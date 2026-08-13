@@ -1,0 +1,28 @@
+# Python virtual environments
+.venv/
+venv/
+
+# Python-generated files
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+
+# Azure authentication state
+.azure/
+
+# IDE-specific files
+.vscode/
+.idea/
+
+# Local documents and generated data
+data/sources/*
+data/processed/*
+data/evaluation/*
+!data/sources/.gitkeep
+!data/processed/.gitkeep
+!data/evaluation/.gitkeep
