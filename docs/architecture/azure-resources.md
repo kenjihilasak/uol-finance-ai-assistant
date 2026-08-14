@@ -20,6 +20,9 @@ This document records the resource types and responsibilities used by the projec
 ## Secret-handling policy
 
 - Never commit admin keys, API keys, storage connection strings, SAS tokens, access tokens, or client secrets.
-- Local development authenticates through Microsoft Entra ID using a device code.
+- Local development authenticates through Microsoft Entra ID using
+  `InteractiveBrowserCredential` with `AZURE_TENANT_ID`.
+- Keep Microsoft Entra Security Defaults enabled. This project does not use the
+  device code flow because it is blocked by the tenant's security policy.
 - Deployed workloads should authenticate through a managed identity.
 - If a secret is ever committed, deleting it from the latest file is insufficient: rotate the credential immediately and remove it from Git history.
