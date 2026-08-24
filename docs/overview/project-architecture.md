@@ -204,11 +204,13 @@ Important controls include:
 download or as proof of permission. The operator remains responsible for
 confirming that processing and any displayed excerpts are allowed.
 
-See [processed-document-schema.md](./processed-document-schema.md) for the
-current extraction contract,
-[source-metadata-schema.md](./source-metadata-schema.md) for the registration
-contract, and [../source-ingestion.md](../source-ingestion.md) for the executable
-workflow.
+See
+[processed-document-schema.md](../stage_02_processing/processed-document-schema.md)
+for the extraction contract,
+[source-metadata-schema.md](../stage_01_ingestion/source-metadata-schema.md) for
+the registration contract, and
+[source-ingestion.md](../stage_01_ingestion/source-ingestion.md) for the
+executable workflow.
 
 ## Retrieval and answer policy
 
