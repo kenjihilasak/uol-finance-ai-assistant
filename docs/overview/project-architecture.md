@@ -23,84 +23,88 @@ Status describes repository progress, not live Azure health.
 
 ## Logical architecture
 
+### System map
+
+This diagram stays vertical and shows only the main lifecycle. Detailed service
+responsibilities follow in a table instead of being compressed into the same
+canvas.
+
 ```mermaid
-flowchart LR
+flowchart TB
     classDef implemented fill:#DCFCE7,stroke:#15803D,color:#14532D,stroke-width:2px
     classDef provisioned fill:#FEF3C7,stroke:#B45309,color:#78350F,stroke-width:2px
     classDef planned fill:#F1F5F9,stroke:#64748B,color:#334155,stroke-width:2px,stroke-dasharray:5 5
 
-    subgraph intake[Controlled local intake]
-        operator[Operator]
-        pdf[Approved PDF in<br/>data/sources]
-        register[Register provenance,<br/>usage basis and rights note]
-        validate[Validate path, extension,<br/>size, PDF header and SHA-256]
+    source[Approved local PDF]
+    ingest[Stage 01: register and validate]
+    sourceBlob[(Immutable source blob)]
+    process[Stage 02: extract and chunk]
+    vectors[Stage 03: generate embeddings]
+    search[(Stage 04: Azure AI Search)]
+    rag[Stage 05: RAG API]
+    ui[Stage 06: portfolio UI]
 
-        operator --> pdf --> register --> validate
-    end
+    source --> ingest
+    ingest --> sourceBlob
+    ingest --> process
+    process --> vectors
+    vectors -.-> search
+    search -.-> rag
+    rag -.-> ui
 
-    subgraph offline[Offline processing]
-        upload[Upload immutable<br/>source blob]
-        extract[Extract and normalise<br/>page-level text]
-        chunk[Create deterministic,<br/>page-bounded chunks]
-        embed[Generate and validate<br/>embedding vectors]
-
-        validate --> upload
-        validate --> extract --> chunk --> embed
-    end
-
-    subgraph azure[Azure data and AI plane]
-        entra[Microsoft Entra ID]
-        sourceBlob[(Blob Storage<br/>source-documents)]
-        processedBlob[(Blob Storage<br/>processed-documents)]
-        embeddingModel[Microsoft Foundry<br/>text-embedding-3-small]
-        search[(Azure AI Search<br/>versioned hybrid index)]
-        chatModel[Microsoft Foundry<br/>gpt-5-mini]
-        evaluationBlob[(Blob Storage<br/>evaluation-data)]
-    end
-
-    subgraph serving[Online RAG serving]
-        ui[Portfolio chat UI]
-        api[API and RAG orchestrator]
-        retrieve[Query embedding,<br/>hybrid retrieval and filters]
-        policy[Evidence threshold,<br/>citations and abstention]
-
-        ui --> api --> retrieve
-        policy --> api
-    end
-
-    subgraph quality[Quality and operations]
-        evaluator[Offline evaluation runner]
-        telemetry[Logs, metrics, traces<br/>and cost signals]
-    end
-
-    upload -->|PDF + compact metadata| sourceBlob
-    chunk -->|text batches| embeddingModel
-    embeddingModel -->|1,536-dimensional vectors| embed
-    embed -.->|processed records| processedBlob
-    embed -.->|index documents| search
-
-    retrieve -.->|embed question| embeddingModel
-    retrieve -.->|vector + keyword query| search
-    search -.->|top-k chunks + metadata| retrieve
-    retrieve -.->|bounded evidence| chatModel
-    chatModel -.->|draft answer| policy
-
-    evaluationBlob -.-> evaluator
-    evaluator -.->|test questions| api
-    api -.-> telemetry
-    evaluator -.-> telemetry
-
-    entra -.->|developer OAuth + Azure RBAC| sourceBlob
-    entra -.->|developer OAuth + Azure RBAC| embeddingModel
-    entra -.->|managed identity + Azure RBAC| api
-
-    class operator,pdf,register,validate,upload,extract,chunk,embed,entra,sourceBlob,embeddingModel implemented
-    class processedBlob,search,chatModel,evaluationBlob provisioned
-    class ui,api,retrieve,policy,evaluator,telemetry planned
+    class source,ingest,sourceBlob,process,vectors implemented
+    class search provisioned
+    class rag,ui planned
 ```
 
-Solid arrows are implemented data movement. Dashed arrows are target
+Solid arrows are implemented data movement. Dashed arrows are the next or later
 integrations.
+
+### Implemented offline path
+
+This second diagram expands only the implemented part, including the two Azure
+calls. Keeping the future serving path separate prevents GitHub from shrinking
+the labels.
+
+```mermaid
+flowchart TB
+    classDef implemented fill:#DCFCE7,stroke:#15803D,color:#14532D,stroke-width:2px
+
+    operator[Operator]
+    pdf[PDF in data/sources]
+    register[Register provenance and usage basis]
+    validate[Validate path, size, PDF header and SHA-256]
+    upload[Upload without overwrite]
+    sourceBlob[(Blob: source-documents)]
+    extract[Extract pages to processed JSON]
+    chunk[Create page-bounded chunks]
+    request[Send embedding batches]
+    model[Foundry embedding deployment]
+    records[Validate and store vector records]
+    entra[Microsoft Entra ID]
+
+    operator --> pdf --> register --> validate
+    validate --> upload --> sourceBlob
+    validate --> extract --> chunk --> request
+    request --> model --> records
+    entra -.-> upload
+    entra -.-> model
+
+    class operator,pdf,register,validate,upload,sourceBlob,extract,chunk,request,model,records,entra implemented
+```
+
+### Component responsibilities
+
+| Component | Responsibility | Status |
+| --- | --- | --- |
+| `source-documents` | Preserve verified original PDFs with immutable names. | Implemented |
+| `processed-documents` | Store processed pipeline artifacts in Azure. | Provisioned |
+| Embedding deployment | Convert chunk and later query text into vectors. | Implemented |
+| Azure AI Search | Hold the versioned hybrid retrieval index. | Provisioned; integration next |
+| Chat deployment | Synthesize an answer from bounded retrieved evidence. | Provisioned |
+| RAG API and UI | Apply retrieval, citation, and abstention policies. | Planned |
+| `evaluation-data` | Store evaluation datasets and run results. | Provisioned |
+| Evaluation and telemetry | Measure quality, latency, failures, and cost. | Planned |
 
 ## Offline ingestion path
 
