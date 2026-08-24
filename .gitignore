@@ -24,5 +24,6 @@ data/sources/*
 data/processed/*
 data/evaluation/*
 !data/sources/.gitkeep
+!data/sources/README.md
 !data/processed/.gitkeep
 !data/evaluation/.gitkeep

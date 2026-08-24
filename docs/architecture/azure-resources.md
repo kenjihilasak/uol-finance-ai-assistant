@@ -8,7 +8,7 @@ This document records the resource types and responsibilities used by the projec
 | Azure subscription | Identifies the billing and management boundary | `AZURE_SUBSCRIPTION_ID` |
 | Resource group | Groups the project's Azure resources for management | `AZURE_RESOURCE_GROUP` |
 | Storage account | Stores original, processed, and evaluation documents | `AZURE_STORAGE_ACCOUNT_NAME` |
-| `source-documents` container | Immutable copies of original public documents | `AZURE_STORAGE_SOURCE_CONTAINER` |
+| `source-documents` container | Immutable copies of operator-approved source PDFs | `AZURE_STORAGE_SOURCE_CONTAINER` |
 | `processed-documents` container | Extracted and cleaned document representations | `AZURE_STORAGE_PROCESSED_CONTAINER` |
 | `evaluation-data` container | Evaluation questions, expected evidence, and results | `AZURE_STORAGE_EVALUATION_CONTAINER` |
 | Azure AI Search | Stores searchable text, metadata, and embedding vectors | `AZURE_SEARCH_ENDPOINT` |
@@ -26,3 +26,15 @@ This document records the resource types and responsibilities used by the projec
   device code flow because it is blocked by the tenant's security policy.
 - Deployed workloads should authenticate through a managed identity.
 - If a secret is ever committed, deleting it from the latest file is insufficient: rotate the credential immediately and remove it from Git history.
+
+## Source-content policy
+
+- Operators place approved PDFs in the ignored local `data/sources/` directory.
+- The repository stores no PDF, extracted text, chunk, embedding, or evaluation
+  content by default.
+- A source URL is optional provenance and is never required for ingestion.
+- Public availability does not automatically establish an open licence. Record
+  the processing rationale and any redistribution or retention restriction in
+  the source metadata sidecar.
+- Azure containers should remain private and use Entra ID plus least-privilege
+  RBAC rather than anonymous access.
