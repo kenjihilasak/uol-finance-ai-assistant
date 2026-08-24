@@ -6,7 +6,7 @@ import json
 from datetime import datetime, timezone
 from pathlib import Path
 
-from document_utils import (
+from scripts.shared.document_utils import (
     load_and_verify_source,
     processed_path,
     resolve_source_pdf,

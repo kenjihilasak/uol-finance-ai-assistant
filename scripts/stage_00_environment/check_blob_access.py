@@ -1,12 +1,15 @@
 from __future__ import annotations
 
+import argparse
 import os
 
 from dotenv import load_dotenv
 
+from scripts.shared.document_utils import PROJECT_ROOT
+
 
 def required_environment() -> tuple[str, str, set[str]]:
-    load_dotenv()
+    load_dotenv(PROJECT_ROOT / ".env")
     account_url = os.getenv("AZURE_STORAGE_ACCOUNT_URL")
     tenant_id = os.getenv("AZURE_TENANT_ID")
     container_variables = (
@@ -28,7 +31,16 @@ def required_environment() -> tuple[str, str, set[str]]:
     return account_url, tenant_id, expected_containers
 
 
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Verify read access to the configured Azure Blob containers."
+    )
+    return parser.parse_args()
+
+
 def main() -> None:
+    parse_args()
+
     from azure.identity import InteractiveBrowserCredential
     from azure.storage.blob import BlobServiceClient
 

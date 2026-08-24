@@ -7,7 +7,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-from document_utils import (
+from scripts.shared.document_utils import (
     PROJECT_ROOT,
     load_and_verify_source,
     resolve_source_pdf,

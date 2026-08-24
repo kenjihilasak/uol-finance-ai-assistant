@@ -11,3 +11,5 @@
 - [Azure resources](./architecture/azure-resources.md): resource roles and
   secret/content handling policies.
 - [RAG approach](./rag-approach.md): scope and architectural rationale.
+- [Pipeline scripts](../scripts/README.md): stage folders, execution order, and
+  module commands.

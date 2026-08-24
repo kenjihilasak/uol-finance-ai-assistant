@@ -41,7 +41,9 @@ credentials are ignored by Git.
 ## Documentation
 
 Start with the [documentation index](./docs/README.md) and
-[project architecture](./docs/architecture/project-architecture.md).
+[project architecture](./docs/architecture/project-architecture.md). The
+[scripts guide](./scripts/README.md) explains the stage-based folder structure
+and module commands.
 
 ## Authentication and secrets
 

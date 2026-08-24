@@ -19,7 +19,7 @@ Only process documents you are authorised to use. Do not commit the file.
 ## 2. Register and validate it
 
 ```bash
-python scripts/register_source_pdf.py \
+python -m scripts.stage_01_ingestion.register_source_pdf \
   --file data/sources/example-annual-report-2025.pdf \
   --title "Example Annual Report 2025" \
   --institution "Example Institution" \
@@ -48,7 +48,7 @@ not an automated legal determination.
 ## 3. Upload the immutable source
 
 ```bash
-python scripts/upload_source_blob.py \
+python -m scripts.stage_01_ingestion.upload_source_blob \
   --file data/sources/example-annual-report-2025.pdf
 ```
 
@@ -59,7 +59,7 @@ safe when the existing remote bytes are identical.
 ## 4. Extract page-level text
 
 ```bash
-python scripts/extract_pdf_text.py \
+python -m scripts.stage_02_processing.extract_pdf_text \
   --file data/sources/example-annual-report-2025.pdf
 ```
 
@@ -78,7 +78,7 @@ this baseline.
 Use the actual `<document-id>` printed during registration:
 
 ```bash
-python scripts/chunk_extracted_text.py \
+python -m scripts.stage_02_processing.chunk_extracted_text \
   --input data/processed/<document-id>.processed.json
 ```
 
@@ -90,7 +90,7 @@ cross a physical PDF page.
 Validate locally without signing in or calling Azure:
 
 ```bash
-python scripts/generate_embeddings.py \
+python -m scripts.stage_03_embeddings.generate_embeddings \
   --input data/processed/<document-id>.chunks.json \
   --dry-run
 ```
@@ -98,7 +98,7 @@ python scripts/generate_embeddings.py \
 Generate embeddings after the dry run passes:
 
 ```bash
-python scripts/generate_embeddings.py \
+python -m scripts.stage_03_embeddings.generate_embeddings \
   --input data/processed/<document-id>.chunks.json
 ```
 

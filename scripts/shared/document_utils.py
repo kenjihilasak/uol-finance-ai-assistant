@@ -9,7 +9,7 @@ from pathlib import Path
 from urllib.parse import urlparse
 
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
 SOURCE_DIRECTORY = PROJECT_ROOT / "data" / "sources"
 PROCESSED_DIRECTORY = PROJECT_ROOT / "data" / "processed"
 
@@ -154,7 +154,8 @@ def load_and_verify_source(pdf_path: Path) -> dict[str, object]:
     if not metadata_path.is_file():
         raise FileNotFoundError(
             "Source metadata not found. Register the PDF first with "
-            f"scripts/register_source_pdf.py: {metadata_path}"
+            "python -m scripts.stage_01_ingestion.register_source_pdf: "
+            f"{metadata_path}"
         )
 
     metadata = json.loads(metadata_path.read_text(encoding="utf-8"))

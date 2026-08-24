@@ -9,7 +9,12 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-from document_utils import PROJECT_ROOT, processed_path, sha256_file, sha256_text
+from scripts.shared.document_utils import (
+    PROJECT_ROOT,
+    processed_path,
+    sha256_file,
+    sha256_text,
+)
 
 
 BATCH_SIZE = 16

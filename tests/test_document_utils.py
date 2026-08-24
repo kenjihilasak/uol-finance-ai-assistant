@@ -1,19 +1,14 @@
 from __future__ import annotations
 
 import json
-import sys
 import tempfile
 import unittest
 from argparse import Namespace
 from pathlib import Path
 from unittest.mock import patch
 
-
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(PROJECT_ROOT / "scripts"))
-
-import document_utils  # noqa: E402
-import register_source_pdf  # noqa: E402
+from scripts.shared import document_utils
+from scripts.stage_01_ingestion import register_source_pdf
 
 
 class DocumentUtilsTests(unittest.TestCase):

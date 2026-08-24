@@ -108,19 +108,21 @@ The local ingestion path is explicit and reproducible:
 
 1. The operator places a PDF in `data/sources/`. How the operator received it
    is outside this application's scope.
-2. `register_source_pdf.py` validates the local file and creates an ignored
-   JSON sidecar containing a stable document ID, provenance, usage basis, rights
-   note, size, SHA-256, and immutable blob name.
-3. `upload_source_blob.py` verifies the PDF against its sidecar, refuses to
-   overwrite a different blob, and downloads the stored object to verify its
-   bytes and SHA-256. Re-running it against an identical blob is safe.
-4. `extract_pdf_text.py` verifies the source again, extracts page-level text,
-   and records extractor version, page hashes, normalisation rules, and an
-   extraction-coverage quality gate.
-5. `chunk_extracted_text.py` creates stable, page-bounded chunk identifiers.
-   Each result can cite a physical PDF page.
-6. `generate_embeddings.py` validates all chunks, batches their text through
-   the Foundry embedding deployment, and rejects incorrectly sized vectors.
+2. `scripts.stage_01_ingestion.register_source_pdf` validates the local file
+   and creates an ignored JSON sidecar containing a stable document ID,
+   provenance, usage basis, rights note, size, SHA-256, and immutable blob name.
+3. `scripts.stage_01_ingestion.upload_source_blob` verifies the PDF against its
+   sidecar, refuses to overwrite a different blob, and downloads the stored
+   object to verify its bytes and SHA-256. Re-running it against an identical
+   blob is safe.
+4. `scripts.stage_02_processing.extract_pdf_text` verifies the source again,
+   extracts page-level text, and records extractor version, page hashes,
+   normalisation rules, and an extraction-coverage quality gate.
+5. `scripts.stage_02_processing.chunk_extracted_text` creates stable,
+   page-bounded chunk identifiers. Each result can cite a physical PDF page.
+6. `scripts.stage_03_embeddings.generate_embeddings` validates all chunks,
+   batches their text through the Foundry embedding deployment, and rejects
+   incorrectly sized vectors.
 
 Raw PDFs, sidecars, and generated JSON remain outside Git. Scripts and schema
 documentation are committed; content stays local and in controlled Azure

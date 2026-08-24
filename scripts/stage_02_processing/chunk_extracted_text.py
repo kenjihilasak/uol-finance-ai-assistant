@@ -4,7 +4,7 @@ import argparse
 import json
 from pathlib import Path
 
-from document_utils import processed_path, sha256_file, sha256_text
+from scripts.shared.document_utils import processed_path, sha256_file, sha256_text
 
 
 SCHEMA_VERSION = "1.0.0"

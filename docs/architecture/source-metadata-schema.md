@@ -1,6 +1,7 @@
 # Source metadata schema
 
-`register_source_pdf.py` writes an ignored sidecar beside each local PDF:
+`scripts.stage_01_ingestion.register_source_pdf` writes an ignored sidecar
+beside each local PDF:
 
 ```text
 data/sources/report.pdf

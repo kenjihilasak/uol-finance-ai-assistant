@@ -5,7 +5,7 @@ import json
 from datetime import datetime, timezone
 from pathlib import Path
 
-from document_utils import (
+from scripts.shared.document_utils import (
     ALLOWED_DOCUMENT_STATUSES,
     SOURCE_DIRECTORY,
     SOURCE_METADATA_SCHEMA_VERSION,
