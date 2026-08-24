@@ -1,126 +1,84 @@
 # Processed document schema
 
-This document defines the page-level JSON produced from a registered local PDF.
-Chunking, embeddings, and Azure AI Search records are later contracts.
+Stage 02 writes page-level JSON to:
 
-## Purpose
+```text
+data/processed/<document-id>.processed.json
+```
 
-The representation makes every extracted page traceable to the exact source
-bytes. It retains enough provenance and processing information to reproduce an
-artifact and cite a physical PDF page.
+Schema version: `1.0.0`.
 
-## Top-level fields
-
-| Field | Type | Purpose |
-| --- | --- | --- |
-| `schema_version` | string | Version of this processed-document contract. |
-| `document_id` | string | Stable, URL-safe ID copied from source registration. |
-| `source` | object | Registered source metadata and immutable blob name. |
-| `processing` | object | Extractor settings, timestamp, and quality statistics. |
-| `pages` | array | Ordered page-level text records. |
-
-## Source object
+## Top level
 
 | Field | Type | Purpose |
 | --- | --- | --- |
-| `title` | string | Human-readable document title. |
-| `institution` | string | Publisher, owner, or supplying organisation. |
-| `document_date` | string | Document date in `YYYY-MM-DD` format. |
-| `registered_at_utc` | string | Local registration time in UTC. |
-| `sha256` | string | SHA-256 of the source PDF bytes. |
-| `content_type` | string | Must be `application/pdf`. |
-| `status` | string | `current` or `historical`. |
-| `size_bytes` | integer | Source PDF size. |
-| `local_filename` | string | Filename under `data/sources/`. |
-| `blob_name` | string | Immutable destination name in `source-documents`. |
-| `source_reference` | string | Human-readable description of origin or custodian. |
-| `source_url` | string or null | Optional provenance URL; never a download instruction. |
-| `usage_basis` | string | Operator-recorded reason the document may be processed. |
-| `rights_note` | string or null | Copyright, licence, confidentiality, or retention note. |
+| `schema_version` | string | Contract version |
+| `document_id` | string | ID created during registration |
+| `source` | object | Verified source metadata |
+| `processing` | object | Extraction settings and quality metrics |
+| `pages` | array | Ordered page records |
 
-`usage_basis` and `rights_note` document a human decision; the script cannot
-determine copyright or grant permission. The source hash, size, content type,
-filename, and document ID must match the registration sidecar before extraction
-starts.
+## Source
 
-## Processing object
+`source` copies every field from the
+[source metadata schema](../stage_01_ingestion/source-metadata-schema.md) except
+its `schema_version` and `document_id`; the document ID is already top-level.
+Extraction first revalidates the PDF size, content type, filename, and SHA-256.
 
-The object records:
+## Processing
 
-- processing timestamp in UTC;
-- extractor name and installed version;
-- extraction mode and relevant options;
-- text normalisation rules;
-- configured minimum text-page ratio;
-- total pages, pages with and without text;
-- total character and approximate word counts;
-- observed ratio of pages containing extractable text.
+| Field group | Contents |
+| --- | --- |
+| Execution | `processed_at_utc`, extractor name and version |
+| Settings | extraction mode, layout option, normalisations |
+| Quality gate | minimum and observed text-page ratios |
+| Counts | pages, non-empty pages, characters, and approximate words |
 
-The first implementation uses `pypdf` layout mode. It normalises line endings
-and trailing whitespace only. It does not perform document-specific character
-substitutions or claim to reconstruct the semantic structure of financial
-tables. A low text-page ratio stops processing so image-only PDFs can be sent
-to a separately designed OCR path.
+The current extractor uses `pypdf` layout mode and only normalises line endings
+and trailing whitespace. It does not reconstruct financial tables. Extraction
+stops below the configured text-page ratio so image-only PDFs can be reviewed
+for OCR.
 
-## Page object
+## Page
 
 | Field | Type | Purpose |
 | --- | --- | --- |
-| `page_number` | integer | One-based physical PDF page number. |
-| `text` | string | Extracted and minimally normalised page text. |
-| `character_count` | integer | Number of characters in `text`. |
-| `word_count` | integer | Approximate whitespace-delimited word count. |
-| `sha256` | string | SHA-256 of the UTF-8 page text. |
+| `page_number` | integer | One-based physical PDF page |
+| `text` | string | Minimally normalised text |
+| `character_count` | integer | Text length |
+| `word_count` | integer | Approximate whitespace-delimited count |
+| `sha256` | string | Hash of the UTF-8 page text |
 
-Page hashes detect accidental text changes between extraction and chunking.
-They do not replace the source PDF hash.
+Page hashes detect changes between extraction and chunking; the source PDF hash
+remains the document-level integrity check.
 
-## Example shape
+## Shape
 
 ```json
 {
   "schema_version": "1.0.0",
-  "document_id": "example-annual-report-2025-a1b2c3d4e5f6",
+  "document_id": "example-report-a1b2c3d4e5f6",
   "source": {
-    "title": "Example Annual Report 2025",
-    "institution": "Example Institution",
-    "document_date": "2025-07-31",
-    "registered_at_utc": "2026-08-24T10:15:00Z",
+    "title": "Example Report",
     "sha256": "source-pdf-sha256",
-    "content_type": "application/pdf",
-    "status": "current",
-    "size_bytes": 123456,
-    "local_filename": "example-annual-report-2025.pdf",
-    "blob_name": "example-institution/2025/example-annual-report-2025-a1b2c3d4e5f6/example-annual-report-2025.pdf",
-    "source_reference": "Provided by the document owner",
-    "source_url": null,
-    "usage_basis": "Operator-confirmed portfolio analysis",
-    "rights_note": "Do not redistribute the source document"
+    "source_reference": "Provided by the document owner"
   },
   "processing": {
-    "processed_at_utc": "2026-08-24T10:20:00Z",
     "extractor": {"name": "pypdf", "version": "6.16.1"},
-    "extraction_mode": "layout",
-    "normalisations": [
-      "line_endings_to_lf",
-      "trailing_whitespace_removed"
-    ],
-    "minimum_text_page_ratio": 0.8,
     "page_count": 100,
-    "pages_with_text": 100,
-    "pages_without_text": 0,
-    "text_page_ratio": 1.0,
-    "total_character_count": 250000,
-    "total_word_count": 40000
+    "text_page_ratio": 1.0
   },
   "pages": [
     {
       "page_number": 1,
-      "text": "Extracted page text...",
-      "character_count": 22,
-      "word_count": 3,
+      "text": "Extracted text...",
+      "character_count": 17,
+      "word_count": 2,
       "sha256": "page-text-sha256"
     }
   ]
 }
 ```
+
+The example is abbreviated; the tables and linked source schema define the full
+contract.

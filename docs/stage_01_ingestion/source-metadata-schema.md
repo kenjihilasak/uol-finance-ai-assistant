@@ -1,14 +1,13 @@
 # Source metadata schema
 
-`scripts.stage_01_ingestion.register_source_pdf` writes an ignored sidecar
-beside each local PDF:
+Registration writes an ignored sidecar beside each PDF:
 
 ```text
 data/sources/report.pdf
 data/sources/report.metadata.json
 ```
 
-The schema version is `1.0.0`.
+Schema version: `1.0.0`.
 
 | Field | Type | Rule |
 | --- | --- | --- |
@@ -29,12 +28,8 @@ The schema version is `1.0.0`.
 | `usage_basis` | string | Operator-recorded reason for processing. |
 | `rights_note` | string or null | Optional usage, retention, or redistribution restriction. |
 
-If no document ID is supplied, registration builds one from a slug of the
-title and the first 12 characters of the source hash. A changed PDF therefore
-receives a different default ID and blob path. An identical hash found in
-another sidecar is rejected as a duplicate.
+Without `--document-id`, registration combines a title slug with the first 12
+hash characters. Changed content gets a new ID; duplicate content is rejected.
 
-The upload and extraction stages reload this sidecar and recalculate the file
-size and SHA-256. Extraction copies its provenance fields into the processed
-document contract; later chunks carry only the subset needed for retrieval and
-citations.
+Upload and extraction recalculate size and SHA-256. Extraction carries the
+provenance fields forward; chunks keep the subset needed for retrieval.

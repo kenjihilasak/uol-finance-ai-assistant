@@ -1,33 +1,22 @@
 # Project architecture
 
-## Executive summary
+## Scope
 
-This project uses a **modular classic RAG architecture on Azure**. The offline
-pipeline turns operator-approved financial PDFs into traceable chunks and
-embeddings. The planned online pipeline retrieves that evidence and asks the
-chat model to produce cited answers or abstain.
+This project uses modular classic RAG on Azure. The implemented offline pipeline
+turns approved financial PDFs into traceable vectors. The planned online path
+will retrieve evidence and return a cited answer or abstain.
 
-Source acquisition is deliberately outside the application boundary. An
-operator places a PDF directly in `data/sources/` and records its provenance and
-usage basis. A URL is optional metadata; the application neither downloads nor
-trusts a document merely because it is publicly reachable.
+Source acquisition is outside the application boundary. An operator places a
+PDF in `data/sources/`; a URL is optional provenance, not a download input or
+proof of permission.
 
-The diagrams use these implementation states:
+| Status | Meaning |
+| --- | --- |
+| Implemented | Code exists in this repository. |
+| Provisioned | Azure resource exists; integration may be incomplete. |
+| Planned | Target capability not yet implemented. |
 
-- **Implemented**: code exists in this repository.
-- **Provisioned**: the Azure resource exists, but application integration is
-  not complete.
-- **Planned**: target capability not yet implemented.
-
-Status describes repository progress, not live Azure health.
-
-## Logical architecture
-
-### System map
-
-This diagram stays vertical and shows only the main lifecycle. Detailed service
-responsibilities follow in a table instead of being compressed into the same
-canvas.
+## System map
 
 ```mermaid
 flowchart TB
@@ -57,14 +46,9 @@ flowchart TB
     class rag,ui planned
 ```
 
-Solid arrows are implemented data movement. Dashed arrows are the next or later
-integrations.
+Solid arrows are implemented; dashed arrows are future integrations.
 
-### Implemented offline path
-
-This second diagram expands only the implemented part, including the two Azure
-calls. Keeping the future serving path separate prevents GitHub from shrinking
-the labels.
+## Implemented offline path
 
 ```mermaid
 flowchart TB
@@ -93,44 +77,24 @@ flowchart TB
     class operator,pdf,register,validate,upload,sourceBlob,extract,chunk,request,model,records,entra implemented
 ```
 
-### Component responsibilities
+Use the [source ingestion guide](../stage_01_ingestion/source-ingestion.md) for
+commands. Data contracts are defined by the
+[source metadata](../stage_01_ingestion/source-metadata-schema.md) and
+[processed document](../stage_02_processing/processed-document-schema.md)
+schemas.
+
+## Component status
 
 | Component | Responsibility | Status |
 | --- | --- | --- |
-| `source-documents` | Preserve verified original PDFs with immutable names. | Implemented |
-| `processed-documents` | Store processed pipeline artifacts in Azure. | Provisioned |
-| Embedding deployment | Convert chunk and later query text into vectors. | Implemented |
-| Azure AI Search | Hold the versioned hybrid retrieval index. | Provisioned; integration next |
-| Chat deployment | Synthesize an answer from bounded retrieved evidence. | Provisioned |
-| RAG API and UI | Apply retrieval, citation, and abstention policies. | Planned |
-| `evaluation-data` | Store evaluation datasets and run results. | Provisioned |
+| `source-documents` | Preserve verified original PDFs. | Implemented |
+| `processed-documents` | Store processed artifacts in Azure. | Provisioned |
+| Embedding deployment | Convert text into vectors. | Implemented |
+| Azure AI Search | Store the hybrid retrieval index. | Integration next |
+| Chat deployment | Synthesize answers from evidence. | Provisioned |
+| RAG API and UI | Retrieve, cite, and abstain. | Planned |
+| `evaluation-data` | Store evaluation inputs and results. | Provisioned |
 | Evaluation and telemetry | Measure quality, latency, failures, and cost. | Planned |
-
-## Offline ingestion path
-
-The local ingestion path is explicit and reproducible:
-
-1. The operator places a PDF in `data/sources/`. How the operator received it
-   is outside this application's scope.
-2. `scripts.stage_01_ingestion.register_source_pdf` validates the local file
-   and creates an ignored JSON sidecar containing a stable document ID,
-   provenance, usage basis, rights note, size, SHA-256, and immutable blob name.
-3. `scripts.stage_01_ingestion.upload_source_blob` verifies the PDF against its
-   sidecar, refuses to overwrite a different blob, and downloads the stored
-   object to verify its bytes and SHA-256. Re-running it against an identical
-   blob is safe.
-4. `scripts.stage_02_processing.extract_pdf_text` verifies the source again,
-   extracts page-level text, and records extractor version, page hashes,
-   normalisation rules, and an extraction-coverage quality gate.
-5. `scripts.stage_02_processing.chunk_extracted_text` creates stable,
-   page-bounded chunk identifiers. Each result can cite a physical PDF page.
-6. `scripts.stage_03_embeddings.generate_embeddings` validates all chunks,
-   batches their text through the Foundry embedding deployment, and rejects
-   incorrectly sized vectors.
-
-Raw PDFs, sidecars, and generated JSON remain outside Git. Scripts and schema
-documentation are committed; content stays local and in controlled Azure
-containers.
 
 ## Online request path (target)
 
@@ -145,115 +109,65 @@ sequenceDiagram
     participant LLM as Chat deployment
 
     User->>UI: Ask a finance question
-    UI->>API: POST question + correlation ID
-    API->>API: Validate input and apply policy
+    UI->>API: Send question
     API->>EMB: Generate query vector
     EMB-->>API: Query embedding
-    API->>SEARCH: Hybrid search with metadata filters
-    SEARCH-->>API: Top-k chunks, scores and source pages
+    API->>SEARCH: Run hybrid search
+    SEARCH-->>API: Return chunks and source pages
 
-    alt Evidence passes retrieval threshold
-        API->>LLM: Question + bounded evidence + citation IDs
-        LLM-->>API: Grounded draft answer
-        API->>API: Validate citations against retrieved chunks
-        API-->>UI: Answer + source reference + page numbers
+    alt Evidence is sufficient
+        API->>LLM: Send question and bounded evidence
+        LLM-->>API: Draft cited answer
+        API->>API: Validate citation IDs
+        API-->>UI: Return answer and pages
     else Evidence is insufficient
-        API-->>UI: Abstain and explain what evidence is missing
+        API-->>UI: Abstain
     end
 
-    UI-->>User: Cited response or explicit abstention
+    UI-->>User: Show result
 ```
 
-The model is not the source of truth. Search returns evidence, the chat model
-synthesises only from that evidence, and the API validates citation IDs before
-returning the response.
+Search is the evidence source. The API must bound context, validate citation
+IDs, and abstain below a retrieval threshold.
 
-## Trust boundaries and identity
+## Security and traceability
 
-| Context | Authentication | Authorisation target |
-| --- | --- | --- |
-| Local development | `InteractiveBrowserCredential` in the configured tenant | Least-privilege Azure RBAC roles |
-| Deployed application | Managed identity | Blob, Search, and Foundry data-plane roles |
-| Git repository | No Azure credentials or document content | Templates, code, and non-secret resource names only |
-
-Storage keys, search admin keys, connection strings, SAS tokens, access tokens,
-and client secrets are not part of the intended application path. Tenant
-Security Defaults remain enabled.
-
-## Data contracts and traceability
+| Context | Identity |
+| --- | --- |
+| Local development | `InteractiveBrowserCredential` with least-privilege RBAC |
+| Deployed application | Managed identity with data-plane RBAC |
+| Git | No credentials or document content |
 
 ```text
-operator approval + source reference
-  -> local PDF SHA-256 + metadata sidecar
+operator approval
+  -> PDF SHA-256 + source metadata
   -> immutable source blob
-  -> page number + page-text SHA-256
-  -> deterministic chunk ID + chunk-text SHA-256
+  -> page hash
+  -> chunk ID + chunk hash
   -> embedding record
   -> search result
-  -> answer citation
+  -> citation
 ```
 
-Important controls include:
+Controls: restricted source paths, symlink rejection, file and hash validation,
+overwrite protection, deterministic chunk IDs, vector-size checks, and
+versioned schemas. `source_url` remains optional provenance. The operator is
+responsible for usage and redistribution rights.
 
-- source files restricted to `data/sources/`, with symlinks rejected;
-- format-header, size, metadata, and SHA-256 validation at stage boundaries;
-- immutable blob names and overwrite protection;
-- versioned source and processed-document schemas;
-- deterministic, page-bounded chunks;
-- provenance and rights notes carried into processed artifacts;
-- explicit vector-dimension validation;
-- a versioned search index name for safe schema evolution.
+## Evaluation targets
 
-`source_url` is nullable and retained only for provenance. It is not used for
-download or as proof of permission. The operator remains responsible for
-confirming that processing and any displayed excerpts are allowed.
-
-See
-[processed-document-schema.md](../stage_02_processing/processed-document-schema.md)
-for the extraction contract,
-[source-metadata-schema.md](../stage_01_ingestion/source-metadata-schema.md) for
-the registration contract, and
-[source-ingestion.md](../stage_01_ingestion/source-ingestion.md) for the
-executable workflow.
-
-## Retrieval and answer policy
-
-The target uses hybrid retrieval:
-
-- keyword search preserves exact financial terms, dates, and account names;
-- vector search captures semantically related language;
-- metadata filters can exclude historical documents;
-- semantic reranking can be measured separately from the baseline;
-- an evidence threshold triggers abstention when the corpus is insufficient.
-
-The API must constrain context size, validate citation identifiers, and expose
-the source reference and physical page number. A source URL is shown only when
-one was recorded.
-
-## Evaluation strategy
-
-The `evaluation-data` container will hold versioned questions, expected
-evidence, and run results.
-
-| Layer | Example measures |
+| Layer | Measures |
 | --- | --- |
-| Ingestion | source hash match, extraction coverage, empty-page rate |
+| Ingestion | Hash match, extraction coverage, empty-page rate |
 | Retrieval | Recall@k, MRR, nDCG, source/page match |
-| Generation | groundedness, citation correctness, answer relevance, abstention quality |
-| Operations | p50/p95 latency, request failures, token usage, estimated cost |
+| Generation | Groundedness, citation correctness, abstention quality |
+| Operations | p50/p95 latency, failures, tokens, estimated cost |
 
-Each run should record corpus version, index version, embedding deployment,
-retrieval settings, prompt version, and chat deployment.
+Each run should record corpus, index, model, retrieval, and prompt versions.
 
-## Delivery roadmap
+## Roadmap
 
-1. **Implemented foundation**: controlled local registration, verified Blob
-   upload, extraction, deterministic chunking, and embedding generation.
-2. **Retrieval MVP**: define the Azure AI Search schema, upload vectors, and
-   verify keyword, vector, and hybrid retrieval from Python.
-3. **Grounded answer MVP**: add the RAG orchestrator, citations, evidence
-   thresholds, and explicit abstention.
-4. **Evaluation**: create an expert-reviewed dataset and establish retrieval
-   baselines before prompt tuning.
-5. **Serving and operations**: expose an authenticated API and portfolio UI,
-   deploy with managed identity, and add telemetry and cost monitoring.
+1. Define and populate the Azure AI Search hybrid index.
+2. Add the RAG API with citations and abstention.
+3. Establish an expert-reviewed evaluation baseline.
+4. Add the portfolio UI, managed identity, and telemetry.
