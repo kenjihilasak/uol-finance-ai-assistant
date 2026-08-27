@@ -61,11 +61,18 @@ def load_chunks(path: Path) -> tuple[str, list[dict[str, object]]]:
         text = chunk.get("text")
         if not isinstance(chunk_id, str) or not isinstance(text, str) or not text:
             raise RuntimeError("Every chunk must have a non-empty chunk_id and text")
+        vector_text = chunk.get("embedding_text", text)
+        if not isinstance(vector_text, str) or not vector_text:
+            raise RuntimeError("embedding_text must be a non-empty string when present")
         if chunk_id in chunk_ids:
             raise RuntimeError(f"Duplicate chunk_id: {chunk_id}")
         chunk_ids.add(chunk_id)
 
     return document_id, chunks
+
+
+def embedding_input(chunk: dict[str, object]) -> str:
+    return str(chunk.get("embedding_text", chunk["text"]))
 
 
 def load_config() -> EmbeddingConfig:
@@ -126,7 +133,7 @@ def embed_chunks(
 
     try:
         for batch in batches(chunks):
-            texts = [str(chunk["text"]) for chunk in batch]
+            texts = [embedding_input(chunk) for chunk in batch]
             response = client.embeddings.create(
                 model=config.deployment,
                 input=texts,

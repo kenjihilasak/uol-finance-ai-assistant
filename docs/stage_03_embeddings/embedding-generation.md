@@ -9,6 +9,16 @@ Input: `data/processed/<document-id>.chunks.json`.
 Before calling Azure, the module requires one document ID, non-empty chunks,
 unique chunk IDs, matching document IDs, and non-empty text.
 
+Version 2 chunks contain two text fields:
+
+| Field | Use |
+| --- | --- |
+| `text` | Exact page evidence shown to users and used for citations. |
+| `embedding_text` | Evidence prefixed with document title, institution, and page. |
+
+The embedding request uses `embedding_text`. Version 1 files remain compatible
+and fall back to `text`.
+
 ```bash
 python -m scripts.stage_03_embeddings.generate_embeddings \
   --input data/processed/<document-id>.chunks.json \

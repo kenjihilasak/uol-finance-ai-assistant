@@ -61,7 +61,7 @@ flowchart TB
     upload[Upload without overwrite]
     sourceBlob[(Blob: source-documents)]
     extract[Extract pages to processed JSON]
-    chunk[Create page-bounded chunks]
+    chunk[Create recursive page-bounded chunks]
     request[Send embedding batches]
     model[Foundry embedding deployment]
     records[Validate and store vector records]
@@ -81,7 +81,8 @@ Use the [source ingestion guide](../stage_01_ingestion/source-ingestion.md) for
 commands. Data contracts are defined by the
 [source metadata](../stage_01_ingestion/source-metadata-schema.md) and
 [processed document](../stage_02_processing/processed-document-schema.md)
-schemas.
+schemas. The [chunking strategy](../stage_02_processing/chunking-strategy.md)
+records the retrieval-unit decision and comparison.
 
 ## Component status
 

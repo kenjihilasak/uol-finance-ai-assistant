@@ -2,14 +2,18 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
+from dataclasses import dataclass
 from pathlib import Path
 
 from scripts.shared.document_utils import processed_path, sha256_file, sha256_text
 
 
-SCHEMA_VERSION = "1.0.0"
-CHUNKING_METHOD = "page_bounded_character_window"
+SCHEMA_VERSION = "2.0.0"
+CHUNKING_METHOD = "page_bounded_recursive_text_units"
+DEFAULT_TARGET_CHARS = 1200
 DEFAULT_MAX_CHARS = 1800
+DEFAULT_MIN_CHARS = 300
 DEFAULT_OVERLAP_CHARS = 200
 
 REQUIRED_SOURCE_FIELDS = {
@@ -23,45 +27,210 @@ REQUIRED_SOURCE_FIELDS = {
 }
 
 
+@dataclass(frozen=True)
+class TextUnit:
+    start: int
+    end: int
+
+
+def trim_span(text: str, start: int, end: int) -> tuple[int, int] | None:
+    while start < end and text[start].isspace():
+        start += 1
+    while end > start and text[end - 1].isspace():
+        end -= 1
+    return (start, end) if start < end else None
+
+
+def paragraph_spans(text: str) -> list[tuple[int, int]]:
+    spans: list[tuple[int, int]] = []
+    start = 0
+    for separator in re.finditer(r"\n[ \t]*\n+", text):
+        span = trim_span(text, start, separator.start())
+        if span:
+            spans.append(span)
+        start = separator.end()
+
+    span = trim_span(text, start, len(text))
+    if span:
+        spans.append(span)
+    return spans
+
+
+def sentence_spans(text: str, start: int, end: int) -> list[tuple[int, int]]:
+    paragraph = text[start:end]
+    spans: list[tuple[int, int]] = []
+    sentence_start = 0
+    boundary_pattern = re.compile(r'[.!?](?:["\u2019\u201d)]*)\s+(?=[A-Z0-9\u00a3])')
+
+    for boundary in boundary_pattern.finditer(paragraph):
+        punctuation_end = boundary.start() + len(boundary.group(0).rstrip())
+        span = trim_span(
+            text,
+            start + sentence_start,
+            start + punctuation_end,
+        )
+        if span:
+            spans.append(span)
+        sentence_start = boundary.end()
+
+    span = trim_span(text, start + sentence_start, end)
+    if span:
+        spans.append(span)
+    return spans
+
+
+def word_bounded_spans(
+    text: str, start: int, end: int, max_chars: int
+) -> list[tuple[int, int]]:
+    spans: list[tuple[int, int]] = []
+    cursor = start
+
+    while cursor < end:
+        candidate_end = min(cursor + max_chars, end)
+        if candidate_end < end:
+            boundary = text.rfind(" ", cursor, candidate_end)
+            if boundary > cursor:
+                candidate_end = boundary
+
+        span = trim_span(text, cursor, candidate_end)
+        if span:
+            spans.append(span)
+        cursor = max(candidate_end, cursor + 1)
+
+    return spans
+
+
+def text_units(text: str, max_chars: int) -> list[TextUnit]:
+    units: list[TextUnit] = []
+    for paragraph_start, paragraph_end in paragraph_spans(text):
+        for sentence_start, sentence_end in sentence_spans(
+            text, paragraph_start, paragraph_end
+        ):
+            spans = (
+                [(sentence_start, sentence_end)]
+                if sentence_end - sentence_start <= max_chars
+                else word_bounded_spans(
+                    text,
+                    sentence_start,
+                    sentence_end,
+                    max_chars,
+                )
+            )
+            units.extend(TextUnit(start, end) for start, end in spans)
+    return units
+
+
+def rebalance_short_windows(
+    text: str,
+    windows: list[tuple[int, int, str]],
+    min_chars: int,
+    max_chars: int,
+) -> list[tuple[int, int, str]]:
+    """Merge short edge windows when the result remains within max_chars."""
+    pending = list(windows)
+    balanced: list[tuple[int, int, str]] = []
+    index = 0
+
+    while index < len(pending):
+        start, end, value = pending[index]
+        if len(value) >= min_chars or len(pending) == 1:
+            balanced.append((start, end, value))
+            index += 1
+            continue
+
+        if balanced and end - balanced[-1][0] <= max_chars:
+            previous_start = balanced[-1][0]
+            balanced[-1] = (
+                previous_start,
+                end,
+                text[previous_start:end],
+            )
+            index += 1
+            continue
+
+        if index + 1 < len(pending):
+            next_start, next_end, _ = pending[index + 1]
+            if next_end - start <= max_chars:
+                pending[index + 1] = (start, next_end, text[start:next_end])
+                index += 1
+                continue
+
+        balanced.append((start, end, value))
+        index += 1
+
+    return balanced
+
+
 def split_page_text(
     text: str,
     max_chars: int = DEFAULT_MAX_CHARS,
     overlap_chars: int = DEFAULT_OVERLAP_CHARS,
+    target_chars: int | None = None,
+    min_chars: int | None = None,
 ) -> list[tuple[int, int, str]]:
-    """Return deterministic, word-bounded windows from one PDF page."""
+    """Return page-bounded windows using paragraph and sentence boundaries."""
     if max_chars <= 0:
         raise ValueError("max_chars must be positive")
     if overlap_chars < 0 or overlap_chars >= max_chars:
         raise ValueError(
             "overlap_chars must be non-negative and smaller than max_chars"
         )
+    if target_chars is None:
+        target_chars = min(DEFAULT_TARGET_CHARS, max_chars)
+    if target_chars <= 0 or target_chars > max_chars:
+        raise ValueError("target_chars must be positive and no larger than max_chars")
+    if min_chars is None:
+        min_chars = min(DEFAULT_MIN_CHARS, target_chars)
+    if min_chars <= 0 or min_chars > target_chars:
+        raise ValueError("min_chars must be positive and no larger than target_chars")
     if not text:
         return []
 
+    units = text_units(text, max_chars)
+    if not units:
+        return []
+
     windows: list[tuple[int, int, str]] = []
-    start = 0
-    text_length = len(text)
+    first_unit = 0
 
-    while start < text_length:
-        end = min(start + max_chars, text_length)
-        if end < text_length:
-            boundary = text.rfind(" ", start, end)
-            if boundary > start:
-                end = boundary
+    while first_unit < len(units):
+        last_unit = first_unit
+        while last_unit + 1 < len(units):
+            current_length = units[last_unit].end - units[first_unit].start
+            candidate_length = units[last_unit + 1].end - units[first_unit].start
+            if current_length >= target_chars or candidate_length > max_chars:
+                break
+            last_unit += 1
 
-        candidate = text[start:end]
-        chunk_text = candidate.strip()
-        if chunk_text:
-            leading_whitespace = len(candidate) - len(candidate.lstrip())
-            chunk_start = start + leading_whitespace
-            chunk_end = chunk_start + len(chunk_text)
-            windows.append((chunk_start, chunk_end, chunk_text))
+        chunk_start = units[first_unit].start
+        chunk_end = units[last_unit].end
+        windows.append((chunk_start, chunk_end, text[chunk_start:chunk_end]))
 
-        if end == text_length:
+        if last_unit == len(units) - 1:
             break
-        start = max(end - overlap_chars, start + 1)
 
-    return windows
+        next_unit = last_unit + 1
+        overlap_start = last_unit
+        while overlap_start >= first_unit:
+            overlap_length = units[last_unit].end - units[overlap_start].start
+            if overlap_length > overlap_chars:
+                break
+            next_unit = overlap_start
+            overlap_start -= 1
+
+        first_unit = max(first_unit + 1, next_unit)
+
+    return rebalance_short_windows(text, windows, min_chars, max_chars)
+
+
+def embedding_text(
+    source: dict[str, object], page_number: int, text: str
+) -> str:
+    return (
+        f"Document: {source['title']}\n"
+        f"Institution: {source['institution']}\n"
+        f"Page: {page_number}\n\n{text}"
+    )
 
 
 def load_processed_document(path: Path) -> dict[str, object]:
@@ -95,6 +264,8 @@ def build_chunks(
     document: dict[str, object],
     max_chars: int,
     overlap_chars: int,
+    target_chars: int | None = None,
+    min_chars: int | None = None,
 ) -> list[dict[str, object]]:
     document_id = document["document_id"]
     source = document["source"]
@@ -113,8 +284,15 @@ def build_chunks(
         if not isinstance(page_number, int) or not isinstance(page_text, str):
             raise RuntimeError("A page has an invalid page_number or text")
 
-        windows = split_page_text(page_text, max_chars, overlap_chars)
+        windows = split_page_text(
+            page_text,
+            max_chars=max_chars,
+            overlap_chars=overlap_chars,
+            target_chars=target_chars,
+            min_chars=min_chars,
+        )
         for ordinal, (start, end, text) in enumerate(windows, start=1):
+            vector_text = embedding_text(source, page_number, text)
             chunks.append(
                 {
                     "schema_version": SCHEMA_VERSION,
@@ -124,6 +302,7 @@ def build_chunks(
                     "page_range": {"start": page_number, "end": page_number},
                     "character_range": {"start": start, "end": end},
                     "text": text,
+                    "embedding_text": vector_text,
                     "source_title": source["title"],
                     "institution": source["institution"],
                     "source_reference": source["source_reference"],
@@ -132,6 +311,7 @@ def build_chunks(
                     "status": source["status"],
                     "source_sha256": source["sha256"],
                     "text_sha256": sha256_text(text),
+                    "embedding_text_sha256": sha256_text(vector_text),
                 }
             )
 
@@ -144,6 +324,8 @@ def write_chunks(
     chunks: list[dict[str, object]],
     document_id: str,
     source_processed_sha256: str,
+    target_chars: int,
+    min_chars: int,
     max_chars: int,
     overlap_chars: int,
     output_path: Path,
@@ -155,9 +337,13 @@ def write_chunks(
         "source_processed_sha256": source_processed_sha256,
         "chunking": {
             "method": CHUNKING_METHOD,
+            "split_priority": ["page", "paragraph", "sentence", "word"],
+            "target_chars": target_chars,
+            "min_chars": min_chars,
             "max_chars": max_chars,
             "overlap_chars": overlap_chars,
             "cross_page_chunks": False,
+            "embedding_context": ["document_title", "institution", "page"],
         },
         "chunks": chunks,
     }
@@ -184,6 +370,8 @@ def parse_args() -> argparse.Namespace:
         type=Path,
         help="Path to a <document-id>.processed.json file.",
     )
+    parser.add_argument("--target-chars", type=int, default=DEFAULT_TARGET_CHARS)
+    parser.add_argument("--min-chars", type=int, default=DEFAULT_MIN_CHARS)
     parser.add_argument("--max-chars", type=int, default=DEFAULT_MAX_CHARS)
     parser.add_argument("--overlap-chars", type=int, default=DEFAULT_OVERLAP_CHARS)
     parser.add_argument(
@@ -199,11 +387,19 @@ def main() -> None:
     document = load_processed_document(args.input)
     document_id = str(document["document_id"])
     output_path = processed_path(document_id, "chunks")
-    chunks = build_chunks(document, args.max_chars, args.overlap_chars)
+    chunks = build_chunks(
+        document,
+        args.max_chars,
+        args.overlap_chars,
+        args.target_chars,
+        args.min_chars,
+    )
     output_sha256 = write_chunks(
         chunks,
         document_id,
         sha256_file(args.input),
+        args.target_chars,
+        args.min_chars,
         args.max_chars,
         args.overlap_chars,
         output_path,

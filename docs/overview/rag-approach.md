@@ -14,7 +14,7 @@ supplies documents, and the AI pipeline validates and processes them.
 1. Register, validate, and hash the PDF.
 2. Store an immutable copy in Azure Blob Storage.
 3. Extract page-level text and apply quality checks.
-4. Create deterministic, page-bounded chunks.
+4. Create deterministic, recursive, page-bounded chunks.
 5. Generate embeddings with Microsoft Foundry.
 6. Index chunks and vectors in Azure AI Search.
 7. Retrieve evidence and return a cited answer or abstain.

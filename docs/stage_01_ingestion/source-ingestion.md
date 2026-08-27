@@ -66,7 +66,9 @@ python -m scripts.stage_02_processing.chunk_extracted_text \
   --input data/processed/<document-id>.processed.json
 ```
 
-Defaults: 1,800 characters, 200-character overlap, and no cross-page chunks.
+Defaults: 1,200-character target, 300-character minimum where merging is safe,
+1,800-character hard limit, 200-character complete-unit overlap, and no
+cross-page chunks. See the [chunking strategy](../stage_02_processing/chunking-strategy.md).
 
 ## 6. Generate embeddings
 

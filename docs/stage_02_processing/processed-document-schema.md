@@ -82,3 +82,7 @@ remains the document-level integrity check.
 
 The example is abbreviated; the tables and linked source schema define the full
 contract.
+
+This file is the extraction contract. The separate
+[chunking strategy](./chunking-strategy.md) explains how page text becomes the
+version 2 chunk artifact used for embeddings.
