@@ -30,6 +30,7 @@ docs/
 12. [Hybrid retrieval](./stage_05_retrieval/hybrid-retrieval.md)
 13. [Retrieval evaluation](./stage_05_retrieval/retrieval-evaluation.md)
 14. [Grounded answer generation](./stage_05_retrieval/grounded-answer-generation.md)
+15. [Portfolio UI options](./overview/ui-options.md)
 
 For hands-on learning, read one stage and then run its matching module.
-Generation evaluation and serving docs will be added with their code.
+Serving docs will be added with the API and UI code.

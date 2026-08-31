@@ -3,7 +3,7 @@
 ## Repository Overview
 - Azure RAG portfolio project for grounded question answering over financial PDFs
 - Focus on provenance, deterministic processing, Entra ID, citations, and measurable retrieval quality
-- Current status: 10-question positive generation baseline complete
+- Current status: Positive and abstention baselines complete; serving next
 
 ## Key Directories
 - `data/sources/` - Input PDFs (ignored, not committed)
@@ -46,7 +46,7 @@ python -m scripts.stage_03_embeddings.generate_embeddings --input data/processed
 - Stage 06: Portfolio UI
 
 ## Current Focus
-Add a reviewed negative question set and measure abstention before serving.
+Build a low-cost serving API and portfolio UI without exposing Azure credentials.
 
 ## Known Deployed Index Difference
 - `uol-finance-chunks-v1` contains 490 validated documents and uses 1,536-dimensional HNSW vectors.

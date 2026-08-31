@@ -27,6 +27,6 @@ Using `python -m` keeps package imports deterministic and avoids per-script
 | 02 | `extract_pdf_text`, `chunk_extracted_text` | None |
 | 03 | `generate_embeddings` | None in dry run; model call otherwise |
 | 04 | `create_index`, `upload_documents` | Search index management |
-| 05 | Retrieval, retrieval evaluation, grounded answers, generation evaluation | Search and model calls |
+| 05 | Retrieval, positive generation, and abstention evaluation | Search and model calls |
 
 Add future stage folders only when their code is implemented.

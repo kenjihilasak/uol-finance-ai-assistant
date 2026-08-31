@@ -8,9 +8,9 @@ citations, and measurable retrieval quality.
 
 | State | Capabilities |
 | --- | --- |
-| Implemented | PDF pipeline, retrieval evaluation, grounded answers, and positive generation evaluation |
+| Implemented | PDF pipeline, retrieval, grounded answers, positive and negative evaluation |
 | Provisioned | Chat deployment and three Blob containers |
-| Planned | Abstention evaluation, RAG API, telemetry, and UI |
+| Planned | RAG API, telemetry, and portfolio UI |
 
 ## Start here
 
@@ -21,6 +21,7 @@ not download them from URLs.
 - [Project architecture](./docs/overview/project-architecture.md)
 - [Retrieval baseline](./docs/stage_05_retrieval/retrieval-evaluation.md)
 - [Grounded answers](./docs/stage_05_retrieval/grounded-answer-generation.md)
+- [Portfolio UI decision](./docs/overview/ui-options.md)
 - [Source ingestion guide](./docs/stage_01_ingestion/source-ingestion.md)
 - [Script stages](./scripts/README.md)
 

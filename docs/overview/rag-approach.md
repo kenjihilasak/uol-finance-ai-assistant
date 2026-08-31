@@ -20,8 +20,8 @@ supplies documents, and the AI pipeline validates and processes them.
 7. Retrieve evidence with hybrid BM25 and vector search.
 8. Return a cited answer or abstain.
 
-Steps 1–8, retrieval evaluation, and a 10-question positive generation baseline
-are implemented. Abstention evaluation and serving are next.
+Steps 1–8 plus retrieval, positive-generation, and abstention baselines are
+implemented. Serving is next.
 
 ## Direct PDF intake
 

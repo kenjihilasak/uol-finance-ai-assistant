@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0.0",
+  "evaluated_at": "2026-08-31T22:34:02.886450+00:00",
+  "dataset_id": "uol-finance-abstention-v1",
+  "index_name": "uol-finance-chunks-v1",
+  "embedding_deployment": "text-embedding-3-small",
+  "chat_deployment": "gpt-5-mini",
+  "retrieval": {
+    "type": "hybrid_bm25_vector",
+    "top": 5,
+    "vector_candidates": 50
+  },
+  "aggregate": {
+    "correct_abstention_rate": 1.0,
+    "false_answer_rate": 0.0,
+    "citation_free_abstention_rate": 1.0
+  },
+  "usage": {
+    "input_tokens": 15492,
+    "output_tokens": 1291,
+    "total_tokens": 16783
+  },
+  "questions": {
+    "unrelated-company-revenue": "abstained",
+    "future-total-income": "abstained",
+    "future-budget": "abstained",
+    "share-price": "abstained",
+    "dividend-per-share": "abstained",
+    "fitch-credit-rating": "abstained",
+    "future-graduates": "abstained",
+    "monthly-electricity": "abstained",
+    "cfo-home-address": "abstained",
+    "exchange-rate-forecast": "abstained"
+  }
+}

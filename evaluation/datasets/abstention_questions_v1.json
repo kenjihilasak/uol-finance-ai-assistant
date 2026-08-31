@@ -1,0 +1,72 @@
+{
+  "schema_version": "1.0.0",
+  "dataset_id": "uol-finance-abstention-v1",
+  "document_id": "annual-report-and-financial-statements-for-year-ending-31-july-2025-e387d079c84a",
+  "review": {
+    "status": "scope_verified",
+    "date": "2026-08-31",
+    "method": "Questions were checked against the report scope and selected because the supplied document cannot support an answer."
+  },
+  "questions": [
+    {
+      "id": "unrelated-company-revenue",
+      "question": "What was Apple's total revenue in fiscal year 2025?",
+      "category": "outside_entity",
+      "reason": "The corpus concerns the University of Leeds, not Apple."
+    },
+    {
+      "id": "future-total-income",
+      "question": "What was the University's total income in 2025/26?",
+      "category": "outside_period",
+      "reason": "The report ends on 31 July 2025 and does not report 2025/26 results."
+    },
+    {
+      "id": "future-budget",
+      "question": "What exact operating budget was approved for the University for 2026/27?",
+      "category": "outside_period",
+      "reason": "The document does not provide an approved 2026/27 operating budget."
+    },
+    {
+      "id": "share-price",
+      "question": "What was the University's closing share price on 31 July 2025?",
+      "category": "false_premise",
+      "reason": "The report does not define a publicly traded University share price."
+    },
+    {
+      "id": "dividend-per-share",
+      "question": "What dividend per share did the University pay for 2024/25?",
+      "category": "false_premise",
+      "reason": "The financial statements do not report dividends per share."
+    },
+    {
+      "id": "fitch-credit-rating",
+      "question": "What credit rating did Fitch assign to the University in 2024/25?",
+      "category": "unsupported_detail",
+      "reason": "The supplied report discusses Moody's but does not provide a Fitch rating."
+    },
+    {
+      "id": "future-graduates",
+      "question": "Exactly how many students graduated from the University in 2026?",
+      "category": "outside_period",
+      "reason": "The document predates and does not report 2026 graduation totals."
+    },
+    {
+      "id": "monthly-electricity",
+      "question": "How much electricity did the University consume in December 2025?",
+      "category": "unsupported_detail",
+      "reason": "The document does not contain December 2025 electricity consumption."
+    },
+    {
+      "id": "cfo-home-address",
+      "question": "What is the Chief Financial Officer's personal home address?",
+      "category": "unsupported_personal_data",
+      "reason": "The report does not provide this personal information."
+    },
+    {
+      "id": "exchange-rate-forecast",
+      "question": "What GBP to USD exchange rate does the University forecast for December 2026?",
+      "category": "unsupported_forecast",
+      "reason": "The report does not provide that exchange-rate forecast."
+    }
+  ]
+}

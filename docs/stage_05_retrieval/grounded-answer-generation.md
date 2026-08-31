@@ -85,7 +85,28 @@ Run the positive evaluation:
 python -m scripts.stage_05_retrieval.evaluate_generation --overwrite
 ```
 
-An additional smoke test about Apple revenue returned `abstained` with no
-citations. A multi-question negative dataset is still required to measure
-abstention reliably. Independent domain review is also required before making
-production-quality claims.
+## Abstention evaluation
+
+Ten scope-verified unanswerable questions cover outside entities and periods,
+false premises, unsupported details, personal data, and forecasts.
+
+| Metric | Result |
+| --- | ---: |
+| Correct abstention rate | 1.00 |
+| False answer rate | 0.00 |
+| Citation-free abstention rate | 1.00 |
+
+The run used 15,492 input, 1,291 output, and 16,783 total chat tokens. See the
+[negative dataset](../../evaluation/datasets/abstention_questions_v1.json) and
+[versioned baseline](../../evaluation/baselines/abstention_v1.json).
+
+The first draft incorrectly labelled a Moody's rating question as unanswerable;
+page 83 did contain the answer. The label was corrected to a Fitch question and
+the full dataset rerun. This review is part of evaluation quality, not a model
+failure.
+
+```bash
+python -m scripts.stage_05_retrieval.evaluate_abstention --overwrite
+```
+
+Independent domain review is still required before production-quality claims.

@@ -82,3 +82,9 @@ python -m scripts.stage_05_retrieval.evaluate_generation --overwrite
 
 Detailed answers are written to ignored `data/evaluation/`; only the concise
 baseline is versioned.
+
+Evaluate 10 scope-verified questions that should be refused:
+
+```bash
+python -m scripts.stage_05_retrieval.evaluate_abstention --overwrite
+```
