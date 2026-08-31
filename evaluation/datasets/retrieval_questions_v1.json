@@ -1,0 +1,108 @@
+{
+  "schema_version": "1.0.0",
+  "dataset_id": "uol-finance-retrieval-v1",
+  "document_id": "annual-report-and-financial-statements-for-year-ending-31-july-2025-e387d079c84a",
+  "review": {
+    "status": "source_verified",
+    "date": "2026-08-31",
+    "method": "Questions, concise answer references, pages, and relevant chunks were manually compared with the local source PDF and deterministic Stage 02 chunks."
+  },
+  "questions": [
+    {
+      "id": "finance-total-income",
+      "question": "What was the University's total income in 2024/25, and how did it compare with the previous year?",
+      "answer_reference": "£999m, 5% lower than 2023/24.",
+      "expected_pages": [75, 76],
+      "relevant_chunk_ids": [
+        "annual-report-and-financial-statements-for-year-ending-31-july-2025-e387d079c84a-p0075-c004",
+        "annual-report-and-financial-statements-for-year-ending-31-july-2025-e387d079c84a-p0076-c001"
+      ]
+    },
+    {
+      "id": "finance-operating-result",
+      "question": "What underlying operating result did the University record in 2024/25 before movement in the USS provision?",
+      "answer_reference": "An underlying operating deficit of £8m.",
+      "expected_pages": [75, 76],
+      "relevant_chunk_ids": [
+        "annual-report-and-financial-statements-for-year-ending-31-july-2025-e387d079c84a-p0075-c002",
+        "annual-report-and-financial-statements-for-year-ending-31-july-2025-e387d079c84a-p0076-c001"
+      ]
+    },
+    {
+      "id": "research-income",
+      "question": "How much research grants and contract income did the University report for 2024/25?",
+      "answer_reference": "Approximately £186m; the financial statements report £185.563m.",
+      "expected_pages": [79, 113],
+      "relevant_chunk_ids": [
+        "annual-report-and-financial-statements-for-year-ending-31-july-2025-e387d079c84a-p0079-c001",
+        "annual-report-and-financial-statements-for-year-ending-31-july-2025-e387d079c84a-p0113-c002"
+      ]
+    },
+    {
+      "id": "research-awards",
+      "question": "What value of new research awards was confirmed during 2024/25, and how many new UKRI awards were there?",
+      "answer_reference": "£212m of new awards and 183 new UKRI awards.",
+      "expected_pages": [79],
+      "relevant_chunk_ids": [
+        "annual-report-and-financial-statements-for-year-ending-31-july-2025-e387d079c84a-p0079-c002"
+      ]
+    },
+    {
+      "id": "donor-scholarships",
+      "question": "How many undergraduate and postgraduate scholarships were awarded in 2024/25 with support from donors?",
+      "answer_reference": "86 undergraduate and 60 postgraduate scholarships.",
+      "expected_pages": [81],
+      "relevant_chunk_ids": [
+        "annual-report-and-financial-statements-for-year-ending-31-july-2025-e387d079c84a-p0081-c001"
+      ]
+    },
+    {
+      "id": "uss-surplus",
+      "question": "What estimated surplus did the USS monitoring position show at March 2025?",
+      "answer_reference": "£10.1bn.",
+      "expected_pages": [82],
+      "relevant_chunk_ids": [
+        "annual-report-and-financial-statements-for-year-ending-31-july-2025-e387d079c84a-p0082-c001"
+      ]
+    },
+    {
+      "id": "cash-year-end",
+      "question": "What were consolidated cash and cash equivalents at the end of 2024/25?",
+      "answer_reference": "£366.485m.",
+      "expected_pages": [101, 135],
+      "relevant_chunk_ids": [
+        "annual-report-and-financial-statements-for-year-ending-31-july-2025-e387d079c84a-p0101-c003",
+        "annual-report-and-financial-statements-for-year-ending-31-july-2025-e387d079c84a-p0135-c004"
+      ]
+    },
+    {
+      "id": "staff-costs",
+      "question": "What were consolidated staff costs excluding movement in the USS deficit funding liability in 2024/25?",
+      "answer_reference": "£574.369m.",
+      "expected_pages": [95, 115],
+      "relevant_chunk_ids": [
+        "annual-report-and-financial-statements-for-year-ending-31-july-2025-e387d079c84a-p0095-c002",
+        "annual-report-and-financial-statements-for-year-ending-31-july-2025-e387d079c84a-p0115-c004"
+      ]
+    },
+    {
+      "id": "emissions-reduction",
+      "question": "By what percentage did the University's Scope 1 and 2 emissions decrease year on year in 2024/25?",
+      "answer_reference": "13.2%.",
+      "expected_pages": [53],
+      "relevant_chunk_ids": [
+        "annual-report-and-financial-statements-for-year-ending-31-july-2025-e387d079c84a-p0053-c001"
+      ]
+    },
+    {
+      "id": "chair-of-council",
+      "question": "Who was Chair of the University Council in the 2024/25 annual report?",
+      "answer_reference": "Alastair Da Costa.",
+      "expected_pages": [8, 71],
+      "relevant_chunk_ids": [
+        "annual-report-and-financial-statements-for-year-ending-31-july-2025-e387d079c84a-p0008-c001",
+        "annual-report-and-financial-statements-for-year-ending-31-july-2025-e387d079c84a-p0071-c001"
+      ]
+    }
+  ]
+}

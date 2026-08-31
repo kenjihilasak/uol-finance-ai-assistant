@@ -138,14 +138,28 @@ def embed_query(
     deployment: str,
     dimensions: int,
 ) -> list[float]:
+    return embed_queries(client, [query], deployment, dimensions)[0]
+
+
+def embed_queries(
+    client: OpenAI,
+    queries: list[str],
+    deployment: str,
+    dimensions: int,
+) -> list[list[float]]:
+    if not queries:
+        raise ValueError("queries must not be empty")
     response = client.embeddings.create(
         model=deployment,
-        input=[query],
+        input=queries,
         dimensions=dimensions,
     )
-    if len(response.data) != 1:
-        raise RuntimeError("Embedding response must contain exactly one vector")
-    return validated_vector(response.data[0].embedding, dimensions)
+    embeddings = sorted(response.data, key=lambda item: item.index)
+    if len(embeddings) != len(queries):
+        raise RuntimeError("Embedding response size does not match the query batch")
+    return [
+        validated_vector(item.embedding, dimensions) for item in embeddings
+    ]
 
 
 def escape_odata_string(value: str) -> str:

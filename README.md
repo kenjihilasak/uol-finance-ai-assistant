@@ -8,9 +8,9 @@ citations, and measurable retrieval quality.
 
 | State | Capabilities |
 | --- | --- |
-| Implemented | PDF ingestion, extraction, chunking, embeddings, indexing, and hybrid retrieval |
+| Implemented | PDF ingestion, processing, indexing, hybrid retrieval, and retrieval evaluation |
 | Provisioned | Chat deployment and three Blob containers |
-| Planned | Cited answer generation, RAG API, evaluation runner, telemetry, and UI |
+| Planned | Cited answer generation, generation evaluation, telemetry, and UI |
 
 ## Start here
 
@@ -19,6 +19,7 @@ not download them from URLs.
 
 - [Documentation learning path](./docs/README.md)
 - [Project architecture](./docs/overview/project-architecture.md)
+- [Retrieval baseline](./docs/stage_05_retrieval/retrieval-evaluation.md)
 - [Source ingestion guide](./docs/stage_01_ingestion/source-ingestion.md)
 - [Script stages](./scripts/README.md)
 

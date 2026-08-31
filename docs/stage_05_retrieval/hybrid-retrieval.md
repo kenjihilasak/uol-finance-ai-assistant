@@ -33,8 +33,9 @@ Implementation:
 Implemented: query embedding, hybrid retrieval, optional document filter, safe
 field selection, and evidence output.
 
-Next: create a small reviewed question set and measure Recall@k/MRR before
-adding `gpt-5-mini`, citations, and abstention.
+The initial reviewed dataset and Recall@k/MRR baseline are documented in
+[retrieval evaluation](./retrieval-evaluation.md). Next: add `gpt-5-mini` with
+bounded context, citations, and abstention.
 
 ## References
 

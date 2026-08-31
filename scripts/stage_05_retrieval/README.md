@@ -36,3 +36,20 @@ vector neighbours participate in rank fusion and must be at least `top`.
 
 The query uses Entra ID and `text-embedding-3-small`. Its output deliberately
 excludes `content_vector`, so 1,536-float vectors never enter logs or prompts.
+
+## Evaluate
+
+Validate the tracked question set without contacting Azure:
+
+```bash
+python -m scripts.stage_05_retrieval.evaluate_retrieval --dry-run
+```
+
+Run the hybrid baseline and calculate Recall@1/3/5 and MRR@5:
+
+```bash
+python -m scripts.stage_05_retrieval.evaluate_retrieval --overwrite
+```
+
+Detailed results go to ignored `data/evaluation/`; the reviewed dataset and
+concise baseline are versioned under `evaluation/`.

@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0.0",
+  "evaluated_at": "2026-08-31T19:12:51.168644+00:00",
+  "dataset_id": "uol-finance-retrieval-v1",
+  "index_name": "uol-finance-chunks-v1",
+  "embedding_deployment": "text-embedding-3-small",
+  "retrieval": {
+    "type": "hybrid_bm25_vector",
+    "top": 5,
+    "vector_candidates": 50
+  },
+  "aggregate": {
+    "recall@1": 0.7,
+    "recall@3": 0.9,
+    "recall@5": 1.0,
+    "mrr@5": 0.825
+  },
+  "first_relevant_ranks": {
+    "finance-total-income": 4,
+    "finance-operating-result": 2,
+    "research-income": 1,
+    "research-awards": 1,
+    "donor-scholarships": 1,
+    "uss-surplus": 1,
+    "cash-year-end": 1,
+    "staff-costs": 1,
+    "emissions-reduction": 1,
+    "chair-of-council": 2
+  }
+}

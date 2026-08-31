@@ -28,6 +28,8 @@ docs/
 10. [Create index guide](./stage_04_search_index/create-index.md)
 11. [Upload documents guide](./stage_04_search_index/upload-documents.md)
 12. [Hybrid retrieval](./stage_05_retrieval/hybrid-retrieval.md)
+13. [Retrieval evaluation](./stage_05_retrieval/retrieval-evaluation.md)
 
 For hands-on learning, read one stage and then run its matching module.
-Evaluation, answer generation, and serving docs will be added with their code.
+Generation evaluation, answer generation, and serving docs will be added with
+their code.

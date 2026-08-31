@@ -97,7 +97,8 @@ records the retrieval-unit decision and comparison.
 | Chat deployment | Synthesize answers from evidence. | Provisioned |
 | RAG API and UI | Generate, cite, abstain, and serve. | Planned |
 | `evaluation-data` | Store evaluation inputs and results. | Provisioned |
-| Evaluation and telemetry | Measure quality, latency, failures, and cost. | Planned |
+| Retrieval evaluation | Measure Recall@k and MRR on reviewed questions. | Implemented |
+| Generation evaluation and telemetry | Measure grounding, latency, failures, and cost. | Planned |
 
 ## Online request path
 
@@ -170,6 +171,6 @@ Each run should record corpus, index, model, retrieval, and prompt versions.
 
 ## Roadmap
 
-1. Establish an expert-reviewed retrieval evaluation baseline.
-2. Add the RAG API with citations and abstention.
+1. Add the RAG API with citations and abstention.
+2. Evaluate groundedness, citation correctness, and abstention.
 3. Add the portfolio UI, managed identity, and telemetry.
