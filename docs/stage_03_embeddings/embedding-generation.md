@@ -35,8 +35,9 @@ python -m scripts.stage_03_embeddings.generate_embeddings \
 | `AZURE_EMBEDDING_DEPLOYMENT` | Embedding deployment name |
 | `AZURE_EMBEDDING_DIMENSIONS` | Required vector length |
 
-Authentication uses Entra ID rather than API keys. Requests use batches of 16;
-vectors with the wrong dimensions are rejected.
+Authentication uses Entra ID rather than API keys. Requests use batches of 8,
+pause for two seconds between batches, and retry transient rate limits. Vectors
+with the wrong dimensions are rejected.
 
 ## Generate
 

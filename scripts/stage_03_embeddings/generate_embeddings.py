@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import time
 from collections.abc import Iterator
 from dataclasses import dataclass
 from pathlib import Path
@@ -18,7 +19,9 @@ from scripts.shared.document_utils import (
 )
 
 
-BATCH_SIZE = 16
+BATCH_SIZE = 8
+BATCH_DELAY_SECONDS = 2.0
+MAX_RETRIES = 8
 OPENAI_SCOPE = "https://ai.azure.com/.default"
 
 
@@ -126,11 +129,18 @@ def embed_chunks(
     client = OpenAI(
         base_url=openai_base_url(config.endpoint),
         api_key=token_provider,
+        max_retries=MAX_RETRIES,
     )
     records: list[dict[str, object]] = []
+    chunk_batches = list(batches(chunks))
 
     try:
-        for batch in batches(chunks):
+        for batch_number, batch in enumerate(chunk_batches, start=1):
+            print(
+                f"Embedding batch {batch_number}/{len(chunk_batches)} "
+                f"({len(batch)} chunks)...",
+                flush=True,
+            )
             texts = [embedding_input(chunk) for chunk in batch]
             response = client.embeddings.create(
                 model=config.deployment,
@@ -148,6 +158,9 @@ def embed_chunks(
                         f"Unexpected vector size for {chunk['chunk_id']}: {len(vector)}"
                     )
                 records.append({**chunk, "content_vector": vector})
+
+            if batch_number < len(chunk_batches):
+                time.sleep(BATCH_DELAY_SECONDS)
     finally:
         client.close()
         credential.close()
