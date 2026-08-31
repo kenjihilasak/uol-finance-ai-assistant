@@ -1,4 +1,4 @@
-"""Measure question-level Recall@k and MRR for hybrid retrieval."""
+"""Measure question-level Recall@k and MRR for retrieval modes."""
 
 from __future__ import annotations
 
@@ -24,6 +24,7 @@ from scripts.stage_05_retrieval.hybrid_search import (
     openai_base_url,
     validated_query,
     validate_limits,
+    vector_search,
 )
 
 
@@ -196,7 +197,10 @@ def run_evaluation(
     config: RetrievalConfig,
     k_values: tuple[int, ...],
     vector_candidates: int,
+    mode: str,
 ) -> dict[str, Any]:
+    if mode not in {"hybrid", "vector"}:
+        raise ValueError("mode must be hybrid or vector")
     top = max(k_values)
     validate_limits(top, vector_candidates)
     credential = build_user_credential(config.tenant_id)
@@ -223,14 +227,23 @@ def run_evaluation(
             zip(dataset.cases, vectors, strict=True), start=1
         ):
             print(f"Retrieving {position}/{len(dataset.cases)}: {case.case_id}")
-            results = hybrid_search(
-                search_client,
-                case.question,
-                vector,
-                top=top,
-                vector_candidates=vector_candidates,
-                document_id=dataset.document_id,
-            )
+            if mode == "hybrid":
+                results = hybrid_search(
+                    search_client,
+                    case.question,
+                    vector,
+                    top=top,
+                    vector_candidates=vector_candidates,
+                    document_id=dataset.document_id,
+                )
+            else:
+                results = vector_search(
+                    search_client,
+                    vector,
+                    top=top,
+                    vector_candidates=vector_candidates,
+                    document_id=dataset.document_id,
+                )
             rankings[case.case_id] = [
                 str(result["chunk_id"]) for result in results
             ]
@@ -247,7 +260,7 @@ def run_evaluation(
         "index_name": config.search_index_name,
         "embedding_deployment": config.embedding_deployment,
         "retrieval": {
-            "type": "hybrid_bm25_vector",
+            "type": "hybrid_bm25_vector" if mode == "hybrid" else "vector_only",
             "top": top,
             "vector_candidates": vector_candidates,
         },
@@ -272,6 +285,7 @@ def print_summary(payload: dict[str, Any]) -> None:
     print("\nRetrieval evaluation")
     print(f"Dataset: {payload['dataset_id']}")
     print(f"Index: {payload['index_name']}")
+    print(f"Mode: {payload['retrieval']['type']}")
     for metric, value in payload["aggregate"].items():
         print(f"{metric}: {value:.3f}")
     print("\nPer question")
@@ -288,9 +302,15 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--k", type=int, nargs="+", default=list(DEFAULT_K_VALUES))
     parser.add_argument("--vector-candidates", type=int, default=50)
     parser.add_argument(
+        "--mode",
+        choices=("hybrid", "vector"),
+        default="hybrid",
+        help="Hybrid combines BM25 and vectors; vector excludes keyword search.",
+    )
+    parser.add_argument(
         "--output",
         type=Path,
-        default=Path("data/evaluation/retrieval_baseline_v1.results.json"),
+        help="Defaults to an ignored mode-specific file under data/evaluation/.",
     )
     parser.add_argument("--overwrite", action="store_true")
     parser.add_argument(
@@ -313,6 +333,7 @@ def main() -> None:
         print(f"Dataset: {dataset.dataset_id}")
         print(f"Source-verified questions: {len(dataset.cases)}")
         print(f"Index: {config.search_index_name}")
+        print(f"Retrieval mode: {args.mode}")
         recall_metrics = ", ".join(f"Recall@{k}" for k in k_values)
         print(f"Metrics: {recall_metrics}, MRR@{max(k_values)}")
         print("Azure authentication and retrieval: not performed")
@@ -323,10 +344,14 @@ def main() -> None:
         config,
         k_values,
         args.vector_candidates,
+        args.mode,
     )
-    write_results(payload, args.output, args.overwrite)
+    output = args.output or Path(
+        f"data/evaluation/{args.mode}_retrieval_v1.results.json"
+    )
+    write_results(payload, output, args.overwrite)
     print_summary(payload)
-    print(f"\nResults written to ignored local file: {args.output}")
+    print(f"\nResults written to ignored local file: {output}")
 
 
 if __name__ == "__main__":

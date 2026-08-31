@@ -51,5 +51,13 @@ Run the hybrid baseline and calculate Recall@1/3/5 and MRR@5:
 python -m scripts.stage_05_retrieval.evaluate_retrieval --overwrite
 ```
 
+Compare vector-only retrieval using the same dataset and parameters:
+
+```bash
+python -m scripts.stage_05_retrieval.evaluate_retrieval \
+  --mode vector \
+  --overwrite
+```
+
 Detailed results go to ignored `data/evaluation/`; the reviewed dataset and
 concise baseline are versioned under `evaluation/`.

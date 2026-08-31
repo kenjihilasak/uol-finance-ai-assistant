@@ -16,6 +16,32 @@ score orders results; it is not an answer-confidence probability. Chat
 generation is kept out of this stage so retrieval quality can be inspected
 independently.
 
+## RRF flow
+
+```mermaid
+flowchart LR
+    q[Question] --> bm25[BM25 ranked list]
+    q --> embed[Question embedding]
+    embed --> vector[Vector ranked list]
+    bm25 --> score["Per-list score: 1 / (rank + k)"]
+    vector --> score
+    score --> sum[Sum scores for each chunk]
+    sum --> final[Final fused ranking]
+```
+
+In the formula, the denominator is `rank + k`; Microsoft documents `k` as an
+RRF constant and gives 60 as an effective value. This `k` is separate from the
+number of vector neighbours. A chunk appearing high in both lists receives
+contributions from both and moves upward.
+
+RRF and hybrid retrieval are not unique to Azure. Azure's advantage is managed
+execution of keyword and vector queries plus fusion in one search request.
+Other systems, including Elasticsearch, also implement RRF, and an application
+can implement the fusion itself.
+
+Vector-only retrieval in this project means embedding similarity without BM25.
+It is not Azure AI Search's optional Semantic Ranker feature.
+
 ## Request flow
 
 1. Validate the question and result limits.
@@ -40,4 +66,6 @@ bounded context, citations, and abstention.
 ## References
 
 - [Hybrid search overview](https://learn.microsoft.com/azure/search/hybrid-search-overview)
+- [Azure RRF ranking](https://learn.microsoft.com/azure/search/hybrid-search-ranking)
 - [Create a hybrid query](https://learn.microsoft.com/azure/search/hybrid-search-how-to-query)
+- [Elasticsearch RRF](https://www.elastic.co/docs/reference/elasticsearch/rest-apis/reciprocal-rank-fusion)

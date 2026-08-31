@@ -7,6 +7,7 @@ from scripts.stage_05_retrieval.hybrid_search import (
     validated_query,
     validated_vector,
     validate_limits,
+    vector_search,
 )
 
 
@@ -81,6 +82,18 @@ class HybridSearchTests(unittest.TestCase):
 
     def test_odata_single_quote_is_escaped(self):
         self.assertEqual(escape_odata_string("a'b"), "a''b")
+
+    def test_vector_only_query_omits_keyword_search(self):
+        client = FakeSearchClient([])
+        vector_search(
+            client,
+            [0.1, 0.2],
+            top=1,
+            vector_candidates=10,
+        )
+        self.assertIsNone(client.search_args["search_text"])
+        self.assertNotIn("search_fields", client.search_args)
+        self.assertEqual(len(client.search_args["vector_queries"]), 1)
 
 
 if __name__ == "__main__":

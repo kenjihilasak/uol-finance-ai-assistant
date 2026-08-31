@@ -205,6 +205,43 @@ def hybrid_search(
     return results
 
 
+def vector_search(
+    client: SearchClient,
+    query_vector: list[float],
+    *,
+    top: int = DEFAULT_TOP,
+    vector_candidates: int = DEFAULT_VECTOR_CANDIDATES,
+    document_id: str | None = None,
+) -> list[dict[str, Any]]:
+    """Run vector-only retrieval without BM25 or rank fusion."""
+    validate_limits(top, vector_candidates)
+    vector_query = VectorizedQuery(
+        vector=query_vector,
+        k_nearest_neighbors=vector_candidates,
+        fields="content_vector",
+        exhaustive=False,
+    )
+    document_filter = None
+    if document_id:
+        document_filter = f"document_id eq '{escape_odata_string(document_id)}'"
+
+    response = client.search(
+        search_text=None,
+        vector_queries=[vector_query],
+        select=SELECT_FIELDS,
+        filter=document_filter,
+        top=top,
+    )
+
+    results: list[dict[str, Any]] = []
+    for rank, item in enumerate(response, start=1):
+        result = {field: item.get(field) for field in SELECT_FIELDS}
+        result["rank"] = rank
+        result["score"] = item.get("@search.score")
+        results.append(result)
+    return results
+
+
 def run_retrieval(
     config: RetrievalConfig,
     query: str,
