@@ -89,6 +89,13 @@ class GroundedAnswer:
     citation_ids: tuple[str, ...]
 
 
+@dataclass(frozen=True)
+class TokenUsage:
+    input_tokens: int | None
+    output_tokens: int | None
+    total_tokens: int | None
+
+
 def load_config() -> GenerationConfig:
     load_dotenv(PROJECT_ROOT / ".env")
     retrieval = load_retrieval_config()
@@ -210,11 +217,29 @@ def generate_answer(
     question: str,
     evidence: list[Evidence],
 ) -> GroundedAnswer:
+    answer, _ = generate_answer_with_usage(
+        client,
+        deployment,
+        question,
+        evidence,
+    )
+    return answer
+
+
+def generate_answer_with_usage(
+    client: OpenAI,
+    deployment: str,
+    question: str,
+    evidence: list[Evidence],
+) -> tuple[GroundedAnswer, TokenUsage]:
     if not evidence:
-        return GroundedAnswer(
-            status="abstained",
-            answer="The supplied document does not provide enough evidence.",
-            citation_ids=(),
+        return (
+            GroundedAnswer(
+                status="abstained",
+                answer="The supplied document does not provide enough evidence.",
+                citation_ids=(),
+            ),
+            TokenUsage(input_tokens=0, output_tokens=0, total_tokens=0),
         )
     response = client.responses.create(
         model=deployment,
@@ -231,7 +256,13 @@ def generate_answer(
         payload = json.loads(response.output_text)
     except json.JSONDecodeError as error:
         raise RuntimeError("Chat deployment returned invalid JSON") from error
-    return validate_grounded_answer(payload, evidence)
+    usage = response.usage
+    token_usage = TokenUsage(
+        input_tokens=getattr(usage, "input_tokens", None),
+        output_tokens=getattr(usage, "output_tokens", None),
+        total_tokens=getattr(usage, "total_tokens", None),
+    )
+    return validate_grounded_answer(payload, evidence), token_usage
 
 
 def run_grounded_answer(

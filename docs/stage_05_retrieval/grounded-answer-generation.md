@@ -56,12 +56,36 @@ python -m scripts.stage_05_retrieval.generate_grounded_answer \
   --dry-run
 ```
 
-## Verified smoke tests
+## Ten-question positive evaluation
 
-An in-scope question returned £999m, 5% lower than 2023/24, citing page 75.
-An out-of-scope question about Apple revenue returned `abstained` with no
-citations.
+The full reviewed positive set was executed with one embedding batch and 10
+`gpt-5-mini` responses.
 
-These two checks verify the end-to-end contract, not overall generation
-quality. The next evaluation should include all reviewed positive questions and
-several deliberately unanswerable questions.
+| Metric | Result |
+| --- | ---: |
+| Answered rate | 1.00 |
+| Relevant context hit rate | 1.00 |
+| Relevant citation hit rate | 1.00 |
+| Citation precision | 0.85 |
+| Manually reviewed answer correctness | 1.00 |
+
+All 10 answers matched their concise references during development review.
+Three answers included additional retrieved citations not labelled as relevant,
+which reduced macro-averaged citation precision without changing answer
+correctness.
+
+Token usage for the run was 16,141 input, 1,844 output, and 17,985 total tokens.
+The concise versioned result is
+[`generation_positive_v1.json`](../../evaluation/baselines/generation_positive_v1.json).
+Detailed answers remain in ignored `data/evaluation/` for local review.
+
+Run the positive evaluation:
+
+```bash
+python -m scripts.stage_05_retrieval.evaluate_generation --overwrite
+```
+
+An additional smoke test about Apple revenue returned `abstained` with no
+citations. A multi-question negative dataset is still required to measure
+abstention reliably. Independent domain review is also required before making
+production-quality claims.

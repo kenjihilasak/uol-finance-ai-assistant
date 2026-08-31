@@ -1,0 +1,74 @@
+{
+  "schema_version": "1.0.0",
+  "evaluated_at": "2026-08-31T21:10:38.917339+00:00",
+  "dataset_id": "uol-finance-retrieval-v1",
+  "index_name": "uol-finance-chunks-v1",
+  "embedding_deployment": "text-embedding-3-small",
+  "chat_deployment": "gpt-5-mini",
+  "retrieval": {
+    "type": "hybrid_bm25_vector",
+    "top": 5,
+    "vector_candidates": 50
+  },
+  "aggregate": {
+    "answered_rate": 1.0,
+    "unexpected_abstention_rate": 0.0,
+    "context_relevance_hit_rate": 1.0,
+    "citation_relevance_hit_rate": 1.0,
+    "citation_precision": 0.85,
+    "manually_reviewed_answer_correctness": 1.0
+  },
+  "usage": {
+    "input_tokens": 16141,
+    "output_tokens": 1844,
+    "total_tokens": 17985
+  },
+  "manual_review": {
+    "status": "development_review_complete",
+    "correct_answers": 10,
+    "questions": 10,
+    "independent_domain_review_required": true
+  },
+  "questions": {
+    "finance-total-income": {
+      "status": "answered",
+      "citation_precision": 1.0
+    },
+    "finance-operating-result": {
+      "status": "answered",
+      "citation_precision": 1.0
+    },
+    "research-income": {
+      "status": "answered",
+      "citation_precision": 1.0
+    },
+    "research-awards": {
+      "status": "answered",
+      "citation_precision": 1.0
+    },
+    "donor-scholarships": {
+      "status": "answered",
+      "citation_precision": 1.0
+    },
+    "uss-surplus": {
+      "status": "answered",
+      "citation_precision": 1.0
+    },
+    "cash-year-end": {
+      "status": "answered",
+      "citation_precision": 0.5
+    },
+    "staff-costs": {
+      "status": "answered",
+      "citation_precision": 0.5
+    },
+    "emissions-reduction": {
+      "status": "answered",
+      "citation_precision": 1.0
+    },
+    "chair-of-council": {
+      "status": "answered",
+      "citation_precision": 0.5
+    }
+  }
+}

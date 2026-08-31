@@ -73,3 +73,12 @@ python -m scripts.stage_05_retrieval.generate_grounded_answer \
 
 The model must return `answered` with valid retrieved source IDs or `abstained`
 without citations. This is a CLI learning boundary; the HTTP API comes later.
+
+Evaluate all 10 reviewed positive questions and record token usage:
+
+```bash
+python -m scripts.stage_05_retrieval.evaluate_generation --overwrite
+```
+
+Detailed answers are written to ignored `data/evaluation/`; only the concise
+baseline is versioned.

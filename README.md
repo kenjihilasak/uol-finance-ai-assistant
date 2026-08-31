@@ -8,9 +8,9 @@ citations, and measurable retrieval quality.
 
 | State | Capabilities |
 | --- | --- |
-| Implemented | PDF pipeline, hybrid retrieval evaluation, and grounded answer CLI |
+| Implemented | PDF pipeline, retrieval evaluation, grounded answers, and positive generation evaluation |
 | Provisioned | Chat deployment and three Blob containers |
-| Planned | Generation evaluation, RAG API, telemetry, and UI |
+| Planned | Abstention evaluation, RAG API, telemetry, and UI |
 
 ## Start here
 

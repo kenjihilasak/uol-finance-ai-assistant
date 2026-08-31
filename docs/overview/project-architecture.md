@@ -99,7 +99,8 @@ records the retrieval-unit decision and comparison.
 | RAG API and UI | Serve the verified pipeline. | Planned |
 | `evaluation-data` | Store evaluation inputs and results. | Provisioned |
 | Retrieval evaluation | Measure Recall@k and MRR on reviewed questions. | Implemented |
-| Generation evaluation and telemetry | Measure grounding, latency, failures, and cost. | Planned |
+| Positive generation evaluation | Measure answers, citations, and token usage. | Implemented |
+| Abstention evaluation and telemetry | Measure negatives, latency, failures, and cost. | Planned |
 
 ## Online request path
 
@@ -173,6 +174,6 @@ Each run should record corpus, index, model, retrieval, and prompt versions.
 
 ## Roadmap
 
-1. Evaluate groundedness, citation correctness, and abstention.
+1. Add a reviewed negative set and measure abstention.
 2. Add the serving API for the verified pipeline.
 3. Add the portfolio UI, managed identity, and telemetry.
