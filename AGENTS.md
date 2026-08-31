@@ -3,7 +3,7 @@
 ## Repository Overview
 - Azure RAG portfolio project for grounded question answering over financial PDFs
 - Focus on provenance, deterministic processing, Entra ID, citations, and measurable retrieval quality
-- Current status: Stages 01-04 complete, Stage 05 (retrieval and RAG API) next
+- Current status: Stages 01-05 retrieval complete; evaluation and RAG API next
 
 ## Key Directories
 - `data/sources/` - Input PDFs (ignored, not committed)
@@ -42,11 +42,11 @@ python -m scripts.stage_03_embeddings.generate_embeddings --input data/processed
 - Stage 02: Extract text and create chunks
 - Stage 03: Generate embeddings with Foundry
 - Stage 04: Index in Azure AI Search
-- Stage 05: Retrieval and RAG API with citations and abstention (next)
+- Stage 05: Hybrid retrieval implemented; citations and abstention are next
 - Stage 06: Portfolio UI
 
 ## Current Focus
-Stage 05: Implement hybrid retrieval before adding answer generation.
+Evaluate hybrid retrieval before adding answer generation.
 
 ## Known Deployed Index Difference
 - `uol-finance-chunks-v1` contains 490 validated documents and uses 1,536-dimensional HNSW vectors.

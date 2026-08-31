@@ -10,7 +10,8 @@ docs/
 ├── stage_01_ingestion/
 ├── stage_02_processing/
 ├── stage_03_embeddings/
-└── stage_04_search_index/
+├── stage_04_search_index/
+└── stage_05_retrieval/
 ```
 
 ## Reading order
@@ -26,6 +27,7 @@ docs/
 9. [Index schema](./stage_04_search_index/index-schema.md)
 10. [Create index guide](./stage_04_search_index/create-index.md)
 11. [Upload documents guide](./stage_04_search_index/upload-documents.md)
+12. [Hybrid retrieval](./stage_05_retrieval/hybrid-retrieval.md)
 
 For hands-on learning, read one stage and then run its matching module.
-Retrieval, evaluation, and serving docs will be added with their code.
+Evaluation, answer generation, and serving docs will be added with their code.

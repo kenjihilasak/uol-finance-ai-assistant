@@ -30,7 +30,8 @@ flowchart TB
     process[Stage 02: extract and chunk]
     vectors[Stage 03: generate embeddings]
     search[(Stage 04: Azure AI Search)]
-    rag[Stage 05: RAG API]
+    retrieval[Stage 05: hybrid retrieval]
+    rag[RAG API and cited answers]
     ui[Stage 06: portfolio UI]
 
     source --> ingest
@@ -38,10 +39,11 @@ flowchart TB
     ingest --> process
     process --> vectors
     vectors --> search
-    search -.-> rag
+    search --> retrieval
+    retrieval -.-> rag
     rag -.-> ui
 
-    class source,ingest,sourceBlob,process,vectors,search implemented
+    class source,ingest,sourceBlob,process,vectors,search,retrieval implemented
     class rag,ui planned
 ```
 
@@ -91,12 +93,13 @@ records the retrieval-unit decision and comparison.
 | `processed-documents` | Store processed artifacts in Azure. | Provisioned |
 | Embedding deployment | Convert text into vectors. | Implemented |
 | Azure AI Search | Store the hybrid retrieval index. | Implemented |
+| Hybrid retrieval | Combine BM25 and vector evidence rankings. | Implemented |
 | Chat deployment | Synthesize answers from evidence. | Provisioned |
-| RAG API and UI | Retrieve, cite, and abstain. | Planned |
+| RAG API and UI | Generate, cite, abstain, and serve. | Planned |
 | `evaluation-data` | Store evaluation inputs and results. | Provisioned |
 | Evaluation and telemetry | Measure quality, latency, failures, and cost. | Planned |
 
-## Online request path (target)
+## Online request path
 
 ```mermaid
 sequenceDiagram
@@ -127,8 +130,8 @@ sequenceDiagram
     UI-->>User: Show result
 ```
 
-Search is the evidence source. The API must bound context, validate citation
-IDs, and abstain below a retrieval threshold.
+Query embedding and hybrid search are implemented as a CLI. The API, bounded
+context, citation validation, and abstention remain planned.
 
 ## Security and traceability
 
@@ -167,6 +170,6 @@ Each run should record corpus, index, model, retrieval, and prompt versions.
 
 ## Roadmap
 
-1. Add the RAG API with citations and abstention.
-2. Establish an expert-reviewed evaluation baseline.
+1. Establish an expert-reviewed retrieval evaluation baseline.
+2. Add the RAG API with citations and abstention.
 3. Add the portfolio UI, managed identity, and telemetry.

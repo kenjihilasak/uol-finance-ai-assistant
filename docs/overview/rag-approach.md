@@ -17,9 +17,11 @@ supplies documents, and the AI pipeline validates and processes them.
 4. Create deterministic, recursive, page-bounded chunks.
 5. Generate embeddings with Microsoft Foundry.
 6. Index chunks and vectors in Azure AI Search.
-7. Retrieve evidence and return a cited answer or abstain.
+7. Retrieve evidence with hybrid BM25 and vector search.
+8. Return a cited answer or abstain.
 
-Steps 1–6 are implemented. Retrieval and cited answer generation are next.
+Steps 1–7 are implemented. Retrieval evaluation and cited answer generation
+are next.
 
 ## Direct PDF intake
 

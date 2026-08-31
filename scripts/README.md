@@ -7,6 +7,7 @@ scripts/
 ├── stage_02_processing/   # Extract text and create chunks
 ├── stage_03_embeddings/   # Generate vectors
 ├── stage_04_search_index/ # Create and populate search index
+├── stage_05_retrieval/    # Run BM25 + vector retrieval
 └── shared/                # Shared validation and hashing
 ```
 
@@ -26,5 +27,6 @@ Using `python -m` keeps package imports deterministic and avoids per-script
 | 02 | `extract_pdf_text`, `chunk_extracted_text` | None |
 | 03 | `generate_embeddings` | None in dry run; model call otherwise |
 | 04 | `create_index`, `upload_documents` | Search index management |
+| 05 | `hybrid_search` | Embedding model and search query |
 
 Add future stage folders only when their code is implemented.
