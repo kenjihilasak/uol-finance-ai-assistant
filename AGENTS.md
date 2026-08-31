@@ -47,4 +47,10 @@ python -m scripts.stage_03_embeddings.generate_embeddings --input data/processed
 
 ## Current Focus
 Stage 05: Implement hybrid retrieval before adding answer generation.
+
+## Known Deployed Index Difference
+- `uol-finance-chunks-v1` contains 490 validated documents and uses 1,536-dimensional HNSW vectors.
+- It was initially created with vector profile `default` and `content_vector.retrievable=true`.
+- Retrieval queries must explicitly select citation fields and exclude `content_vector`.
+- Do not delete or recreate the working index without explicit approval; use a versioned replacement for schema changes.
 Schema documented in docs/stage_04_search_index/index-schema.md

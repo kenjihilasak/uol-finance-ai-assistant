@@ -44,6 +44,12 @@ Text and metadata fields are retrievable for citations and provenance. The
 vector is not returned in search responses because it is large and has no UI
 or citation value.
 
+The final creation script sets `content_vector.retrievable` to `false`. The
+existing `uol-finance-chunks-v1` index was created during development with that
+property set to `true`; Stage 05 queries must therefore use an explicit `select`
+list that excludes `content_vector`. Apply the final schema through a versioned
+replacement index rather than deleting the working index in place.
+
 ### Vector Fields
 Fields supporting semantic similarity search:
 - `content_vector` - The 1,536-dimensional embedding vector using the HNSW
