@@ -1,0 +1,50 @@
+# Agent Instructions
+
+## Repository Overview
+- Azure RAG portfolio project for grounded question answering over financial PDFs
+- Focus on provenance, deterministic processing, Entra ID, citations, and measurable retrieval quality
+- Current status: Stages 01-04 complete, Stage 05 (retrieval and RAG API) next
+
+## Key Directories
+- `data/sources/` - Input PDFs (ignored, not committed)
+- `data/processed/` - Extracted text, chunks, and embeddings (ignored, not committed)
+- `scripts/` - Pipeline stages organized by number
+- `docs/` - Technical documentation following pipeline stages
+
+## Essential Commands
+```bash
+# Run unit tests
+python -m unittest discover -s tests -v
+
+# Process a PDF through all stages
+python -m scripts.stage_01_ingestion.register_source_pdf --file data/sources/document.pdf --help
+python -m scripts.stage_02_processing.extract_pdf_text --file data/sources/document.pdf
+python -m scripts.stage_02_processing.chunk_extracted_text --input data/processed/document.processed.json
+python -m scripts.stage_03_embeddings.generate_embeddings --input data/processed/document.chunks.json
+
+# Always run modules from repository root with -m flag
+```
+
+## Security Rules
+- Never commit credentials, PDFs, extracted text, chunks, or embeddings
+- Use Microsoft Entra ID authentication (InteractiveBrowserCredential locally)
+- Device Code authentication blocked by tenant Security Defaults
+- Copy tracked `.env.example` to ignored `.env` for local configuration
+
+## Development Workflow
+1. Place PDF in `data/sources/`
+2. Follow stages in numerical order (01 → 02 → 03 → 04)
+3. Each stage produces artifacts in `data/processed/`
+4. Validate artifacts before proceeding to next stage
+
+## Stage Dependencies
+- Stage 01: Register PDF and upload to Blob Storage
+- Stage 02: Extract text and create chunks
+- Stage 03: Generate embeddings with Foundry
+- Stage 04: Index in Azure AI Search
+- Stage 05: Retrieval and RAG API with citations and abstention (next)
+- Stage 06: Portfolio UI
+
+## Current Focus
+Stage 05: Implement hybrid retrieval before adding answer generation.
+Schema documented in docs/stage_04_search_index/index-schema.md

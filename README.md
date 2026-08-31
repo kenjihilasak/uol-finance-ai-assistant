@@ -8,9 +8,9 @@ citations, and measurable retrieval quality.
 
 | State | Capabilities |
 | --- | --- |
-| Implemented | PDF registration, integrity checks, Blob upload, page extraction, chunking, and embeddings |
-| Provisioned | Azure AI Search, chat deployment, and three Blob containers |
-| Planned | Search indexing, RAG API, evaluation runner, telemetry, and UI |
+| Implemented | PDF ingestion, extraction, chunking, embeddings, and Azure AI Search indexing |
+| Provisioned | Chat deployment and three Blob containers |
+| Planned | RAG API, evaluation runner, telemetry, and UI |
 
 ## Start here
 

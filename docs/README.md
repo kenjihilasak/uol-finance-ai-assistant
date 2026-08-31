@@ -9,7 +9,8 @@ docs/
 ├── stage_00_environment/
 ├── stage_01_ingestion/
 ├── stage_02_processing/
-└── stage_03_embeddings/
+├── stage_03_embeddings/
+└── stage_04_search_index/
 ```
 
 ## Reading order
@@ -22,6 +23,9 @@ docs/
 6. [Processed document schema](./stage_02_processing/processed-document-schema.md)
 7. [Chunking strategy](./stage_02_processing/chunking-strategy.md)
 8. [Embedding generation](./stage_03_embeddings/embedding-generation.md)
+9. [Index schema](./stage_04_search_index/index-schema.md)
+10. [Create index guide](./stage_04_search_index/create-index.md)
+11. [Upload documents guide](./stage_04_search_index/upload-documents.md)
 
-For hands-on learning, read one stage and then run its matching module. Search
-indexing, retrieval, evaluation, and serving docs will be added with their code.
+For hands-on learning, read one stage and then run its matching module.
+Retrieval, evaluation, and serving docs will be added with their code.

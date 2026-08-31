@@ -6,6 +6,7 @@ scripts/
 ├── stage_01_ingestion/    # Register and upload PDFs
 ├── stage_02_processing/   # Extract text and create chunks
 ├── stage_03_embeddings/   # Generate vectors
+├── stage_04_search_index/ # Create and populate search index
 └── shared/                # Shared validation and hashing
 ```
 
@@ -24,5 +25,6 @@ Using `python -m` keeps package imports deterministic and avoids per-script
 | 01 | `register_source_pdf`, `upload_source_blob` | Upload only |
 | 02 | `extract_pdf_text`, `chunk_extracted_text` | None |
 | 03 | `generate_embeddings` | None in dry run; model call otherwise |
+| 04 | `create_index`, `upload_documents` | Search index management |
 
 Add future stage folders only when their code is implemented.

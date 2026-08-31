@@ -37,12 +37,11 @@ flowchart TB
     ingest --> sourceBlob
     ingest --> process
     process --> vectors
-    vectors -.-> search
+    vectors --> search
     search -.-> rag
     rag -.-> ui
 
-    class source,ingest,sourceBlob,process,vectors implemented
-    class search provisioned
+    class source,ingest,sourceBlob,process,vectors,search implemented
     class rag,ui planned
 ```
 
@@ -91,7 +90,7 @@ records the retrieval-unit decision and comparison.
 | `source-documents` | Preserve verified original PDFs. | Implemented |
 | `processed-documents` | Store processed artifacts in Azure. | Provisioned |
 | Embedding deployment | Convert text into vectors. | Implemented |
-| Azure AI Search | Store the hybrid retrieval index. | Integration next |
+| Azure AI Search | Store the hybrid retrieval index. | Implemented |
 | Chat deployment | Synthesize answers from evidence. | Provisioned |
 | RAG API and UI | Retrieve, cite, and abstain. | Planned |
 | `evaluation-data` | Store evaluation inputs and results. | Provisioned |
@@ -168,7 +167,6 @@ Each run should record corpus, index, model, retrieval, and prompt versions.
 
 ## Roadmap
 
-1. Define and populate the Azure AI Search hybrid index.
-2. Add the RAG API with citations and abstention.
-3. Establish an expert-reviewed evaluation baseline.
-4. Add the portfolio UI, managed identity, and telemetry.
+1. Add the RAG API with citations and abstention.
+2. Establish an expert-reviewed evaluation baseline.
+3. Add the portfolio UI, managed identity, and telemetry.

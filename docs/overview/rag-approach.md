@@ -19,7 +19,7 @@ supplies documents, and the AI pipeline validates and processes them.
 6. Index chunks and vectors in Azure AI Search.
 7. Retrieve evidence and return a cited answer or abstain.
 
-Steps 1–5 are implemented. Search indexing is next.
+Steps 1–6 are implemented. Retrieval and cited answer generation are next.
 
 ## Direct PDF intake
 
