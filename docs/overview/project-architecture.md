@@ -94,8 +94,9 @@ records the retrieval-unit decision and comparison.
 | Embedding deployment | Convert text into vectors. | Implemented |
 | Azure AI Search | Store the hybrid retrieval index. | Implemented |
 | Hybrid retrieval | Combine BM25 and vector evidence rankings. | Implemented |
-| Chat deployment | Synthesize answers from evidence. | Provisioned |
-| RAG API and UI | Generate, cite, abstain, and serve. | Planned |
+| Chat deployment | Synthesize answers from bounded evidence. | Implemented |
+| Grounded answer CLI | Generate, cite, validate, and abstain. | Implemented |
+| RAG API and UI | Serve the verified pipeline. | Planned |
 | `evaluation-data` | Store evaluation inputs and results. | Provisioned |
 | Retrieval evaluation | Measure Recall@k and MRR on reviewed questions. | Implemented |
 | Generation evaluation and telemetry | Measure grounding, latency, failures, and cost. | Planned |
@@ -131,8 +132,9 @@ sequenceDiagram
     UI-->>User: Show result
 ```
 
-Query embedding and hybrid search are implemented as a CLI. The API, bounded
-context, citation validation, and abstention remain planned.
+Query embedding, hybrid search, bounded context, structural citation
+validation, and abstention are implemented as CLIs. The serving API remains
+planned.
 
 ## Security and traceability
 
@@ -171,6 +173,6 @@ Each run should record corpus, index, model, retrieval, and prompt versions.
 
 ## Roadmap
 
-1. Add the RAG API with citations and abstention.
-2. Evaluate groundedness, citation correctness, and abstention.
+1. Evaluate groundedness, citation correctness, and abstention.
+2. Add the serving API for the verified pipeline.
 3. Add the portfolio UI, managed identity, and telemetry.

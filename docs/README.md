@@ -29,7 +29,7 @@ docs/
 11. [Upload documents guide](./stage_04_search_index/upload-documents.md)
 12. [Hybrid retrieval](./stage_05_retrieval/hybrid-retrieval.md)
 13. [Retrieval evaluation](./stage_05_retrieval/retrieval-evaluation.md)
+14. [Grounded answer generation](./stage_05_retrieval/grounded-answer-generation.md)
 
 For hands-on learning, read one stage and then run its matching module.
-Generation evaluation, answer generation, and serving docs will be added with
-their code.
+Generation evaluation and serving docs will be added with their code.

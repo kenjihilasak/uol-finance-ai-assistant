@@ -61,3 +61,15 @@ python -m scripts.stage_05_retrieval.evaluate_retrieval \
 
 Detailed results go to ignored `data/evaluation/`; the reviewed dataset and
 concise baseline are versioned under `evaluation/`.
+
+## Generate a grounded answer
+
+After validating retrieval, generate an answer from at most five chunks:
+
+```bash
+python -m scripts.stage_05_retrieval.generate_grounded_answer \
+  --query "What was the University's total income in 2024/25?"
+```
+
+The model must return `answered` with valid retrieved source IDs or `abstained`
+without citations. This is a CLI learning boundary; the HTTP API comes later.

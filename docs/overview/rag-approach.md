@@ -20,8 +20,8 @@ supplies documents, and the AI pipeline validates and processes them.
 7. Retrieve evidence with hybrid BM25 and vector search.
 8. Return a cited answer or abstain.
 
-Steps 1–7 and an initial retrieval evaluation baseline are implemented. Cited
-answer generation is next.
+Steps 1–8 and an initial retrieval evaluation baseline are implemented.
+Generation evaluation and serving are next.
 
 ## Direct PDF intake
 
