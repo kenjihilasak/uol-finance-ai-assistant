@@ -9,6 +9,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
+from scripts.shared.azure_auth import build_user_credential
 from scripts.shared.document_utils import (
     PROJECT_ROOT,
     processed_path,
@@ -117,13 +118,10 @@ def openai_base_url(endpoint: str) -> str:
 def embed_chunks(
     chunks: list[dict[str, object]], config: EmbeddingConfig
 ) -> list[dict[str, object]]:
-    from azure.identity import (
-        InteractiveBrowserCredential,
-        get_bearer_token_provider,
-    )
+    from azure.identity import get_bearer_token_provider
     from openai import OpenAI
 
-    credential = InteractiveBrowserCredential(tenant_id=config.tenant_id)
+    credential = build_user_credential(config.tenant_id)
     token_provider = get_bearer_token_provider(credential, OPENAI_SCOPE)
     client = OpenAI(
         base_url=openai_base_url(config.endpoint),

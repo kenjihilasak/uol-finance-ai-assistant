@@ -6,6 +6,7 @@ import os
 from dotenv import load_dotenv
 
 from scripts.shared.document_utils import PROJECT_ROOT
+from scripts.shared.azure_auth import build_user_credential
 
 
 def required_environment() -> tuple[str, str, set[str]]:
@@ -41,11 +42,10 @@ def parse_args() -> argparse.Namespace:
 def main() -> None:
     parse_args()
 
-    from azure.identity import InteractiveBrowserCredential
     from azure.storage.blob import BlobServiceClient
 
     account_url, tenant_id, expected_containers = required_environment()
-    credential = InteractiveBrowserCredential(tenant_id=tenant_id)
+    credential = build_user_credential(tenant_id)
     blob_service = BlobServiceClient(account_url=account_url, credential=credential)
 
     try:

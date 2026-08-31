@@ -135,7 +135,7 @@ IDs, and abstain below a retrieval threshold.
 
 | Context | Identity |
 | --- | --- |
-| Local development | `InteractiveBrowserCredential` with least-privilege RBAC |
+| Local development | Device code or browser credential with least-privilege RBAC |
 | Deployed application | Managed identity with data-plane RBAC |
 | Git | No credentials or document content |
 

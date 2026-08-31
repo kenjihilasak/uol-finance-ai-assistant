@@ -19,7 +19,9 @@ Concrete values belong in the ignored `.env` file.
 
 ## Security rules
 
-- Use Entra ID with `InteractiveBrowserCredential` for local development.
+- Use Entra ID with `InteractiveBrowserCredential` on a local desktop. Set
+  `AZURE_AUTH_METHOD=device_code` only for remote terminals where the tenant
+  permits Device Code authentication.
 - Use managed identity for deployed workloads.
 - Keep tenant Security Defaults enabled.
 - Never commit keys, connection strings, SAS tokens, access tokens, or secrets.

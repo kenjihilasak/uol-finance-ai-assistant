@@ -30,12 +30,13 @@ python -m scripts.stage_03_embeddings.generate_embeddings \
 | `.env` variable | Purpose |
 | --- | --- |
 | `AZURE_TENANT_ID` | Entra tenant |
+| `AZURE_AUTH_METHOD` | `interactive_browser` locally; `device_code` only if permitted |
 | `AZURE_OPENAI_ENDPOINT` | OpenAI-compatible Foundry endpoint |
 | `AZURE_EMBEDDING_DEPLOYMENT` | Embedding deployment name |
 | `AZURE_EMBEDDING_DIMENSIONS` | Required vector length |
 
-Authentication uses `InteractiveBrowserCredential`, not API keys. Requests use
-batches of 16; vectors with the wrong dimensions are rejected.
+Authentication uses Entra ID rather than API keys. Requests use batches of 16;
+vectors with the wrong dimensions are rejected.
 
 ## Generate
 

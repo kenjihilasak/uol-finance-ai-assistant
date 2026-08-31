@@ -7,6 +7,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
+from scripts.shared.azure_auth import build_user_credential
 from scripts.shared.document_utils import (
     PROJECT_ROOT,
     load_and_verify_source,
@@ -71,14 +72,13 @@ def verify_remote_blob(blob_client: object, metadata: dict[str, object]) -> None
 
 def upload_and_verify(pdf_path: Path) -> None:
     from azure.core.exceptions import ResourceExistsError
-    from azure.identity import InteractiveBrowserCredential
     from azure.storage.blob import BlobServiceClient, ContentSettings
 
     metadata = load_and_verify_source(pdf_path)
     account_url, container_name, tenant_id = required_environment()
     blob_name = str(metadata["blob_name"])
 
-    credential = InteractiveBrowserCredential(tenant_id=tenant_id)
+    credential = build_user_credential(tenant_id)
     blob_service = BlobServiceClient(account_url=account_url, credential=credential)
     blob_client = blob_service.get_blob_client(
         container=container_name,
