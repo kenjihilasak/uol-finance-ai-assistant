@@ -4,7 +4,11 @@ import os
 from typing import Any
 
 
-SUPPORTED_AUTH_METHODS = {"device_code", "interactive_browser"}
+SUPPORTED_AUTH_METHODS = {
+    "device_code",
+    "interactive_browser",
+    "service_principal",
+}
 
 
 def configured_auth_method() -> str:
@@ -18,9 +22,28 @@ def configured_auth_method() -> str:
 
 
 def build_user_credential(tenant_id: str) -> Any:
-    """Build a user credential suitable for local or remote development."""
-    from azure.identity import DeviceCodeCredential, InteractiveBrowserCredential
+    """Build an Entra ID credential for local or hosted execution."""
+    from azure.identity import (
+        ClientSecretCredential,
+        DeviceCodeCredential,
+        InteractiveBrowserCredential,
+    )
 
-    if configured_auth_method() == "interactive_browser":
+    method = configured_auth_method()
+    if method == "interactive_browser":
         return InteractiveBrowserCredential(tenant_id=tenant_id)
-    return DeviceCodeCredential(tenant_id=tenant_id)
+    if method == "device_code":
+        return DeviceCodeCredential(tenant_id=tenant_id)
+
+    client_id = os.getenv("AZURE_CLIENT_ID")
+    client_secret = os.getenv("AZURE_CLIENT_SECRET")
+    if not client_id or not client_secret:
+        raise RuntimeError(
+            "service_principal authentication requires AZURE_CLIENT_ID and "
+            "AZURE_CLIENT_SECRET"
+        )
+    return ClientSecretCredential(
+        tenant_id=tenant_id,
+        client_id=client_id,
+        client_secret=client_secret,
+    )

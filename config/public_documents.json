@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0.0",
+  "documents": [
+    {
+      "document_id": "annual-report-and-financial-statements-for-year-ending-31-july-2025-e387d079c84a",
+      "title": "Annual Report and financial statements for year ending 31 July 2025",
+      "institution": "University of Leeds",
+      "document_date": "2025-07-31",
+      "source_url": "https://www.leeds.ac.uk/download/downloads/id/3533/annual-report-and-accounts-2024-25.pdf",
+      "status": "current",
+      "suggested_questions": [
+        "What was the University's total income in 2024/25?",
+        "How much cash and current investments did the University hold?",
+        "What were the main financial sustainability risks?",
+        "What credit rating did Moody's affirm?"
+      ]
+    }
+  ]
+}

@@ -8,9 +8,9 @@ citations, and measurable retrieval quality.
 
 | State | Capabilities |
 | --- | --- |
-| Implemented | PDF pipeline, retrieval, grounded answers, positive and negative evaluation |
+| Implemented | PDF pipeline, evaluated RAG, FastAPI contract, public document catalog, portfolio UI |
 | Provisioned | Chat deployment and three Blob containers |
-| Planned | RAG API, telemetry, and portfolio UI |
+| Planned | Railway deployment, persistent rate limiting, telemetry, authenticated ingestion |
 
 ## Start here
 
@@ -22,14 +22,16 @@ not download them from URLs.
 - [Retrieval baseline](./docs/stage_05_retrieval/retrieval-evaluation.md)
 - [Grounded answers](./docs/stage_05_retrieval/grounded-answer-generation.md)
 - [Portfolio UI decision](./docs/overview/ui-options.md)
+- [Serving and deployment guide](./docs/stage_06_serving/api-and-portfolio.md)
 - [Source ingestion guide](./docs/stage_01_ingestion/source-ingestion.md)
 - [Script stages](./scripts/README.md)
 
 ## Security
 
 Copy `.env.example` to the ignored `.env` file. Local Azure access uses
-`InteractiveBrowserCredential`; deployed services should use managed identity.
-Never commit credentials, source PDFs, extracted text, chunks, or embeddings.
+`InteractiveBrowserCredential`; Railway uses an Entra ID service principal with
+least-privilege RBAC. Never commit credentials, source PDFs, extracted text,
+chunks, or embeddings.
 
 ## Tests
 

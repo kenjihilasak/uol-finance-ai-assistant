@@ -11,7 +11,8 @@ docs/
 ├── stage_02_processing/
 ├── stage_03_embeddings/
 ├── stage_04_search_index/
-└── stage_05_retrieval/
+├── stage_05_retrieval/
+└── stage_06_serving/
 ```
 
 ## Reading order
@@ -31,6 +32,6 @@ docs/
 13. [Retrieval evaluation](./stage_05_retrieval/retrieval-evaluation.md)
 14. [Grounded answer generation](./stage_05_retrieval/grounded-answer-generation.md)
 15. [Portfolio UI options](./overview/ui-options.md)
+16. [Serving API and portfolio](./stage_06_serving/api-and-portfolio.md)
 
 For hands-on learning, read one stage and then run its matching module.
-Serving docs will be added with the API and UI code.

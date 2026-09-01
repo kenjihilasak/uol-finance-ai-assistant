@@ -1,80 +1,67 @@
-# Portfolio UI options
+# Portfolio UI decision
 
 ## Decision
 
-Use the existing Astro site at `kenjihilasak.github.io` as the project entry
-point. Add this project to its typed case-study data and use the existing
-`demo` link to open a small React and Fluent UI application hosted on Azure
-Static Web Apps.
-
-Keep the demo code in this repository because it belongs to the AI product.
-Keep the portfolio repository focused on presenting the case study. Power Apps
-can be a second, internal-style demonstration; it should not replace the public
-experience.
-
-| Option | Best use | Portfolio limitation |
-| --- | --- | --- |
-| Foundry playground | Configure and test models or agents | Development surface, not the public product UI |
-| Power Apps canvas app | Rapid internal business application | Sharing and connectors depend on Power Platform licensing |
-| Copilot Studio | Managed conversational agent | Licensing and less visibility into this custom RAG pipeline |
-| Static Web Apps + Functions | Public code-first portfolio | Requires building a small API and frontend |
-
-Microsoft documents the Power Apps Developer Plan as a free development and
-test environment. It is useful for learning Power Fx and connectors, but does
-not remove production sharing and licensing considerations.
-
-## Recommended low-cost shape
+Use the existing Astro portfolio on GitHub Pages for both the case study and a
+small interactive chat. Host the Python API on the existing Railway Hobby
+account. Keep Azure AI Search and Microsoft Foundry as the managed AI services.
 
 ```text
-kenjihilasak.github.io (Astro case study)
-  -> Open demo link
-  -> React + Fluent UI on Azure Static Web Apps Free
-  -> Azure Functions consumption API
-  -> managed identity
-  -> Azure AI Search Free + Microsoft Foundry
+Astro portfolio on GitHub Pages
+  -> HTTPS request to Railway FastAPI
+  -> Entra ID application credential
+  -> Azure AI Search + Microsoft Foundry
 ```
 
-This keeps one public portfolio and gives each repository a clear
-responsibility:
+Frontend hosting is not the main engineering evidence. Retrieval evaluation,
+grounding, citations, abstention, API design, identity, and cost controls are.
 
-- `kenjihilasak.github.io`: project story, architecture, metrics, limitations,
-  repository link, and demo link.
-- `uol-finance-ai-assistant`: ingestion, retrieval, evaluation, API, and demo
-  application.
+## Why not the other UI options?
 
-Do not embed the demo in an iframe. A normal link is easier to use on mobile,
-keeps browser history and accessibility intact, and makes the Azure deployment
-boundary visible to reviewers.
+| Option | Decision | Reason |
+| --- | --- | --- |
+| Existing Astro portfolio | Use | One public site and minimal client code |
+| Railway FastAPI | Use | Existing account and standard Python API skills |
+| Azure Static Web Apps | Skip | Duplicates the existing static site |
+| Azure Functions | Defer | Managed identity is useful, but not required for this scale |
+| Power Apps | Skip | Better suited to an internal low-code application |
+| Copilot Studio | Skip | Adds an agent abstraction without improving this evaluated RAG |
 
-The public site should have two modes:
+## Public experience
 
-- Recorded demo mode: sanitized example responses, no Azure model call.
-- Rate-limited live mode: explicit user action, a few curated questions, and a
-  server-side kill switch.
+The portfolio page exposes:
 
-Never call Search or Foundry directly from browser code. The Function should
-hold the managed identity, validate input, enforce limits, and return only the
-answer and citation metadata.
+- the documents currently available to the RAG system;
+- an official link to each PDF;
+- suggested and free-text questions;
+- answered or abstained status;
+- cited page, excerpt, and direct `#page=N` PDF link;
+- measured retrieval and abstention results.
 
-## Portfolio integration checklist
+The browser never receives an Azure credential. The API validates the question,
+restricts the document ID to a public catalog, applies a request limit, and can
+disable all live model calls with `API_LIVE_ENABLED=false`.
 
-When the API and UI are ready:
+## CORS is not authentication
 
-1. Add `uol-finance-ai-assistant` to `src/data/site.ts` in the portfolio.
-2. Add its evidence-led narrative to `src/data/caseStudies.ts`.
-3. Include measured retrieval and abstention results, not estimated metrics.
-4. Set `github` to this repository and `demo` to the Static Web Apps URL.
-5. Add the project slug to the selected-work ordering.
-6. Test both links and the mobile layout before publishing.
+Cross-Origin Resource Sharing (CORS) is a browser policy. The API allows browser
+requests only from the portfolio origin and local Astro development. This
+prevents an unrelated webpage from calling the API through a visitor's browser,
+but it does not stop scripts or direct HTTP clients. Rate limits, input
+validation, cost budgets, and the live kill switch are still required.
 
-If Azure credit is unavailable, the case study and a recorded-response mode
-remain public while live generation is disabled. This prevents an expired
-subscription from leaving a broken portfolio page.
+## Future ingestion
 
-## References
+The current public UI is read-only. A later authenticated operator interface may
+accept either a local PDF upload or an HTTPS URL. It must remain separate from
+the public chat and add:
 
-- [Microsoft Foundry Agent Service](https://learn.microsoft.com/azure/foundry/agents/overview)
-- [Power Apps Developer Plan](https://learn.microsoft.com/power-platform/developer/plan)
-- [Power Platform licensing overview](https://learn.microsoft.com/power-platform/admin/pricing-billing-skus)
-- [Azure Static Web Apps pricing](https://azure.microsoft.com/pricing/details/app-service/static/)
-- [Azure Functions pricing](https://azure.microsoft.com/pricing/details/functions/)
+- Entra ID operator authentication and authorization;
+- size, content-type, PDF signature, and hash checks;
+- explicit rights and public-source metadata;
+- URL redirect and DNS/IP validation to prevent server-side request forgery;
+- malware scanning, immutable Blob storage, and asynchronous processing;
+- index versioning and a review step before publication.
+
+Until that stage exists, add public document links manually to
+`config/public_documents.json`.

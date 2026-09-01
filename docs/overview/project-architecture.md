@@ -2,9 +2,9 @@
 
 ## Scope
 
-This project uses modular classic RAG on Azure. The implemented offline pipeline
-turns approved financial PDFs into traceable vectors. The planned online path
-will retrieve evidence and return a cited answer or abstain.
+This project uses modular classic RAG on Azure. The offline pipeline turns
+approved financial PDFs into traceable vectors. A FastAPI serving layer returns
+a cited answer or abstains, and the existing Astro portfolio provides the UI.
 
 Source acquisition is outside the application boundary. An operator places a
 PDF in `data/sources/`; a URL is optional provenance, not a download input or
@@ -31,8 +31,8 @@ flowchart TB
     vectors[Stage 03: generate embeddings]
     search[(Stage 04: Azure AI Search)]
     retrieval[Stage 05: hybrid retrieval]
-    rag[RAG API and cited answers]
-    ui[Stage 06: portfolio UI]
+    rag[FastAPI on Railway]
+    ui[Astro portfolio on GitHub Pages]
 
     source --> ingest
     ingest --> sourceBlob
@@ -40,14 +40,14 @@ flowchart TB
     process --> vectors
     vectors --> search
     search --> retrieval
-    retrieval -.-> rag
-    rag -.-> ui
+    retrieval --> rag
+    rag --> ui
 
-    class source,ingest,sourceBlob,process,vectors,search,retrieval implemented
-    class rag,ui planned
+    class source,ingest,sourceBlob,process,vectors,search,retrieval,rag,ui implemented
 ```
 
-Solid arrows are implemented; dashed arrows are future integrations.
+All shown components are implemented in code. Railway deployment and the
+portfolio API URL remain operator deployment steps.
 
 ## Implemented offline path
 
@@ -96,7 +96,8 @@ records the retrieval-unit decision and comparison.
 | Hybrid retrieval | Combine BM25 and vector evidence rankings. | Implemented |
 | Chat deployment | Synthesize answers from bounded evidence. | Implemented |
 | Grounded answer CLI | Generate, cite, validate, and abstain. | Implemented |
-| RAG API and UI | Serve the verified pipeline. | Planned |
+| FastAPI serving layer | Serve documents, cited answers, and abstentions. | Implemented |
+| Astro portfolio UI | Present evidence and call the API without Azure secrets. | Implemented |
 | `evaluation-data` | Store evaluation inputs and results. | Provisioned |
 | Retrieval evaluation | Measure Recall@k and MRR on reviewed questions. | Implemented |
 | Positive generation evaluation | Measure answers, citations, and token usage. | Implemented |
@@ -109,14 +110,17 @@ records the retrieval-unit decision and comparison.
 sequenceDiagram
     autonumber
     actor User
-    participant UI as Portfolio UI
-    participant API as RAG API
+    participant UI as Astro on GitHub Pages
+    participant API as FastAPI on Railway
+    participant ID as Microsoft Entra ID
     participant EMB as Embedding deployment
     participant SEARCH as Azure AI Search
     participant LLM as Chat deployment
 
     User->>UI: Ask a finance question
     UI->>API: Send question
+    API->>ID: Request OAuth access tokens
+    ID-->>API: Issue scoped tokens
     API->>EMB: Generate query vector
     EMB-->>API: Query embedding
     API->>SEARCH: Run hybrid search
@@ -134,16 +138,16 @@ sequenceDiagram
     UI-->>User: Show result
 ```
 
-Query embedding, hybrid search, bounded context, structural citation
-validation, and abstention are implemented as CLIs. The serving API remains
-planned.
+The API also maps cited chunks to official PDF links and page anchors through a
+tracked public document catalog.
 
 ## Security and traceability
 
 | Context | Identity |
 | --- | --- |
 | Local development | Device code or browser credential with least-privilege RBAC |
-| Deployed application | Managed identity with data-plane RBAC |
+| Railway application | Entra ID service principal with data-plane RBAC |
+| Future Azure-hosted application | Managed identity with data-plane RBAC |
 | Git | No credentials or document content |
 
 ```text
@@ -158,9 +162,10 @@ operator approval
 ```
 
 Controls: restricted source paths, symlink rejection, file and hash validation,
-overwrite protection, deterministic chunk IDs, vector-size checks, and
-versioned schemas. `source_url` remains optional provenance. The operator is
-responsible for usage and redistribution rights.
+overwrite protection, deterministic chunk IDs, vector-size checks, versioned
+schemas, a public-document allowlist, CORS, input limits, request throttling,
+and a live-generation kill switch. The operator is responsible for usage and
+redistribution rights.
 
 ## Evaluation targets
 
@@ -175,6 +180,7 @@ Each run should record corpus, index, model, retrieval, and prompt versions.
 
 ## Roadmap
 
-1. Add the serving API for the verified pipeline.
-2. Build the rate-limited portfolio UI.
-3. Add the portfolio UI, managed identity, and telemetry.
+1. Deploy FastAPI to Railway and configure its Entra ID service principal.
+2. Publish the portfolio with `PUBLIC_UOL_FINANCE_API_URL`.
+3. Add persistent rate limiting, telemetry, and cost dashboards.
+4. Add an authenticated PDF/URL ingestion interface with security review.

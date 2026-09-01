@@ -3,7 +3,7 @@
 ## Repository Overview
 - Azure RAG portfolio project for grounded question answering over financial PDFs
 - Focus on provenance, deterministic processing, Entra ID, citations, and measurable retrieval quality
-- Current status: Positive and abstention baselines complete; serving next
+- Current status: Serving API and portfolio UI implemented; deployment next
 
 ## Key Directories
 - `data/sources/` - Input PDFs (ignored, not committed)
@@ -27,7 +27,7 @@ python -m scripts.stage_03_embeddings.generate_embeddings --input data/processed
 
 ## Security Rules
 - Never commit credentials, PDFs, extracted text, chunks, or embeddings
-- Use Microsoft Entra ID authentication (InteractiveBrowserCredential locally)
+- Use Microsoft Entra ID authentication (browser locally; service principal on Railway)
 - Device Code authentication blocked by tenant Security Defaults
 - Copy tracked `.env.example` to ignored `.env` for local configuration
 
@@ -43,10 +43,10 @@ python -m scripts.stage_03_embeddings.generate_embeddings --input data/processed
 - Stage 03: Generate embeddings with Foundry
 - Stage 04: Index in Azure AI Search
 - Stage 05: Retrieval, evaluation, cited generation, and abstention are implemented
-- Stage 06: Portfolio UI
+- Stage 06: FastAPI serving contract and Astro portfolio UI are implemented
 
 ## Current Focus
-Build a low-cost serving API and portfolio UI without exposing Azure credentials.
+Deploy the serving API and portfolio safely, then add telemetry.
 
 ## Known Deployed Index Difference
 - `uol-finance-chunks-v1` contains 490 validated documents and uses 1,536-dimensional HNSW vectors.

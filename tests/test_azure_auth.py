@@ -4,7 +4,7 @@ import os
 import unittest
 from unittest.mock import patch
 
-from scripts.shared.azure_auth import configured_auth_method
+from scripts.shared.azure_auth import build_user_credential, configured_auth_method
 
 
 class AzureAuthTests(unittest.TestCase):
@@ -28,6 +28,23 @@ class AzureAuthTests(unittest.TestCase):
         ):
             with self.assertRaises(RuntimeError):
                 configured_auth_method()
+
+    def test_service_principal_can_be_selected(self) -> None:
+        with patch.dict(
+            os.environ,
+            {"AZURE_AUTH_METHOD": "service_principal"},
+            clear=True,
+        ):
+            self.assertEqual(configured_auth_method(), "service_principal")
+
+    def test_service_principal_requires_private_credentials(self) -> None:
+        with patch.dict(
+            os.environ,
+            {"AZURE_AUTH_METHOD": "service_principal"},
+            clear=True,
+        ):
+            with self.assertRaises(RuntimeError):
+                build_user_credential("tenant-id")
 
 
 if __name__ == "__main__":
