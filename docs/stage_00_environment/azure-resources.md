@@ -2,6 +2,45 @@
 
 Concrete values belong in the ignored `.env` file.
 
+## Current resource hierarchy
+
+Inventory reviewed on 2 September 2026:
+
+```text
+Subscription: fee3971c-7410-4caf-8577-63579269a12b
+└── Resource group: rg-uol-finance-ai-dev
+    ├── Foundry resource: uol-finance-ai
+    │   └── Foundry project: proj-uol-finance-ai
+    ├── Foundry resource: luishilasaca-5075-resource
+    │   └── Foundry project: luishilasaca-5075
+    ├── Azure AI Search: uol-finance-search
+    └── Storage account: stuolfinanceai
+```
+
+A Foundry project is a child resource of a Foundry account. Model deployments,
+networking, and other settings can be shared through the parent resource; the
+project is the workspace used for development and evaluation.
+
+### Intended project hierarchy
+
+`uol-finance-ai/proj-uol-finance-ai` is the hierarchy used by this repository.
+It contains the `gpt-5-mini` and `text-embedding-3-small` deployments.
+
+`uol-finance-search` contains the retrieval index and `stuolfinanceai` contains
+the source, processed, and evaluation containers. Search and Storage are
+separate resources, not children of the Foundry project.
+
+### Additional hierarchy under review
+
+`luishilasaca-5075-resource/luishilasaca-5075` is probably an automatically
+generated resource and default project from an earlier Foundry quick-create
+flow. This is an inference from its generated name, different region, and the
+absence of model deployments observed in the portal; it is not yet proven.
+
+Before deletion, verify the parent and child have no deployments, agents,
+connections, data, indexes, evaluations, dependent resources, or recent cost.
+Deletion is irreversible and requires explicit operator approval.
+
 | Resource | Purpose | Environment variable |
 | --- | --- | --- |
 | Region | Align initial resources | `AZURE_LOCATION` |
@@ -22,7 +61,8 @@ Concrete values belong in the ignored `.env` file.
 - Use Entra ID with `InteractiveBrowserCredential` on a local desktop. Set
   `AZURE_AUTH_METHOD=device_code` only for remote terminals where the tenant
   permits Device Code authentication.
-- Use managed identity for deployed workloads.
+- Use an Entra ID service principal with least-privilege RBAC on Railway.
+- Prefer managed identity if the API is later moved to an Azure host.
 - Keep tenant Security Defaults enabled.
 - Never commit keys, connection strings, SAS tokens, access tokens, or secrets.
 - Keep Azure containers private and grant least-privilege RBAC roles.
