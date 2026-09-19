@@ -4,7 +4,7 @@
 
 This step turns retrieved evidence into a concise answer while preserving the
 boundary between retrieval and generation. It uses `gpt-5-mini` only after the
-hybrid retriever returns up to five chunks.
+hybrid retriever returns bounded chunks.
 
 ## Flow
 
@@ -31,7 +31,8 @@ question
 Rules enforced in code:
 
 - `answered` requires at least one citation.
-- Every citation ID must identify a retrieved chunk.
+- The response schema permits only the supplied `S1...Sn` citation IDs.
+- A second validator rejects any citation ID that does not identify retrieved evidence.
 - `abstained` must have no citations.
 - Evidence is bounded to five chunks and 15,000 characters.
 - Retrieved text is labelled as untrusted data, not instructions.
@@ -110,3 +111,43 @@ python -m scripts.stage_05_retrieval.evaluate_abstention --overwrite
 ```
 
 Independent domain review is still required before production-quality claims.
+
+## Student administration positive evaluation
+
+The same generation contract was evaluated on the 10 reviewed questions from
+`uol-student-admin-retrieval-v1`, using hybrid top 3 because the guide contains
+three chunks.
+
+| Metric | Result |
+| --- | ---: |
+| Answered rate | 1.00 |
+| Unexpected abstention rate | 0.00 |
+| Relevant context hit rate | 1.00 |
+| Relevant citation hit rate | 1.00 |
+| Citation precision | 1.00 |
+| Development-reviewed answer correctness | 1.00 |
+
+All 10 answers matched their references and cited only labelled relevant
+chunks. The reviewed run used 8,594 input, 1,533 output, and 10,127 total chat
+tokens.
+See the
+[versioned baseline](../../evaluation/baselines/student_admin_generation_positive_v1.json).
+These usage totals describe the accepted reviewed run. They exclude the
+rejected initial run and infrastructure retries, which can still contribute to
+Azure consumption.
+
+An initial run exposed that the model could return a raw `chunk_id` instead of
+an `S1...Sn` source ID. Runtime validation rejected the response. The structured
+output schema now restricts citation values dynamically to the evidence IDs in
+the current request, while runtime validation remains as a second control.
+
+This remains a small development evaluation over a three-page English guide.
+Independent review and robustness testing are still required.
+
+```bash
+python -m scripts.stage_05_retrieval.evaluate_generation \
+  --dataset evaluation/datasets/student_admin_retrieval_questions_v1.json \
+  --top 3 --vector-candidates 20 \
+  --output data/evaluation/student_admin_generation_positive_v1.results.json \
+  --overwrite
+```

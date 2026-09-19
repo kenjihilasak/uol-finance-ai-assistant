@@ -1,0 +1,74 @@
+{
+  "schema_version": "1.0.0",
+  "evaluated_at": "2026-09-19T21:52:06.500079+00:00",
+  "dataset_id": "uol-student-admin-retrieval-v1",
+  "index_name": "uol-finance-chunks-v1",
+  "embedding_deployment": "text-embedding-3-small",
+  "chat_deployment": "gpt-5-mini",
+  "retrieval": {
+    "type": "hybrid_bm25_vector",
+    "top": 3,
+    "vector_candidates": 20
+  },
+  "aggregate": {
+    "answered_rate": 1.0,
+    "unexpected_abstention_rate": 0.0,
+    "context_relevance_hit_rate": 1.0,
+    "citation_relevance_hit_rate": 1.0,
+    "citation_precision": 1.0,
+    "manually_reviewed_answer_correctness": 1.0
+  },
+  "usage": {
+    "input_tokens": 8594,
+    "output_tokens": 1533,
+    "total_tokens": 10127
+  },
+  "manual_review": {
+    "status": "development_review_complete",
+    "correct_answers": 10,
+    "questions": 10,
+    "independent_domain_review_required": true
+  },
+  "questions": {
+    "student-admin-navigation": {
+      "status": "answered",
+      "citation_precision": 1.0
+    },
+    "student-admin-contact-details-option": {
+      "status": "answered",
+      "citation_precision": 1.0
+    },
+    "student-admin-edit-current-address": {
+      "status": "answered",
+      "citation_precision": 1.0
+    },
+    "student-admin-missing-address-type": {
+      "status": "answered",
+      "citation_precision": 1.0
+    },
+    "student-admin-example-data": {
+      "status": "answered",
+      "citation_precision": 1.0
+    },
+    "student-admin-address-search": {
+      "status": "answered",
+      "citation_precision": 1.0
+    },
+    "student-admin-listed-country": {
+      "status": "answered",
+      "citation_precision": 1.0
+    },
+    "student-admin-unlisted-country": {
+      "status": "answered",
+      "citation_precision": 1.0
+    },
+    "student-admin-main-contact-number": {
+      "status": "answered",
+      "citation_precision": 1.0
+    },
+    "student-admin-save-updates": {
+      "status": "answered",
+      "citation_precision": 1.0
+    }
+  }
+}
