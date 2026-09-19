@@ -15,11 +15,14 @@ from scripts.stage_05_retrieval.generate_grounded_answer import (
 class ServingApiTests(unittest.TestCase):
     def test_catalog_contains_official_https_pdf(self) -> None:
         catalog = load_document_catalog()
-        self.assertGreaterEqual(len(catalog), 1)
+        self.assertEqual(len(catalog), 2)
         document = next(iter(catalog.values()))
         self.assertTrue(document.source_url.startswith("https://"))
         self.assertTrue(document.source_url.endswith(".pdf"))
         self.assertEqual(document.page_url(83), f"{document.source_url}#page=83")
+        self.assertEqual(catalog[
+            "updating-your-address-details-through-student-services-8f93c8f89e9d"
+        ].category, "student_admin")
 
     def test_answer_contract_exposes_only_cited_evidence(self) -> None:
         document = PublicDocument(

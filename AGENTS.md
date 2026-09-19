@@ -48,19 +48,16 @@ python -m scripts.stage_03_embeddings.generate_embeddings --input data/processed
 ## Current Focus
 Deploy the serving API and portfolio safely, then add telemetry.
 
-## Pending Student Guide Ingestion
+## Student Guide Ingestion
 - The current official address-update PDF is `id/134`; the supplied `id/7444`
   URL returns the University of Leeds 404 page and must not be ingested.
-- `id/134` is locally registered and processed into 3 page-bounded chunks with
-  `category=student_admin`.
-- Cloud completion is pending: on 2026-09-19 Storage and Search reported disabled,
-  and Foundry reported the subscription was not registered for Cognitive Services.
-- After Azure is reactivated: add the index field, upload the source, generate
-  embeddings, upload the 3 records, verify a category-filtered query, then add
-  the document to `config/public_documents.json`.
+- `id/134` is registered, stored in Blob Storage, processed into 3 page-bounded
+  chunks, embedded, and indexed with `category=student_admin`.
+- A category-filtered hybrid query was verified successfully on 2026-09-19.
+- A distinct replacement PDF or valid URL is still required for `id/7444`.
 
 ## Known Deployed Index Difference
-- `uol-finance-chunks-v1` contains 490 validated documents and uses 1,536-dimensional HNSW vectors.
+- `uol-finance-chunks-v1` contains 493 validated documents and uses 1,536-dimensional HNSW vectors.
 - It was initially created with vector profile `default` and `content_vector.retrievable=true`.
 - Retrieval queries must explicitly select citation fields and exclude `content_vector`.
 - Do not delete or recreate the working index without explicit approval; use a versioned replacement for schema changes.

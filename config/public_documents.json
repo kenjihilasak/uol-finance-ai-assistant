@@ -15,6 +15,21 @@
         "What were the main financial sustainability risks?",
         "What credit rating did Moody's affirm?"
       ]
+    },
+    {
+      "document_id": "updating-your-address-details-through-student-services-8f93c8f89e9d",
+      "title": "Updating Your Address Details Through Student Services",
+      "institution": "University of Leeds",
+      "category": "student_admin",
+      "document_date": "2025-03-19",
+      "source_url": "https://students.leeds.ac.uk/download/downloads/id/134/updating-your-address-through-student-services.pdf",
+      "status": "current",
+      "suggested_questions": [
+        "How do I update my address in Student Services?",
+        "What should I do if my country is not listed?",
+        "Which contact number must I provide?",
+        "How do I save my updated contact details?"
+      ]
     }
   ]
 }
