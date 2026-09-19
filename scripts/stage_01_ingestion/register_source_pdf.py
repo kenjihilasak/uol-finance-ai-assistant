@@ -13,6 +13,7 @@ from scripts.shared.document_utils import (
     resolve_source_pdf,
     slugify,
     validate_document_id,
+    validate_category,
     validate_iso_date,
     validate_optional_source_url,
     validate_pdf_file,
@@ -41,6 +42,7 @@ def build_metadata(args: argparse.Namespace, pdf_path: Path) -> dict[str, object
     source_sha256 = str(file_details["sha256"])
     title = args.title.strip()
     institution = args.institution.strip()
+    category = validate_category(args.category)
     source_reference = args.source_reference.strip()
     usage_basis = args.usage_basis.strip()
     document_date = validate_iso_date(args.document_date)
@@ -48,6 +50,7 @@ def build_metadata(args: argparse.Namespace, pdf_path: Path) -> dict[str, object
     required_text = {
         "title": title,
         "institution": institution,
+        "category": category,
         "source_reference": source_reference,
         "usage_basis": usage_basis,
     }
@@ -74,6 +77,7 @@ def build_metadata(args: argparse.Namespace, pdf_path: Path) -> dict[str, object
         "document_id": document_id,
         "title": title,
         "institution": institution,
+        "category": category,
         "document_date": document_date,
         "registered_at_utc": datetime.now(timezone.utc)
         .isoformat()
@@ -130,6 +134,11 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--title", required=True, help="Document title.")
     parser.add_argument("--institution", required=True, help="Document owner.")
+    parser.add_argument(
+        "--category",
+        required=True,
+        help="Stable retrieval category, for example finance or student_admin.",
+    )
     parser.add_argument(
         "--document-date",
         required=True,

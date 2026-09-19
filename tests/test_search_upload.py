@@ -6,18 +6,20 @@ from scripts.stage_04_search_index.create_index import (
     VECTOR_PROFILE_NAME,
     build_search_index,
 )
+from scripts.stage_04_search_index.add_category_field import add_category_field
 from scripts.stage_04_search_index.upload_documents import search_document
 
 
 def example_record() -> dict[str, object]:
     return {
-        "schema_version": "2.0.0",
+        "schema_version": "2.1.0",
         "chunk_id": "report-p0008-c001",
         "document_id": "report",
         "text": "Revenue increased.",
         "embedding_text": "Document: Report\n\nRevenue increased.",
         "source_title": "Report",
         "institution": "Example University",
+        "category": "finance",
         "source_reference": "Provided by document owner",
         "source_url": None,
         "status": "current",
@@ -47,6 +49,7 @@ class SearchDocumentMappingTests(unittest.TestCase):
         )
         self.assertEqual(document["document_date"], "2025-07-31T00:00:00Z")
         self.assertEqual(document["page_range"], {"start": 8, "end": 8})
+        self.assertEqual(document["category"], "finance")
         self.assertEqual(document["content_vector"], [0.25, -0.5, 0.0])
 
     def test_preserves_non_null_source_url(self) -> None:
@@ -89,8 +92,19 @@ class SearchIndexSchemaTests(unittest.TestCase):
             VECTOR_PROFILE_NAME,
         )
         self.assertFalse(fields["content_vector"].retrievable)
+        self.assertTrue(fields["category"].filterable)
+        self.assertTrue(fields["category"].facetable)
         self.assertEqual(len(index.vector_search.algorithms), 1)
         self.assertEqual(len(index.vector_search.profiles), 1)
+
+    def test_category_migration_is_additive_and_idempotent(self) -> None:
+        index = build_search_index("example-index", 1536)
+        index.fields = [field for field in index.fields if field.name != "category"]
+
+        self.assertTrue(add_category_field(index))
+        self.assertFalse(add_category_field(index))
+        category_fields = [field for field in index.fields if field.name == "category"]
+        self.assertEqual(len(category_fields), 1)
 
 if __name__ == "__main__":
     unittest.main()

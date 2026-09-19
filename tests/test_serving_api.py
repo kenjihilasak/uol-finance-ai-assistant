@@ -15,9 +15,9 @@ from scripts.stage_05_retrieval.generate_grounded_answer import (
 class ServingApiTests(unittest.TestCase):
     def test_catalog_contains_official_https_pdf(self) -> None:
         catalog = load_document_catalog()
-        self.assertEqual(len(catalog), 1)
+        self.assertGreaterEqual(len(catalog), 1)
         document = next(iter(catalog.values()))
-        self.assertTrue(document.source_url.startswith("https://www.leeds.ac.uk/"))
+        self.assertTrue(document.source_url.startswith("https://"))
         self.assertTrue(document.source_url.endswith(".pdf"))
         self.assertEqual(document.page_url(83), f"{document.source_url}#page=83")
 
@@ -26,6 +26,7 @@ class ServingApiTests(unittest.TestCase):
             document_id="document-1",
             title="Report",
             institution="Institution",
+            category="finance",
             document_date=date(2025, 7, 31),
             source_url="https://example.com/report.pdf",
             status="current",

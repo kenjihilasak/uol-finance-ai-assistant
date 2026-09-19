@@ -13,7 +13,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 SOURCE_DIRECTORY = PROJECT_ROOT / "data" / "sources"
 PROCESSED_DIRECTORY = PROJECT_ROOT / "data" / "processed"
 
-SOURCE_METADATA_SCHEMA_VERSION = "1.0.0"
+SOURCE_METADATA_SCHEMA_VERSION = "1.1.0"
 MAX_SOURCE_BYTES = 50 * 1024 * 1024
 ALLOWED_DOCUMENT_STATUSES = {"current", "historical"}
 
@@ -22,6 +22,7 @@ REQUIRED_SOURCE_METADATA_FIELDS = {
     "document_id",
     "title",
     "institution",
+    "category",
     "document_date",
     "registered_at_utc",
     "sha256",
@@ -74,6 +75,15 @@ def validate_iso_date(value: str) -> str:
     except ValueError as error:
         raise ValueError("document_date must use YYYY-MM-DD") from error
     return value
+
+
+def validate_category(value: str) -> str:
+    candidate = value.strip()
+    if not re.fullmatch(r"[a-z][a-z0-9_]{1,63}", candidate):
+        raise ValueError(
+            "category must contain 2-64 lowercase letters, numbers, or underscores"
+        )
+    return candidate
 
 
 def validate_optional_source_url(value: str | None) -> str | None:
@@ -175,10 +185,12 @@ def load_and_verify_source(pdf_path: Path) -> dict[str, object]:
         )
     validate_document_id(str(metadata["document_id"]))
     validate_iso_date(str(metadata["document_date"]))
+    validate_category(str(metadata["category"]))
 
     non_empty_string_fields = (
         "title",
         "institution",
+        "category",
         "registered_at_utc",
         "local_filename",
         "blob_name",

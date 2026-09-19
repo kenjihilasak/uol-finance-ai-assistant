@@ -13,7 +13,7 @@ from scripts.shared.document_utils import (
 )
 
 
-SCHEMA_VERSION = "1.0.0"
+SCHEMA_VERSION = "1.1.0"
 
 
 def sha256_bytes(value: bytes) -> str:
@@ -75,6 +75,7 @@ def build_processed_document(
     source_fields = (
         "title",
         "institution",
+        "category",
         "document_date",
         "registered_at_utc",
         "sha256",

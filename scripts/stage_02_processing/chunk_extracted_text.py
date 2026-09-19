@@ -9,7 +9,7 @@ from pathlib import Path
 from scripts.shared.document_utils import processed_path, sha256_file, sha256_text
 
 
-SCHEMA_VERSION = "2.0.0"
+SCHEMA_VERSION = "2.1.0"
 CHUNKING_METHOD = "page_bounded_recursive_text_units"
 DEFAULT_TARGET_CHARS = 1200
 DEFAULT_MAX_CHARS = 1800
@@ -19,6 +19,7 @@ DEFAULT_OVERLAP_CHARS = 200
 REQUIRED_SOURCE_FIELDS = {
     "title",
     "institution",
+    "category",
     "source_reference",
     "source_url",
     "document_date",
@@ -305,6 +306,7 @@ def build_chunks(
                     "embedding_text": vector_text,
                     "source_title": source["title"],
                     "institution": source["institution"],
+                    "category": source["category"],
                     "source_reference": source["source_reference"],
                     "source_url": source["source_url"],
                     "document_date": source["document_date"],

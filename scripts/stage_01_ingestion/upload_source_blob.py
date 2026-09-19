@@ -41,6 +41,7 @@ def blob_metadata(metadata: dict[str, object]) -> dict[str, str]:
         "schema_version": str(metadata["schema_version"]),
         "document_id": str(metadata["document_id"]),
         "institution_slug": slugify(str(metadata["institution"]), 64),
+        "category": str(metadata["category"]),
         "document_date": str(metadata["document_date"]),
         "sha256": str(metadata["sha256"]),
         "content_type": str(metadata["content_type"]),

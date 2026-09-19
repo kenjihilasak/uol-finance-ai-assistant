@@ -70,6 +70,13 @@ def build_search_index(index_name: str, vector_dimensions: int) -> SearchIndex:
             filterable=True,
             sortable=True,
         ),
+        SimpleField(
+            name="category",
+            type=SearchFieldDataType.String,
+            filterable=True,
+            sortable=True,
+            facetable=True,
+        ),
         SearchField(
             name="source_reference",
             type=SearchFieldDataType.String,

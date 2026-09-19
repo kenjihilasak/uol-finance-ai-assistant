@@ -56,6 +56,7 @@ class DocumentUtilsTests(unittest.TestCase):
                 "document_id": "example-report-123",
                 "title": "Example Report",
                 "institution": "Example Institution",
+                "category": "finance",
                 "document_date": "2025-07-31",
                 "registered_at_utc": "2026-08-24T10:00:00Z",
                 **details,
@@ -105,6 +106,7 @@ class DocumentUtilsTests(unittest.TestCase):
             args = Namespace(
                 title="Example Annual Report",
                 institution="Example Institution",
+                category="finance",
                 document_date="2025-07-31",
                 status="current",
                 source_reference="Document owner",
@@ -120,8 +122,14 @@ class DocumentUtilsTests(unittest.TestCase):
                 str(metadata["document_id"]).startswith("example-annual-report-")
             )
             self.assertEqual(metadata["institution"], "Example Institution")
+            self.assertEqual(metadata["category"], "finance")
             self.assertIsNone(metadata["source_url"])
             self.assertTrue(str(metadata["blob_name"]).endswith("annual-report.pdf"))
+
+    def test_category_uses_stable_machine_readable_format(self) -> None:
+        self.assertEqual(document_utils.validate_category("student_admin"), "student_admin")
+        with self.assertRaises(ValueError):
+            document_utils.validate_category("Student Admin")
 
 
 if __name__ == "__main__":

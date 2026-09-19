@@ -4,8 +4,9 @@ This stage implements Azure AI Search indexing for the UoL Finance AI Assistant 
 
 ## Components
 
-1. `create_index.py` - Creates the Azure AI Search index with the proper schema
-2. `upload_documents.py` - Uploads document embeddings to the search index
+1. `create_index.py` - Creates a new index with the complete schema
+2. `add_category_field.py` - Adds `category` to the existing index without deleting data
+3. `upload_documents.py` - Uploads document embeddings to the search index
 
 ## Prerequisites
 
@@ -43,6 +44,18 @@ python -m scripts.stage_04_search_index.upload_documents --input data/processed/
 # Upload embeddings to the index
 python -m scripts.stage_04_search_index.upload_documents --input data/processed/document.embeddings.json --index-name uol-finance-chunks-v1
 ```
+
+### Migrate the existing index
+
+Run this once before uploading categorized documents:
+
+```bash
+python -m scripts.stage_04_search_index.add_category_field --dry-run
+python -m scripts.stage_04_search_index.add_category_field
+```
+
+The migration is additive and idempotent. Existing documents remain in place;
+their `category` is null until they are re-uploaded with that field.
 
 ## Index Schema
 

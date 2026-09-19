@@ -2,7 +2,9 @@
 
 ## Overview
 
-This document defines the Azure AI Search index schema for the UoL Finance AI Assistant project. The schema supports hybrid search combining traditional text search with vector similarity search.
+The index supports BM25 + vector retrieval across multiple document categories.
+`category` is metadata: it is used for filtering, sorting, and facets rather
+than keyword matching.
 
 ## Field Properties
 
@@ -30,6 +32,7 @@ Fields that can be used in `$filter` queries:
 - `text_sha256` - Filter by text content hash
 - `embedding_text_sha256` - Filter by embedding text hash
 - `embedding_deployment` - Filter by embedding model
+- `category` - Filter document families such as `finance` or `student_admin`
 
 ### Sortable Fields
 Fields that can be used in `$orderby` queries:
@@ -38,6 +41,11 @@ Fields that can be used in `$orderby` queries:
 - `page_number` - Sort by page order
 - `document_date` - Sort by document dates
 - `source_title` - Sort alphabetically by title
+- `category` - Sort by document family
+
+### Facetable fields
+
+- `category` - Count and display available document families
 
 ### Retrievable Fields
 Text and metadata fields are retrievable for citations and provenance. The
@@ -65,6 +73,7 @@ Most fields map directly from the embeddings JSON records array:
 - `records[i].embedding_text` → `embedding_text`
 - `records[i].source_title` → `source_title`
 - `records[i].institution` → `institution`
+- `records[i].category` → `category`
 - `records[i].source_reference` → `source_reference`
 - `records[i].source_url` → `source_url`
 - `records[i].document_date` → `document_date`

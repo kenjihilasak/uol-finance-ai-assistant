@@ -93,6 +93,7 @@ class ChunkingTests(unittest.TestCase):
             "source": {
                 "title": "Example Report",
                 "institution": "Example Institution",
+                "category": "finance",
                 "source_reference": "Document owner",
                 "source_url": None,
                 "document_date": "2025-07-31",
@@ -107,6 +108,7 @@ class ChunkingTests(unittest.TestCase):
         self.assertEqual(len(chunks), 1)
         self.assertEqual(chunks[0]["page_number"], 7)
         self.assertEqual(chunks[0]["institution"], "Example Institution")
+        self.assertEqual(chunks[0]["category"], "finance")
         self.assertIsNone(chunks[0]["source_url"])
         self.assertIn("Document: Example Report", chunks[0]["embedding_text"])
         self.assertIn("Page: 7", chunks[0]["embedding_text"])

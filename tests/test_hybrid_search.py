@@ -4,6 +4,7 @@ from scripts.stage_05_retrieval.hybrid_search import (
     SELECT_FIELDS,
     escape_odata_string,
     hybrid_search,
+    search_filter,
     validated_query,
     validated_vector,
     validate_limits,
@@ -51,6 +52,7 @@ class HybridSearchTests(unittest.TestCase):
                     "text": "Total income was reported.",
                     "source_title": "Annual report",
                     "institution": "University",
+                    "category": "finance",
                     "page_number": 10,
                     "document_date": "2025-07-31T00:00:00Z",
                     "source_reference": "Annual report, p. 10",
@@ -82,6 +84,10 @@ class HybridSearchTests(unittest.TestCase):
 
     def test_odata_single_quote_is_escaped(self):
         self.assertEqual(escape_odata_string("a'b"), "a''b")
+        self.assertEqual(
+            search_filter("doc'a", "student_admin"),
+            "document_id eq 'doc''a' and category eq 'student_admin'",
+        )
 
     def test_vector_only_query_omits_keyword_search(self):
         client = FakeSearchClient([])

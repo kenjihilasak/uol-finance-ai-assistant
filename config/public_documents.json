@@ -1,10 +1,11 @@
 {
-  "schema_version": "1.0.0",
+  "schema_version": "1.1.0",
   "documents": [
     {
       "document_id": "annual-report-and-financial-statements-for-year-ending-31-july-2025-e387d079c84a",
       "title": "Annual Report and financial statements for year ending 31 July 2025",
       "institution": "University of Leeds",
+      "category": "finance",
       "document_date": "2025-07-31",
       "source_url": "https://www.leeds.ac.uk/download/downloads/id/3533/annual-report-and-accounts-2024-25.pdf",
       "status": "current",

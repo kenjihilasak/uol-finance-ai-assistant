@@ -35,6 +35,7 @@ SELECT_FIELDS = [
     "text",
     "source_title",
     "institution",
+    "category",
     "page_number",
     "document_date",
     "source_reference",
@@ -166,6 +167,18 @@ def escape_odata_string(value: str) -> str:
     return value.replace("'", "''")
 
 
+def search_filter(
+    document_id: str | None = None,
+    category: str | None = None,
+) -> str | None:
+    clauses = []
+    if document_id:
+        clauses.append(f"document_id eq '{escape_odata_string(document_id)}'")
+    if category:
+        clauses.append(f"category eq '{escape_odata_string(category)}'")
+    return " and ".join(clauses) or None
+
+
 def hybrid_search(
     client: SearchClient,
     query: str,
@@ -174,6 +187,7 @@ def hybrid_search(
     top: int = DEFAULT_TOP,
     vector_candidates: int = DEFAULT_VECTOR_CANDIDATES,
     document_id: str | None = None,
+    category: str | None = None,
 ) -> list[dict[str, Any]]:
     """Run one Azure-native hybrid query and return prompt-safe evidence."""
     validate_limits(top, vector_candidates)
@@ -183,9 +197,7 @@ def hybrid_search(
         fields="content_vector",
         exhaustive=False,
     )
-    document_filter = None
-    if document_id:
-        document_filter = f"document_id eq '{escape_odata_string(document_id)}'"
+    document_filter = search_filter(document_id, category)
 
     response = client.search(
         search_text=query,
@@ -212,6 +224,7 @@ def vector_search(
     top: int = DEFAULT_TOP,
     vector_candidates: int = DEFAULT_VECTOR_CANDIDATES,
     document_id: str | None = None,
+    category: str | None = None,
 ) -> list[dict[str, Any]]:
     """Run vector-only retrieval without BM25 or rank fusion."""
     validate_limits(top, vector_candidates)
@@ -221,9 +234,7 @@ def vector_search(
         fields="content_vector",
         exhaustive=False,
     )
-    document_filter = None
-    if document_id:
-        document_filter = f"document_id eq '{escape_odata_string(document_id)}'"
+    document_filter = search_filter(document_id, category)
 
     response = client.search(
         search_text=None,
@@ -249,6 +260,7 @@ def run_retrieval(
     top: int,
     vector_candidates: int,
     document_id: str | None,
+    category: str | None = None,
 ) -> list[dict[str, Any]]:
     credential = build_user_credential(config.tenant_id)
     token_provider = get_bearer_token_provider(credential, OPENAI_SCOPE)
@@ -276,6 +288,7 @@ def run_retrieval(
             top=top,
             vector_candidates=vector_candidates,
             document_id=document_id,
+            category=category,
         )
     finally:
         search_client.close()
@@ -319,6 +332,10 @@ def parse_args() -> argparse.Namespace:
         help="Optional exact document_id filter.",
     )
     parser.add_argument(
+        "--category",
+        help="Optional exact category filter, for example student_admin.",
+    )
+    parser.add_argument(
         "--dry-run",
         action="store_true",
         help="Validate configuration and parameters without contacting Azure.",
@@ -348,6 +365,7 @@ def main() -> None:
         top=args.top,
         vector_candidates=args.vector_candidates,
         document_id=args.document_id,
+        category=args.category,
     )
     print_results(query, results)
 

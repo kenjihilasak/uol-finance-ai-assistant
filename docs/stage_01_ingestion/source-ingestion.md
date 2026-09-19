@@ -18,6 +18,7 @@ python -m scripts.stage_01_ingestion.register_source_pdf \
   --file data/sources/example-annual-report-2025.pdf \
   --title "Example Annual Report 2025" \
   --institution "Example Institution" \
+  --category finance \
   --document-date 2025-07-31 \
   --status current \
   --source-reference "Provided by the document owner" \
@@ -36,6 +37,9 @@ size limit, checks the `%PDF-` header, computes SHA-256, detects duplicates, and
 writes an ignored metadata sidecar. The header identifies the file format; it
 is not a cryptographic signature. Usage fields record an operator decision, not
 an automated legal determination.
+
+`category` is a stable machine label used later as an Azure AI Search filter.
+Use lowercase letters, numbers, and underscores, for example `student_admin`.
 
 ## 3. Upload the source
 

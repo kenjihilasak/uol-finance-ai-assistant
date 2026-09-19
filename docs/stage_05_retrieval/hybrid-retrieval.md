@@ -56,8 +56,8 @@ Implementation:
 
 ## Current boundary
 
-Implemented: query embedding, hybrid retrieval, optional document filter, safe
-field selection, and evidence output.
+Implemented: query embedding, hybrid retrieval, optional `document_id` and
+`category` filters, safe field selection, and evidence output.
 
 The initial reviewed dataset and Recall@k/MRR baseline are documented in
 [retrieval evaluation](./retrieval-evaluation.md). Grounded generation is

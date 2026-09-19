@@ -6,7 +6,7 @@ Stage 02 writes page-level JSON to:
 data/processed/<document-id>.processed.json
 ```
 
-Schema version: `1.0.0`.
+Schema version: `1.1.0`.
 
 ## Top level
 
@@ -56,10 +56,11 @@ remains the document-level integrity check.
 
 ```json
 {
-  "schema_version": "1.0.0",
+  "schema_version": "1.1.0",
   "document_id": "example-report-a1b2c3d4e5f6",
   "source": {
     "title": "Example Report",
+    "category": "finance",
     "sha256": "source-pdf-sha256",
     "source_reference": "Provided by the document owner"
   },

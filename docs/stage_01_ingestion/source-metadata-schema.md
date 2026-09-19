@@ -7,14 +7,15 @@ data/sources/report.pdf
 data/sources/report.metadata.json
 ```
 
-Schema version: `1.0.0`.
+Schema version: `1.1.0`.
 
 | Field | Type | Rule |
 | --- | --- | --- |
-| `schema_version` | string | Must be `1.0.0`. |
+| `schema_version` | string | Must be `1.1.0`. |
 | `document_id` | string | 3-128 lowercase letters, numbers, or hyphens. |
 | `title` | string | Human-readable title. |
 | `institution` | string | Publisher, owner, or supplying organisation. |
+| `category` | string | Stable machine label, such as `finance` or `student_admin`. |
 | `document_date` | string | ISO date in `YYYY-MM-DD` format. |
 | `registered_at_utc` | string | Registration timestamp in UTC. |
 | `sha256` | string | SHA-256 of the exact local PDF bytes. |

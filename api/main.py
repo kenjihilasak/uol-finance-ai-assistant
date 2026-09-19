@@ -34,6 +34,7 @@ class DocumentResponse(BaseModel):
     document_id: str
     title: str
     institution: str
+    category: str
     document_date: str
     source_url: str
     status: str
@@ -120,6 +121,7 @@ def document_response(document: PublicDocument) -> DocumentResponse:
         document_id=document.document_id,
         title=document.title,
         institution=document.institution,
+        category=document.category,
         document_date=document.document_date.isoformat(),
         source_url=document.source_url,
         status=document.status,
