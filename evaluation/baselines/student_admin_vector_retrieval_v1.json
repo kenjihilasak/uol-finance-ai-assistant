@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0.0",
+  "evaluated_at": "2026-09-19T21:40:42.084934+00:00",
+  "dataset_id": "uol-student-admin-retrieval-v1",
+  "index_name": "uol-finance-chunks-v1",
+  "embedding_deployment": "text-embedding-3-small",
+  "retrieval": {
+    "type": "vector_only",
+    "top": 3,
+    "vector_candidates": 20
+  },
+  "aggregate": {
+    "recall@1": 0.8,
+    "recall@2": 1.0,
+    "recall@3": 1.0,
+    "mrr@3": 0.9
+  },
+  "first_relevant_ranks": {
+    "student-admin-navigation": 1,
+    "student-admin-contact-details-option": 2,
+    "student-admin-edit-current-address": 1,
+    "student-admin-missing-address-type": 2,
+    "student-admin-example-data": 1,
+    "student-admin-address-search": 1,
+    "student-admin-listed-country": 1,
+    "student-admin-unlisted-country": 1,
+    "student-admin-main-contact-number": 1,
+    "student-admin-save-updates": 1
+  }
+}

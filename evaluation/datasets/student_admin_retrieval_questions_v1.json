@@ -1,0 +1,103 @@
+{
+  "schema_version": "1.0.0",
+  "dataset_id": "uol-student-admin-retrieval-v1",
+  "document_id": "updating-your-address-details-through-student-services-8f93c8f89e9d",
+  "review": {
+    "status": "source_verified",
+    "date": "2026-09-19",
+    "method": "Questions, reference answers, pages, and relevant chunks were manually compared with the official University of Leeds PDF and the deterministic Stage 02 chunks."
+  },
+  "questions": [
+    {
+      "id": "student-admin-navigation",
+      "question": "Where should I go in Student Services to begin updating my address?",
+      "answer_reference": "Open Personal Information in Student Services.",
+      "expected_pages": [1],
+      "relevant_chunk_ids": [
+        "updating-your-address-details-through-student-services-8f93c8f89e9d-p0001-c001"
+      ]
+    },
+    {
+      "id": "student-admin-contact-details-option",
+      "question": "Which option displays my current addresses and telephone numbers?",
+      "answer_reference": "Choose Update Your Contact Details.",
+      "expected_pages": [1],
+      "relevant_chunk_ids": [
+        "updating-your-address-details-through-student-services-8f93c8f89e9d-p0001-c001"
+      ]
+    },
+    {
+      "id": "student-admin-edit-current-address",
+      "question": "What should I click to edit an existing emergency, permanent home, or term-time address?",
+      "answer_reference": "Click Current next to the relevant address.",
+      "expected_pages": [1],
+      "relevant_chunk_ids": [
+        "updating-your-address-details-through-student-services-8f93c8f89e9d-p0001-c001"
+      ]
+    },
+    {
+      "id": "student-admin-missing-address-type",
+      "question": "What should I do if the address type I need is not shown?",
+      "answer_reference": "Select the address type from the dropdown list and click Submit.",
+      "expected_pages": [1],
+      "relevant_chunk_ids": [
+        "updating-your-address-details-through-student-services-8f93c8f89e9d-p0001-c001"
+      ]
+    },
+    {
+      "id": "student-admin-example-data",
+      "question": "Should I copy the addresses and telephone numbers shown in the guide's examples?",
+      "answer_reference": "No. The examples are fictional and should not be copied.",
+      "expected_pages": [1, 3],
+      "relevant_chunk_ids": [
+        "updating-your-address-details-through-student-services-8f93c8f89e9d-p0001-c001",
+        "updating-your-address-details-through-student-services-8f93c8f89e9d-p0003-c001"
+      ]
+    },
+    {
+      "id": "student-admin-address-search",
+      "question": "How many characters should I type when searching for an address or postal code?",
+      "answer_reference": "Type at least five characters.",
+      "expected_pages": [2],
+      "relevant_chunk_ids": [
+        "updating-your-address-details-through-student-services-8f93c8f89e9d-p0002-c001"
+      ]
+    },
+    {
+      "id": "student-admin-listed-country",
+      "question": "How is an address filled in when my country appears in the country list?",
+      "answer_reference": "Select the country, search for the address, and click the correct result to fill the fields automatically; the fields can then be adjusted manually.",
+      "expected_pages": [2],
+      "relevant_chunk_ids": [
+        "updating-your-address-details-through-student-services-8f93c8f89e9d-p0002-c001"
+      ]
+    },
+    {
+      "id": "student-admin-unlisted-country",
+      "question": "How do I enter my address if my country is not available in the dropdown menu?",
+      "answer_reference": "Enter the address manually in the provided fields.",
+      "expected_pages": [2],
+      "relevant_chunk_ids": [
+        "updating-your-address-details-through-student-services-8f93c8f89e9d-p0002-c001"
+      ]
+    },
+    {
+      "id": "student-admin-main-contact-number",
+      "question": "Where should I enter my primary telephone number, and can I add more numbers?",
+      "answer_reference": "Enter it in Main Contact Number; additional numbers can be added if necessary.",
+      "expected_pages": [3],
+      "relevant_chunk_ids": [
+        "updating-your-address-details-through-student-services-8f93c8f89e9d-p0003-c001"
+      ]
+    },
+    {
+      "id": "student-admin-save-updates",
+      "question": "How do I save my updated address and contact details?",
+      "answer_reference": "Click Submit at the bottom of the page; the main page should then display the changes.",
+      "expected_pages": [3],
+      "relevant_chunk_ids": [
+        "updating-your-address-details-through-student-services-8f93c8f89e9d-p0003-c001"
+      ]
+    }
+  ]
+}

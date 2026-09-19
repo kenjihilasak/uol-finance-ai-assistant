@@ -77,3 +77,40 @@ would miss three of ten questions.
 
 This is a small, single-document baseline. Add independently reviewed
 questions and more documents before treating it as production evidence.
+
+## Student administration guide
+
+The separate `uol-student-admin-retrieval-v1` dataset contains 10
+source-verified questions across the three pages of the address-update guide.
+Because the document has only three chunks, this evaluation uses Recall@1,
+Recall@2, Recall@3, and MRR@3.
+
+| Metric | Vector only | Hybrid BM25 + vector |
+| --- | ---: | ---: |
+| Recall@1 | 0.800 | 1.000 |
+| Recall@2 | 1.000 | 1.000 |
+| Recall@3 | 1.000 | 1.000 |
+| MRR@3 | 0.900 | 1.000 |
+
+Hybrid retrieval moved the relevant page-1 chunk from rank 2 to rank 1 for two
+questions: selecting `Update Your Contact Details` and handling an address type
+that is not initially shown.
+
+Artifacts:
+
+- [Reviewed dataset](../../evaluation/datasets/student_admin_retrieval_questions_v1.json)
+- [Vector-only baseline](../../evaluation/baselines/student_admin_vector_retrieval_v1.json)
+- [Hybrid baseline](../../evaluation/baselines/student_admin_hybrid_retrieval_v1.json)
+
+This perfect hybrid score is a development result, not a production claim. The
+corpus slice contains only three chunks, the questions are in English like the
+source, and no paraphrase, typo, multilingual, or negative-query robustness set
+has yet been evaluated.
+
+Run this dataset with:
+
+```bash
+python -m scripts.stage_05_retrieval.evaluate_retrieval \
+  --dataset evaluation/datasets/student_admin_retrieval_questions_v1.json \
+  --mode hybrid --k 1 2 3 --vector-candidates 20 --overwrite
+```

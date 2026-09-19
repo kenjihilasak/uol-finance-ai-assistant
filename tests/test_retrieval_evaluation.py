@@ -70,6 +70,17 @@ class RetrievalEvaluationTests(unittest.TestCase):
         self.assertEqual(dataset.review["status"], "source_verified")
         self.assertEqual(len(dataset.cases), 10)
 
+    def test_student_admin_dataset_is_valid_and_source_verified(self):
+        dataset = load_dataset(
+            Path(
+                "evaluation/datasets/"
+                "student_admin_retrieval_questions_v1.json"
+            )
+        )
+        self.assertEqual(dataset.dataset_id, "uol-student-admin-retrieval-v1")
+        self.assertEqual(dataset.review["status"], "source_verified")
+        self.assertEqual(len(dataset.cases), 10)
+
     def test_dataset_rejects_unverified_review(self):
         payload = """{
           "schema_version": "1.0.0",
