@@ -30,8 +30,14 @@ def verify_staff_token(token: str) -> StaffIdentity:
         for value in _required("STAFF_AUTH_ALLOWED_OBJECT_IDS").split(",")
         if value.strip()
     }
-    issuer = f"https://login.microsoftonline.com/{tenant_id}/v2.0"
     try:
+        token_version = str(jwt.decode(token, options={"verify_signature": False}).get("ver", "2.0"))
+        if token_version == "1.0":
+            issuer = f"https://sts.windows.net/{tenant_id}/"
+            valid_audiences = [audience, f"api://{audience}"]
+        else:
+            issuer = f"https://login.microsoftonline.com/{tenant_id}/v2.0"
+            valid_audiences = [audience]
         signing_key = jwt.PyJWKClient(
             f"https://login.microsoftonline.com/{tenant_id}/discovery/v2.0/keys",
             cache_keys=True,
@@ -40,7 +46,7 @@ def verify_staff_token(token: str) -> StaffIdentity:
             token,
             signing_key.key,
             algorithms=["RS256"],
-            audience=audience,
+            audience=valid_audiences,
             issuer=issuer,
         )
     except jwt.PyJWTError as error:
