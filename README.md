@@ -11,7 +11,8 @@ provenance, Entra ID, human review, and measurable quality.
 | --- | --- |
 | Implemented | PDF/HTML pipeline, evaluated RAG, safe triage, FastAPI, PostgreSQL repository, Excel export, portfolio workbench |
 | Provisioned | Chat deployment and three Blob containers |
-| Deployment dependent | Railway service, PostgreSQL attachment, secrets, telemetry |
+| Deployed | Railway API, PostgreSQL attachment, Entra service principal, GitHub Pages workbench |
+| Planned | Persistent rate limiting, production telemetry, authenticated ingestion |
 
 ## Start here
 

@@ -53,8 +53,8 @@ flowchart TB
     class source,ingest,sourceBlob,process,vectors,search,retrieval,triage,rag,db,excel,ui implemented
 ```
 
-All shown components are implemented in code. Railway deployment and the
-portfolio API URL remain operator deployment steps.
+All shown components are implemented. The Railway API and GitHub Pages
+workbench were deployed and verified end to end on 20 September 2026.
 
 ## Implemented offline path
 
@@ -201,7 +201,6 @@ Each run should record corpus, index, model, retrieval, and prompt versions.
 
 ## Roadmap
 
-1. Deploy FastAPI and PostgreSQL to Railway; configure the Entra service principal.
-2. Publish the portfolio with `PUBLIC_AGENTIC_SUPPORT_API_URL`.
-3. Add persistent rate limiting, telemetry, and cost dashboards.
-4. Add an authenticated ingestion interface with malware and content review.
+1. Add persistent rate limiting, telemetry, and cost dashboards.
+2. Add Entra-authenticated staff access before storing real enquiries.
+3. Add an authenticated ingestion interface with malware and content review.

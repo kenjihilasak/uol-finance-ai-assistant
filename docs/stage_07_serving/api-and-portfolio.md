@@ -65,7 +65,14 @@ Deployment checklist:
 6. Run the portfolio Pages workflow or merge its feature branch into `master`.
 
 The backend repository contains no Railway or Azure secrets. `railway.toml`
-defines only the build, start, health-check, and restart behavior.
+defines build and health behavior, while `Procfile` declares the explicit
+Uvicorn start command required for the nested `api/main.py` module.
+
+Production endpoint verified on 20 September 2026:
+
+```text
+https://agentic-support-api-production.up.railway.app
+```
 
 ## Portfolio configuration
 
