@@ -401,3 +401,33 @@ def export_enquiries(request: Request) -> Response:
         media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         headers={"Content-Disposition": "attachment; filename=triage-enquiries.xlsx"},
     )
+
+
+@app.get("/v1/staff/enquiries")
+def list_staff_enquiries(
+    staff: Annotated[StaffIdentity, Depends(require_staff)],
+    limit: int = 100,
+) -> list[dict[str, object]]:
+    return enquiry_repository.list(max(1, min(limit, 500)))
+
+
+@app.patch("/v1/staff/enquiries/{enquiry_id}")
+def review_staff_enquiry(
+    enquiry_id: str,
+    payload: ReviewRequest,
+    staff: Annotated[StaffIdentity, Depends(require_staff)],
+) -> dict[str, str]:
+    if not enquiry_repository.update_review(enquiry_id, payload.review_status):
+        raise HTTPException(404, "Unknown enquiry_id")
+    return {"enquiry_id": enquiry_id, "review_status": payload.review_status}
+
+
+@app.get("/v1/staff/enquiries/export.xlsx")
+def export_staff_enquiries(
+    staff: Annotated[StaffIdentity, Depends(require_staff)],
+) -> Response:
+    return Response(
+        enquiry_repository.export_xlsx(),
+        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        headers={"Content-Disposition": "attachment; filename=triage-enquiries.xlsx"},
+    )
