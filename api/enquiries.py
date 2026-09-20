@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import os
+from datetime import date, datetime
 from io import BytesIO
 from threading import Lock
 from typing import Any
@@ -86,6 +87,8 @@ class EnquiryRepository:
             sheet.append([
                 json.dumps(record.get(name), ensure_ascii=False)
                 if isinstance(record.get(name), (list, tuple, dict))
+                else record.get(name).isoformat()
+                if isinstance(record.get(name), (date, datetime))
                 else record.get(name)
                 for name in FIELDS
             ])

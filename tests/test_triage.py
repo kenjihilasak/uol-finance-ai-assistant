@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import unittest
+from datetime import datetime, timezone
 from io import BytesIO
 
 from openpyxl import load_workbook
@@ -88,6 +89,29 @@ class TriageTests(unittest.TestCase):
         workbook = load_workbook(BytesIO(repository.export_xlsx()))
         self.assertEqual(workbook.active["A1"].value, "enquiry_id")
         self.assertEqual(workbook.active["C2"].value, "[Sensitive enquiry redacted]")
+
+    def test_excel_export_serializes_timezone_aware_database_timestamp(self):
+        repository = EnquiryRepository(database_url=None)
+        repository._records.append({
+            "enquiry_id": "id-2",
+            "created_at_utc": datetime(2026, 9, 20, 5, 0, tzinfo=timezone.utc),
+            "enquiry": "Synthetic enquiry",
+            "summary": "Synthetic",
+            "category": "finance_operations",
+            "subcategory": "expense_claim",
+            "is_sensitive": False,
+            "action": "draft_response",
+            "route_to": "finance_team",
+            "missing_info": [],
+            "answer_status": "answered",
+            "draft_response": "Draft",
+            "citation_ids": [],
+            "review_status": "pending",
+            "staff_object_id": "staff-1",
+            "staff_display_name": "Staff User",
+        })
+        workbook = load_workbook(BytesIO(repository.export_xlsx()))
+        self.assertEqual(workbook.active["B2"].value, "2026-09-20T05:00:00+00:00")
 
 
 if __name__ == "__main__":
