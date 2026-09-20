@@ -1,0 +1,32 @@
+{
+  "schema_version": "1.0.0",
+  "routes": [
+    {
+      "route_id": "harassment_and_misconduct",
+      "category": "student_support",
+      "sensitivity": "high",
+      "action": "specialist_referral",
+      "team_name": "Harassment and Misconduct Team",
+      "contact_email": "reportandsupport@leeds.ac.uk",
+      "source_urls": [
+        "https://students.leeds.ac.uk/harassment-misconduct",
+        "https://students.leeds.ac.uk/harassment-misconduct-disclosing/doc/formal-reporting-routes",
+        "https://equality.leeds.ac.uk/wp-content/uploads/sites/64/2025/09/Student-BHSM-Policy-August-2025.pdf"
+      ],
+      "generation_allowed": false
+    },
+    {
+      "route_id": "mental_health_and_wellbeing",
+      "category": "student_support",
+      "sensitivity": "high",
+      "action": "specialist_referral",
+      "team_name": "Student Counselling and Wellbeing",
+      "contact_email": "scw@leeds.ac.uk",
+      "source_urls": [
+        "https://students.leeds.ac.uk/counsellingandwellbeing",
+        "https://students.leeds.ac.uk/urgent-support/doc/security-services"
+      ],
+      "generation_allowed": false
+    }
+  ]
+}

@@ -16,7 +16,7 @@ from scripts.shared.document_utils import (
     validate_category,
     validate_iso_date,
     validate_optional_source_url,
-    validate_pdf_file,
+    validate_source_file,
 )
 
 
@@ -38,7 +38,7 @@ def find_duplicate_sha256(
 
 
 def build_metadata(args: argparse.Namespace, pdf_path: Path) -> dict[str, object]:
-    file_details = validate_pdf_file(pdf_path)
+    file_details = validate_source_file(pdf_path)
     source_sha256 = str(file_details["sha256"])
     title = args.title.strip()
     institution = args.institution.strip()
@@ -66,7 +66,8 @@ def build_metadata(args: argparse.Namespace, pdf_path: Path) -> dict[str, object
         )
 
     institution_slug = slugify(institution, max_length=64)
-    blob_filename = f"{slugify(pdf_path.stem, max_length=96)}.pdf"
+    suffix = ".html" if pdf_path.suffix.lower() in {".html", ".htm"} else ".pdf"
+    blob_filename = f"{slugify(pdf_path.stem, max_length=96)}{suffix}"
     blob_name = (
         f"{institution_slug}/{document_date[:4]}/"
         f"{document_id}/{blob_filename}"
@@ -105,7 +106,7 @@ def write_metadata(
     )
     if duplicate:
         raise RuntimeError(
-            "An identical PDF is already registered by metadata file: "
+            "An identical source is already registered by metadata file: "
             f"{duplicate}"
         )
 

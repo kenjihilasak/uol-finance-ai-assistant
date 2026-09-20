@@ -15,6 +15,7 @@ PROCESSED_DIRECTORY = PROJECT_ROOT / "data" / "processed"
 
 SOURCE_METADATA_SCHEMA_VERSION = "1.1.0"
 MAX_SOURCE_BYTES = 50 * 1024 * 1024
+ALLOWED_SOURCE_SUFFIXES = {".pdf", ".html", ".htm"}
 ALLOWED_DOCUMENT_STATUSES = {"current", "historical"}
 
 REQUIRED_SOURCE_METADATA_FIELDS = {
@@ -96,7 +97,7 @@ def validate_optional_source_url(value: str | None) -> str | None:
     return candidate
 
 
-def resolve_source_pdf(value: str | Path) -> Path:
+def resolve_source_document(value: str | Path) -> Path:
     raw_path = Path(value).expanduser()
     candidate = raw_path if raw_path.is_absolute() else PROJECT_ROOT / raw_path
 
@@ -110,14 +111,21 @@ def resolve_source_pdf(value: str | Path) -> Path:
         resolved.relative_to(source_root)
     except ValueError as error:
         raise ValueError(
-            f"Source PDFs must be inside {SOURCE_DIRECTORY}"
+            f"Source documents must be inside {SOURCE_DIRECTORY}"
         ) from error
 
     if not resolved.is_file():
         raise ValueError(f"The source path is not a regular file: {resolved}")
+    if resolved.suffix.lower() not in ALLOWED_SOURCE_SUFFIXES:
+        raise ValueError("The source file must be PDF or HTML")
+
+    return resolved
+
+
+def resolve_source_pdf(value: str | Path) -> Path:
+    resolved = resolve_source_document(value)
     if resolved.suffix.lower() != ".pdf":
         raise ValueError("The source file must have a .pdf extension")
-
     return resolved
 
 
@@ -152,6 +160,36 @@ def validate_pdf_file(
     }
 
 
+def validate_html_file(
+    html_path: Path, max_bytes: int = MAX_SOURCE_BYTES
+) -> dict[str, int | str]:
+    if not html_path.is_file():
+        raise FileNotFoundError(f"Source HTML not found: {html_path}")
+    size_bytes = html_path.stat().st_size
+    if size_bytes == 0:
+        raise ValueError("The source HTML is empty")
+    if size_bytes > max_bytes:
+        raise ValueError(
+            f"The source HTML exceeds the {max_bytes // (1024 * 1024)} MiB limit"
+        )
+    prefix = html_path.read_bytes()[:4096].decode("utf-8", errors="ignore").lower()
+    if "<html" not in prefix and "<!doctype html" not in prefix:
+        raise ValueError("The file does not contain an HTML document signature")
+    return {
+        "size_bytes": size_bytes,
+        "sha256": sha256_file(html_path),
+        "content_type": "text/html",
+    }
+
+
+def validate_source_file(path: Path) -> dict[str, int | str]:
+    if path.suffix.lower() == ".pdf":
+        return validate_pdf_file(path)
+    if path.suffix.lower() in {".html", ".htm"}:
+        return validate_html_file(path)
+    raise ValueError("The source file must be PDF or HTML")
+
+
 def processed_path(document_id: str, artefact: str) -> Path:
     validate_document_id(document_id)
     if artefact not in {"processed", "chunks", "embeddings"}:
@@ -159,12 +197,11 @@ def processed_path(document_id: str, artefact: str) -> Path:
     return PROCESSED_DIRECTORY / f"{document_id}.{artefact}.json"
 
 
-def load_and_verify_source(pdf_path: Path) -> dict[str, object]:
-    metadata_path = metadata_path_for(pdf_path)
+def load_and_verify_source(source_path: Path) -> dict[str, object]:
+    metadata_path = metadata_path_for(source_path)
     if not metadata_path.is_file():
         raise FileNotFoundError(
-            "Source metadata not found. Register the PDF first with "
-            "python -m scripts.stage_01_ingestion.register_source_pdf: "
+            "Source metadata not found. Register the source first: "
             f"{metadata_path}"
         )
 
@@ -222,15 +259,15 @@ def load_and_verify_source(pdf_path: Path) -> dict[str, object]:
 
     if metadata["status"] not in ALLOWED_DOCUMENT_STATUSES:
         raise RuntimeError(f"Unsupported document status: {metadata['status']}")
-    if metadata["local_filename"] != pdf_path.name:
-        raise RuntimeError("Metadata local_filename does not match the PDF")
+    if metadata["local_filename"] != source_path.name:
+        raise RuntimeError("Metadata local_filename does not match the source")
 
-    file_details = validate_pdf_file(pdf_path)
+    file_details = validate_source_file(source_path)
     if metadata["size_bytes"] != file_details["size_bytes"]:
-        raise RuntimeError("Source PDF size does not match its metadata")
+        raise RuntimeError("Source file size does not match its metadata")
     if metadata["sha256"] != file_details["sha256"]:
-        raise RuntimeError("Source PDF SHA-256 does not match its metadata")
+        raise RuntimeError("Source file SHA-256 does not match its metadata")
     if metadata["content_type"] != file_details["content_type"]:
-        raise RuntimeError("Source PDF content type does not match its metadata")
+        raise RuntimeError("Source content type does not match its metadata")
 
     return metadata

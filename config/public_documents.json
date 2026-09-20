@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.1.0",
+  "schema_version": "1.2.0",
   "documents": [
     {
       "document_id": "annual-report-and-financial-statements-for-year-ending-31-july-2025-e387d079c84a",
@@ -8,6 +8,7 @@
       "category": "finance",
       "document_date": "2025-07-31",
       "source_url": "https://www.leeds.ac.uk/download/downloads/id/3533/annual-report-and-accounts-2024-25.pdf",
+      "content_type": "application/pdf",
       "status": "current",
       "suggested_questions": [
         "What was the University's total income in 2024/25?",
@@ -23,12 +24,103 @@
       "category": "student_admin",
       "document_date": "2025-03-19",
       "source_url": "https://students.leeds.ac.uk/download/downloads/id/134/updating-your-address-through-student-services.pdf",
+      "content_type": "application/pdf",
       "status": "current",
       "suggested_questions": [
         "How do I update my address in Student Services?",
         "What should I do if my country is not listed?",
         "Which contact number must I provide?",
         "How do I save my updated contact details?"
+      ]
+    },
+    {
+      "document_id": "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375",
+      "title": "What to do if you can't access Minerva",
+      "institution": "University of Leeds",
+      "category": "digital_learning",
+      "document_date": "2025-08-05",
+      "source_url": "https://students.leeds.ac.uk/preparing-assessments/doc/minerva-not-working",
+      "content_type": "text/html",
+      "status": "current",
+      "suggested_questions": [
+        "What information should we request when a student cannot submit work?",
+        "Where should a Minerva access problem be reported?",
+        "What should the student send to their school if a deadline is affected?"
+      ]
+    },
+    {
+      "document_id": "get-help-with-your-online-learning-course-6305edf50390",
+      "title": "Get help with your online learning course",
+      "institution": "University of Leeds",
+      "category": "digital_learning",
+      "document_date": "2025-09-24",
+      "source_url": "https://students.leeds.ac.uk/online-learning/doc/get-help-online-learning-course",
+      "content_type": "text/html",
+      "status": "current",
+      "suggested_questions": [
+        "Which team handles questions about Minerva or Coursera?",
+        "Where should an online student ask about module enrolment?",
+        "How quickly do the online learning support teams aim to respond?"
+      ]
+    },
+    {
+      "document_id": "accommodation-3c859667c35c",
+      "title": "Accommodation",
+      "institution": "University of Leeds",
+      "category": "finance_operations",
+      "document_date": "2026-09-20",
+      "source_url": "https://finance.leeds.ac.uk/key-information/policy-2/expenses-non-staff-expenses/travel-and-subsistence-accommodation/",
+      "content_type": "text/html",
+      "status": "current",
+      "suggested_questions": [
+        "What is the standard hotel limit for Leeds?",
+        "Who must approve accommodation above the standard rate?",
+        "Can a traveller book accommodation outside Key Travel?"
+      ]
+    },
+    {
+      "document_id": "cars-and-taxis-ac91fc126134",
+      "title": "Cars and taxis",
+      "institution": "University of Leeds",
+      "category": "finance_operations",
+      "document_date": "2026-09-20",
+      "source_url": "https://finance.leeds.ac.uk/key-information/policy-2/travel-and-subsistence-cars-and-taxis/",
+      "content_type": "text/html",
+      "status": "current",
+      "suggested_questions": [
+        "What mileage rates can be reimbursed?",
+        "Can parking at the normal place of work be claimed?",
+        "When may taxis be claimed as an expense?"
+      ]
+    },
+    {
+      "document_id": "subsistence-303e9db7e63d",
+      "title": "Subsistence",
+      "institution": "University of Leeds",
+      "category": "finance_operations",
+      "document_date": "2026-09-20",
+      "source_url": "https://finance.leeds.ac.uk/key-information/policy-2/expenses-non-staff-expenses/travel-and-subsistence-subsistence/",
+      "content_type": "text/html",
+      "status": "current",
+      "suggested_questions": [
+        "Can subsistence be claimed for a trip under five hours?",
+        "What is the maximum international subsistence claim?",
+        "What can be claimed when a receipt is unavailable?"
+      ]
+    },
+    {
+      "document_id": "travel-and-subsistence-expense-claims-3bf190b47068",
+      "title": "Travel and subsistence: Expense claims",
+      "institution": "University of Leeds",
+      "category": "finance_operations",
+      "document_date": "2026-09-20",
+      "source_url": "https://finance.leeds.ac.uk/key-information/policy-2/expenses-non-staff-expenses/non-staff-expenses/travel-and-subsistence-expense-claims/",
+      "content_type": "text/html",
+      "status": "current",
+      "suggested_questions": [
+        "How soon must an expense claim be submitted?",
+        "What evidence is accepted if the original receipt is unavailable?",
+        "Who must authorise an expense claim?"
       ]
     }
   ]

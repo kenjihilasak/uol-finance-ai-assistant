@@ -13,16 +13,23 @@ from scripts.stage_05_retrieval.generate_grounded_answer import (
 
 
 class ServingApiTests(unittest.TestCase):
-    def test_catalog_contains_official_https_pdf(self) -> None:
+    def test_catalog_contains_official_pdf_and_html_sources(self) -> None:
         catalog = load_document_catalog()
-        self.assertEqual(len(catalog), 2)
-        document = next(iter(catalog.values()))
+        self.assertEqual(len(catalog), 8)
+        document = catalog[
+            "annual-report-and-financial-statements-for-year-ending-31-july-2025-e387d079c84a"
+        ]
         self.assertTrue(document.source_url.startswith("https://"))
         self.assertTrue(document.source_url.endswith(".pdf"))
         self.assertEqual(document.page_url(83), f"{document.source_url}#page=83")
         self.assertEqual(catalog[
             "updating-your-address-details-through-student-services-8f93c8f89e9d"
         ].category, "student_admin")
+        html_document = catalog[
+            "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375"
+        ]
+        self.assertEqual(html_document.content_type, "text/html")
+        self.assertEqual(html_document.page_url(2), html_document.source_url)
 
     def test_answer_contract_exposes_only_cited_evidence(self) -> None:
         document = PublicDocument(
@@ -32,6 +39,7 @@ class ServingApiTests(unittest.TestCase):
             category="finance",
             document_date=date(2025, 7, 31),
             source_url="https://example.com/report.pdf",
+            content_type="application/pdf",
             status="current",
             suggested_questions=("Question?",),
         )

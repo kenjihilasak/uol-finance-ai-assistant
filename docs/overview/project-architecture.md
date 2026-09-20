@@ -3,11 +3,11 @@
 ## Scope
 
 This project uses modular classic RAG on Azure. The offline pipeline turns
-approved financial PDFs into traceable vectors. A FastAPI serving layer returns
+approved PDF and HTML sources into traceable vectors. A FastAPI serving layer returns
 a cited answer or abstains, and the existing Astro portfolio provides the UI.
 
 Source acquisition is outside the application boundary. An operator places a
-PDF in `data/sources/`; a URL is optional provenance, not a download input or
+source in `data/sources/`; a URL is provenance, not a processing-time download input or
 proof of permission.
 
 | Status | Meaning |
@@ -24,7 +24,7 @@ flowchart TB
     classDef provisioned fill:#FEF3C7,stroke:#B45309,color:#78350F,stroke-width:2px
     classDef planned fill:#F1F5F9,stroke:#64748B,color:#334155,stroke-width:2px,stroke-dasharray:5 5
 
-    source[Approved local PDF]
+    source[Approved local PDF or HTML snapshot]
     ingest[Stage 01: register and validate]
     sourceBlob[(Immutable source blob)]
     process[Stage 02: extract and chunk]
@@ -56,7 +56,7 @@ flowchart TB
     classDef implemented fill:#DCFCE7,stroke:#15803D,color:#14532D,stroke-width:2px
 
     operator[Operator]
-    pdf[PDF in data/sources]
+    pdf[PDF or HTML in data/sources]
     register[Register provenance and usage basis]
     validate[Validate path, size, PDF header and SHA-256]
     upload[Upload without overwrite]
@@ -94,6 +94,8 @@ records the retrieval-unit decision and comparison.
 | Embedding deployment | Convert text into vectors. | Implemented |
 | Azure AI Search | Store the hybrid retrieval index. | Implemented |
 | Hybrid retrieval | Combine BM25 and vector evidence rankings. | Implemented |
+| Staff enquiry triage | Classify, clarify, answer, or route an enquiry. | Planned |
+| Sensitive routing registry | Keep specialist routes outside answer generation. | Implemented |
 | Chat deployment | Synthesize answers from bounded evidence. | Implemented |
 | Grounded answer CLI | Generate, cite, validate, and abstain. | Implemented |
 | FastAPI serving layer | Serve documents, cited answers, and abstentions. | Implemented |
@@ -117,7 +119,7 @@ sequenceDiagram
     participant SEARCH as Azure AI Search
     participant LLM as Chat deployment
 
-    User->>UI: Ask a finance question
+    User->>UI: Submit an enquiry for staff review
     UI->>API: Send question
     API->>ID: Request OAuth access tokens
     ID-->>API: Issue scoped tokens

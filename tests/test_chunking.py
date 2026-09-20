@@ -99,6 +99,7 @@ class ChunkingTests(unittest.TestCase):
                 "document_date": "2025-07-31",
                 "status": "current",
                 "sha256": "abc123",
+                "content_type": "application/pdf",
             },
             "pages": [{"page_number": 7, "text": "Revenue increased in 2025."}],
         }
@@ -115,6 +116,26 @@ class ChunkingTests(unittest.TestCase):
         self.assertEqual(
             chunks[0]["chunk_id"], "example-report-123-p0007-c001"
         )
+
+    def test_html_embedding_uses_section_label(self) -> None:
+        document = {
+            "document_id": "example-guide-123",
+            "source": {
+                "title": "Example Guide",
+                "institution": "Example Institution",
+                "category": "digital_learning",
+                "source_reference": "Official website",
+                "source_url": "https://example.org/guide",
+                "document_date": "2025-08-05",
+                "status": "current",
+                "sha256": "abc123",
+                "content_type": "text/html",
+            },
+            "pages": [{"page_number": 2, "text": "Contact the service desk."}],
+        }
+        chunks = build_chunks(document, max_chars=100, overlap_chars=10)
+        self.assertIn("Section: 2", chunks[0]["embedding_text"])
+        self.assertEqual(chunks[0]["content_type"], "text/html")
 
 
 if __name__ == "__main__":

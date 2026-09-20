@@ -257,7 +257,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Upload validated embedding records to Azure AI Search."
     )
-    parser.add_argument("--input", required=True, type=Path)
+    parser.add_argument("--input", required=True, nargs="+", type=Path)
     parser.add_argument("--index-name", required=True)
     parser.add_argument(
         "--dry-run",
@@ -270,7 +270,22 @@ def parse_args() -> argparse.Namespace:
 def main() -> None:
     args = parse_args()
     service_endpoint, tenant_id = load_config()
-    deployment, dimensions, documents = load_search_documents(args.input)
+    deployment = ""
+    dimensions = 0
+    documents: list[dict[str, Any]] = []
+    for input_path in args.input:
+        item_deployment, item_dimensions, item_documents = load_search_documents(
+            input_path
+        )
+        if documents and (
+            item_deployment != deployment or item_dimensions != dimensions
+        ):
+            raise RuntimeError(
+                "All embedding files must use the same deployment and dimensions"
+            )
+        deployment = item_deployment
+        dimensions = item_dimensions
+        documents.extend(item_documents)
 
     if args.dry_run:
         print("Search upload dry run passed")

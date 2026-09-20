@@ -9,6 +9,7 @@ from unittest.mock import patch
 
 from scripts.shared import document_utils
 from scripts.stage_01_ingestion import register_source_pdf
+from scripts.stage_02_processing.extract_html_text import extract_sections
 
 
 class DocumentUtilsTests(unittest.TestCase):
@@ -30,6 +31,22 @@ class DocumentUtilsTests(unittest.TestCase):
 
             with self.assertRaisesRegex(ValueError, "PDF format signature"):
                 document_utils.validate_pdf_file(pdf_path)
+
+    def test_validate_and_extract_html_main_sections(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            html_path = Path(temporary_directory) / "guide.html"
+            html_path.write_text(
+                "<!doctype html><html><body><nav>Ignore me</nav><main>"
+                "<h1>Support guide</h1><p>Use the official support route for help.</p>"
+                "<h2>Next steps</h2><ul><li>Record the error message.</li>"
+                "<li>Contact the service desk.</li></ul></main></body></html>",
+                encoding="utf-8",
+            )
+            details = document_utils.validate_html_file(html_path)
+            sections = extract_sections(html_path.read_text(encoding="utf-8"))
+            self.assertEqual(details["content_type"], "text/html")
+            self.assertEqual(len(sections), 2)
+            self.assertNotIn("Ignore me", str(sections))
 
     def test_resolve_source_pdf_restricts_input_to_source_directory(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
@@ -125,6 +142,29 @@ class DocumentUtilsTests(unittest.TestCase):
             self.assertEqual(metadata["category"], "finance")
             self.assertIsNone(metadata["source_url"])
             self.assertTrue(str(metadata["blob_name"]).endswith("annual-report.pdf"))
+
+    def test_registration_metadata_preserves_html_content_type(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            html_path = Path(temporary_directory) / "guide.html"
+            html_path.write_text(
+                "<!doctype html><html><main><h1>Guide</h1></main></html>",
+                encoding="utf-8",
+            )
+            args = Namespace(
+                title="Example Guide",
+                institution="Example Institution",
+                category="digital_learning",
+                document_date="2025-08-05",
+                status="current",
+                source_reference="Official website",
+                source_url="https://example.org/guide",
+                usage_basis="Portfolio evaluation",
+                rights_note="Do not redistribute",
+                document_id=None,
+            )
+            metadata = register_source_pdf.build_metadata(args, html_path)
+            self.assertEqual(metadata["content_type"], "text/html")
+            self.assertTrue(str(metadata["blob_name"]).endswith("guide.html"))
 
     def test_category_uses_stable_machine_readable_format(self) -> None:
         self.assertEqual(document_utils.validate_category("student_admin"), "student_admin")

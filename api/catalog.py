@@ -22,11 +22,14 @@ class PublicDocument:
     category: str
     document_date: date
     source_url: str
+    content_type: str
     status: str
     suggested_questions: tuple[str, ...]
 
     def page_url(self, page_number: int) -> str:
-        return f"{self.source_url}#page={page_number}"
+        if self.content_type == "application/pdf":
+            return f"{self.source_url}#page={page_number}"
+        return self.source_url
 
 
 def _required_text(item: dict[str, object], name: str) -> str:
@@ -38,7 +41,7 @@ def _required_text(item: dict[str, object], name: str) -> str:
 
 def load_document_catalog(path: Path = CATALOG_PATH) -> dict[str, PublicDocument]:
     payload = json.loads(path.read_text(encoding="utf-8"))
-    if payload.get("schema_version") != "1.1.0":
+    if payload.get("schema_version") != "1.2.0":
         raise RuntimeError("Unsupported public document catalog schema")
     items = payload.get("documents")
     if not isinstance(items, list) or not items:
@@ -55,6 +58,9 @@ def load_document_catalog(path: Path = CATALOG_PATH) -> dict[str, PublicDocument
         parsed_url = urlparse(source_url)
         if parsed_url.scheme != "https" or not parsed_url.netloc:
             raise RuntimeError("Public document source_url must use HTTPS")
+        content_type = _required_text(raw_item, "content_type")
+        if content_type not in {"application/pdf", "text/html"}:
+            raise RuntimeError("Unsupported public document content_type")
         questions = raw_item.get("suggested_questions")
         if (
             not isinstance(questions, list)
@@ -79,6 +85,7 @@ def load_document_catalog(path: Path = CATALOG_PATH) -> dict[str, PublicDocument
             category=validate_category(_required_text(raw_item, "category")),
             document_date=document_date,
             source_url=source_url,
+            content_type=content_type,
             status=_required_text(raw_item, "status"),
             suggested_questions=tuple(question.strip() for question in questions),
         )

@@ -1,6 +1,6 @@
 # Source metadata schema
 
-Registration writes an ignored sidecar beside each PDF:
+Registration writes an ignored sidecar beside each local source:
 
 ```text
 data/sources/report.pdf
@@ -18,11 +18,11 @@ Schema version: `1.1.0`.
 | `category` | string | Stable machine label, such as `finance` or `student_admin`. |
 | `document_date` | string | ISO date in `YYYY-MM-DD` format. |
 | `registered_at_utc` | string | Registration timestamp in UTC. |
-| `sha256` | string | SHA-256 of the exact local PDF bytes. |
-| `content_type` | string | Must be `application/pdf`. |
+| `sha256` | string | SHA-256 of the exact local source bytes. |
+| `content_type` | string | `application/pdf` or `text/html`. |
 | `status` | string | `current` or `historical`. |
 | `size_bytes` | integer | Exact local file size. |
-| `local_filename` | string | Must match the adjacent PDF. |
+| `local_filename` | string | Must match the adjacent source. |
 | `blob_name` | string | Immutable, deterministic Azure blob path. |
 | `source_reference` | string | Human-readable origin or custodian. |
 | `source_url` | string or null | Optional provenance only. |

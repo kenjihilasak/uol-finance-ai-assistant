@@ -25,6 +25,7 @@ REQUIRED_SOURCE_FIELDS = {
     "document_date",
     "status",
     "sha256",
+    "content_type",
 }
 
 
@@ -227,10 +228,13 @@ def split_page_text(
 def embedding_text(
     source: dict[str, object], page_number: int, text: str
 ) -> str:
+    location_label = (
+        "Section" if source.get("content_type") == "text/html" else "Page"
+    )
     return (
         f"Document: {source['title']}\n"
         f"Institution: {source['institution']}\n"
-        f"Page: {page_number}\n\n{text}"
+        f"{location_label}: {page_number}\n\n{text}"
     )
 
 
@@ -307,6 +311,7 @@ def build_chunks(
                     "source_title": source["title"],
                     "institution": source["institution"],
                     "category": source["category"],
+                    "content_type": source["content_type"],
                     "source_reference": source["source_reference"],
                     "source_url": source["source_url"],
                     "document_date": source["document_date"],

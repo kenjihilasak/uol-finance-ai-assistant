@@ -37,6 +37,7 @@ class DocumentResponse(BaseModel):
     category: str
     document_date: str
     source_url: str
+    content_type: str
     status: str
     suggested_questions: list[str]
 
@@ -124,6 +125,7 @@ def document_response(document: PublicDocument) -> DocumentResponse:
         category=document.category,
         document_date=document.document_date.isoformat(),
         source_url=document.source_url,
+        content_type=document.content_type,
         status=document.status,
         suggested_questions=list(document.suggested_questions),
     )
@@ -191,6 +193,11 @@ async def answer_question(
     document = catalog.get(payload.document_id)
     if document is None:
         raise HTTPException(status_code=404, detail="Unknown document_id")
+    if document.status != "current":
+        raise HTTPException(
+            status_code=409,
+            detail="Document is not ready for grounded answers",
+        )
 
     client_key = request.client.host if request.client else "unknown"
     allowed, retry_after = limiter.allow(client_key)

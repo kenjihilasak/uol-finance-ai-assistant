@@ -119,18 +119,23 @@ def openai_base_url(endpoint: str) -> str:
 
 
 def embed_chunks(
-    chunks: list[dict[str, object]], config: EmbeddingConfig
+    chunks: list[dict[str, object]],
+    config: EmbeddingConfig,
+    client: object | None = None,
 ) -> list[dict[str, object]]:
     from azure.identity import get_bearer_token_provider
     from openai import OpenAI
 
-    credential = build_user_credential(config.tenant_id)
-    token_provider = get_bearer_token_provider(credential, OPENAI_SCOPE)
-    client = OpenAI(
-        base_url=openai_base_url(config.endpoint),
-        api_key=token_provider,
-        max_retries=MAX_RETRIES,
-    )
+    credential = None
+    owns_client = client is None
+    if client is None:
+        credential = build_user_credential(config.tenant_id)
+        token_provider = get_bearer_token_provider(credential, OPENAI_SCOPE)
+        client = OpenAI(
+            base_url=openai_base_url(config.endpoint),
+            api_key=token_provider,
+            max_retries=MAX_RETRIES,
+        )
     records: list[dict[str, object]] = []
     chunk_batches = list(batches(chunks))
 
@@ -162,8 +167,9 @@ def embed_chunks(
             if batch_number < len(chunk_batches):
                 time.sleep(BATCH_DELAY_SECONDS)
     finally:
-        client.close()
-        credential.close()
+        if owns_client:
+            client.close()
+            credential.close()
 
     return records
 
@@ -205,6 +211,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--input",
         required=True,
+        nargs="+",
         type=Path,
         help="Path to a <document-id>.chunks.json file.",
     )
@@ -223,35 +230,51 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = parse_args()
-    document_id, chunks = load_chunks(args.input)
-
     if args.dry_run:
+        total_chunks = 0
+        for input_path in args.input:
+            document_id, chunks = load_chunks(input_path)
+            total_chunks += len(chunks)
+            print(f"Document ID: {document_id}; chunks ready: {len(chunks)}")
         print("Embedding dry run passed")
-        print(f"Document ID: {document_id}")
-        print(f"Chunks ready: {len(chunks)}")
-        print(
-            f"Batches at {BATCH_SIZE} chunks: "
-            f"{(len(chunks) + BATCH_SIZE - 1) // BATCH_SIZE}"
-        )
+        print(f"Total chunks ready: {total_chunks}")
         print("Azure authentication and embedding requests: not performed")
         return
 
     config = load_config()
-    records = embed_chunks(chunks, config)
-    output_path = processed_path(document_id, "embeddings")
-    output_sha256 = write_embeddings(
-        document_id,
-        records,
-        config,
-        sha256_file(args.input),
-        output_path,
-        args.overwrite,
+    from azure.identity import get_bearer_token_provider
+    from openai import OpenAI
+
+    credential = build_user_credential(config.tenant_id)
+    token_provider = get_bearer_token_provider(credential, OPENAI_SCOPE)
+    client = OpenAI(
+        base_url=openai_base_url(config.endpoint),
+        api_key=token_provider,
+        max_retries=MAX_RETRIES,
     )
+    total_records = 0
+    try:
+        for input_path in args.input:
+            document_id, chunks = load_chunks(input_path)
+            records = embed_chunks(chunks, config, client=client)
+            output_path = processed_path(document_id, "embeddings")
+            output_sha256 = write_embeddings(
+                document_id,
+                records,
+                config,
+                sha256_file(input_path),
+                output_path,
+                args.overwrite,
+            )
+            total_records += len(records)
+            print(f"Output: {output_path}")
+            print(f"Output SHA-256: {output_sha256}")
+    finally:
+        client.close()
+        credential.close()
 
     print("Local embedding generation completed")
-    print(f"Records: {len(records)}")
-    print(f"Output: {output_path}")
-    print(f"Output SHA-256: {output_sha256}")
+    print(f"Records: {total_records}")
     print("Azure AI Search upload: not performed")
 
 

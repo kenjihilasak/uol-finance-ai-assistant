@@ -1,6 +1,6 @@
 # Processed document schema
 
-Stage 02 writes page-level JSON to:
+Stage 02 writes page- or section-level JSON to:
 
 ```text
 data/processed/<document-id>.processed.json
@@ -23,7 +23,7 @@ Schema version: `1.1.0`.
 `source` copies every field from the
 [source metadata schema](../stage_01_ingestion/source-metadata-schema.md) except
 its `schema_version` and `document_id`; the document ID is already top-level.
-Extraction first revalidates the PDF size, content type, filename, and SHA-256.
+Extraction first revalidates source size, content type, filename, and SHA-256.
 
 ## Processing
 
@@ -34,22 +34,21 @@ Extraction first revalidates the PDF size, content type, filename, and SHA-256.
 | Quality gate | minimum and observed text-page ratios |
 | Counts | pages, non-empty pages, characters, and approximate words |
 
-The current extractor uses `pypdf` layout mode and only normalises line endings
-and trailing whitespace. It does not reconstruct financial tables. Extraction
-stops below the configured text-page ratio so image-only PDFs can be reviewed
-for OCR.
+PDF extraction uses `pypdf` layout mode. HTML extraction keeps text inside
+`<main>`, removes page chrome, and groups content by H1/H2. Both paths minimally
+normalise whitespace and preserve deterministic hashes.
 
 ## Page
 
 | Field | Type | Purpose |
 | --- | --- | --- |
-| `page_number` | integer | One-based physical PDF page |
+| `page_number` | integer | One-based PDF page or HTML section ordinal |
 | `text` | string | Minimally normalised text |
 | `character_count` | integer | Text length |
 | `word_count` | integer | Approximate whitespace-delimited count |
 | `sha256` | string | Hash of the UTF-8 page text |
 
-Page hashes detect changes between extraction and chunking; the source PDF hash
+Text-unit hashes detect changes between extraction and chunking; the source hash
 remains the document-level integrity check.
 
 ## Shape

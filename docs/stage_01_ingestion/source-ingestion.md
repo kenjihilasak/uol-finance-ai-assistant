@@ -1,15 +1,17 @@
 # Source ingestion
 
 Run commands from the repository root with the virtual environment active.
-This workflow starts with a supplied PDF and never downloads from a URL.
+This workflow starts with an operator-approved local PDF or HTML snapshot. The
+pipeline never fetches a URL during registration or processing.
 
-## 1. Place the PDF
+## 1. Place the source
 
 ```text
 data/sources/example-annual-report-2025.pdf
 ```
 
-Only process approved documents. Do not commit the file.
+HTML is saved as a local snapshot so its exact bytes can be hashed. Only process
+approved sources. Do not commit source files.
 
 ## 2. Register it
 
@@ -38,6 +40,21 @@ writes an ignored metadata sidecar. The header identifies the file format; it
 is not a cryptographic signature. Usage fields record an operator decision, not
 an automated legal determination.
 
+For an official HTML page, use the same metadata fields with:
+
+```bash
+python -m scripts.stage_01_ingestion.register_source_html \
+  --file data/sources/example-guide.html \
+  --title "Example Guide" \
+  --institution "Example Institution" \
+  --category digital_learning \
+  --document-date 2025-08-05 \
+  --status current \
+  --source-reference "Official website" \
+  --source-url "https://example.org/guide" \
+  --usage-basis "Public-source portfolio evaluation"
+```
+
 `category` is a stable machine label used later as an Azure AI Search filter.
 Use lowercase letters, numbers, and underscores, for example `student_admin`.
 
@@ -62,6 +79,16 @@ Output: `data/processed/<document-id>.processed.json`.
 
 At least 80% of pages must contain extractable text by default. A lower result
 requires review or a separate OCR path.
+
+For HTML, extract semantic sections from the page's `<main>` element:
+
+```bash
+python -m scripts.stage_02_processing.extract_html_text \
+  --file data/sources/example-guide.html
+```
+
+Navigation, headers, footers, scripts and styles are excluded. H1/H2 sections
+become bounded retrieval units and citations link to the authoritative page.
 
 ## 5. Create chunks
 
