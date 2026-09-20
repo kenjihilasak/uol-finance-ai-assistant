@@ -12,6 +12,7 @@ from api.main import (
     configured_origins,
     require_admin,
 )
+from api.staff_auth import require_staff
 from api.rate_limit import FixedWindowRateLimiter
 from scripts.stage_05_retrieval.generate_grounded_answer import (
     Evidence,
@@ -89,6 +90,12 @@ class ServingApiTests(unittest.TestCase):
                 "headers": [(b"x-admin-token", b"private-token")],
             })
             self.assertIsNone(require_admin(allowed))
+
+    def test_staff_endpoint_requires_bearer_token(self) -> None:
+        request = Request({"type": "http", "headers": []})
+        with self.assertRaises(HTTPException) as caught:
+            require_staff(request)
+        self.assertEqual(caught.exception.status_code, 401)
 
 
 if __name__ == "__main__":

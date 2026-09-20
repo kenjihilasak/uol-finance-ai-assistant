@@ -13,6 +13,7 @@ FIELDS = (
     "enquiry_id", "created_at_utc", "enquiry", "summary", "category",
     "subcategory", "is_sensitive", "action", "route_to", "missing_info",
     "answer_status", "draft_response", "citation_ids", "review_status",
+    "staff_object_id", "staff_display_name",
 )
 
 
@@ -37,6 +38,8 @@ class EnquiryRepository:
                 review_status TEXT NOT NULL
             )
         """)
+        connection.execute("ALTER TABLE triage_enquiries ADD COLUMN IF NOT EXISTS staff_object_id TEXT")
+        connection.execute("ALTER TABLE triage_enquiries ADD COLUMN IF NOT EXISTS staff_display_name TEXT")
 
     def save(self, record: dict[str, Any]) -> None:
         stored = dict(record)
@@ -52,12 +55,12 @@ class EnquiryRepository:
                 """INSERT INTO triage_enquiries
                 (enquiry_id,created_at_utc,enquiry,summary,category,subcategory,
                  is_sensitive,action,route_to,missing_info,answer_status,
-                 draft_response,citation_ids,review_status)
-                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s::jsonb,%s,%s,%s::jsonb,%s)
+                 draft_response,citation_ids,review_status,staff_object_id,staff_display_name)
+                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s::jsonb,%s,%s,%s::jsonb,%s,%s,%s)
                 ON CONFLICT (enquiry_id) DO NOTHING""",
                 tuple(
                     json.dumps(stored[name]) if name in {"missing_info", "citation_ids"}
-                    else stored[name]
+                    else stored.get(name)
                     for name in FIELDS
                 ),
             )

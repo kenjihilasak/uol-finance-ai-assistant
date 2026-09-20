@@ -10,6 +10,7 @@
 | `GET /v1/documents` | Public PDFs and suggested questions | No |
 | `POST /v1/answer` | Hybrid retrieval and grounded generation | Yes |
 | `POST /v1/triage` | Classification, safe routing, and optional cited draft | Yes |
+| `POST /v1/staff/triage` | Entra-authenticated triage; always persists | Yes |
 | `GET /v1/enquiries` | Persisted staff review queue | No |
 | `PATCH /v1/enquiries/{id}` | Update review state | No |
 | `GET /v1/enquiries/export.xlsx` | Download an Excel-compatible workbook | No |

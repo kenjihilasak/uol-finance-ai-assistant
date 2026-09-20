@@ -18,6 +18,7 @@ from dotenv import load_dotenv
 from api.catalog import PublicDocument, load_document_catalog
 from api.enquiries import EnquiryRepository
 from api.rate_limit import FixedWindowRateLimiter
+from api.staff_auth import StaffIdentity, require_staff
 from scripts.stage_05_retrieval.generate_grounded_answer import (
     Evidence,
     GroundedAnswer,
@@ -83,6 +84,11 @@ class TriageRequest(BaseModel):
     model_config = ConfigDict(str_strip_whitespace=True, extra="forbid")
     enquiry: str = Field(min_length=3, max_length=4_000)
     persist: bool = False
+
+
+class StaffTriageRequest(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True, extra="forbid")
+    enquiry: str = Field(min_length=3, max_length=4_000)
 
 
 class TriageResponse(BaseModel):
@@ -216,7 +222,13 @@ def document_for_evidence(item: Evidence) -> PublicDocument:
     return matches[0]
 
 
-def triage_response(enquiry: str, outcome: TriageOutcome, *, persist: bool) -> TriageResponse:
+def triage_response(
+    enquiry: str,
+    outcome: TriageOutcome,
+    *,
+    persist: bool,
+    staff: StaffIdentity | None = None,
+) -> TriageResponse:
     enquiry_id = str(uuid4())
     evidence_by_id = {item.source_id: item for item in outcome.evidence}
     citation_ids = outcome.answer.citation_ids if outcome.answer else ()
@@ -253,6 +265,8 @@ def triage_response(enquiry: str, outcome: TriageOutcome, *, persist: bool) -> T
         "draft_response": response.draft_response,
         "citation_ids": list(citation_ids),
         "review_status": response.review_status,
+        "staff_object_id": staff.object_id if staff else None,
+        "staff_display_name": staff.display_name if staff else None,
     }
     if persist:
         enquiry_repository.save(record)
@@ -270,7 +284,7 @@ app.add_middleware(
     allow_origins=configured_origins(),
     allow_credentials=False,
     allow_methods=["GET", "POST", "PATCH"],
-    allow_headers=["Content-Type", "X-Admin-Token"],
+    allow_headers=["Authorization", "Content-Type", "X-Admin-Token"],
 )
 limiter = FixedWindowRateLimiter(configured_rate_limit())
 
@@ -340,6 +354,25 @@ async def triage_enquiry(
     try:
         outcome = await run_in_threadpool(service.triage, payload.enquiry)
         return triage_response(payload.enquiry, outcome, persist=payload.persist)
+    except RuntimeError as error:
+        if str(error) == "Live model calls are disabled":
+            raise HTTPException(503, str(error)) from error
+        raise HTTPException(502, "The triage service is temporarily unavailable") from error
+
+
+@app.post("/v1/staff/triage", response_model=TriageResponse)
+async def staff_triage_enquiry(
+    payload: StaffTriageRequest,
+    request: Request,
+    staff: Annotated[StaffIdentity, Depends(require_staff)],
+    service: Annotated[TriageService, Depends(get_triage_service)],
+) -> TriageResponse:
+    allowed, retry_after = limiter.allow(f"staff:{staff.object_id}")
+    if not allowed:
+        raise HTTPException(429, "Too many requests; try again later", headers={"Retry-After": str(retry_after)})
+    try:
+        outcome = await run_in_threadpool(service.triage, payload.enquiry)
+        return triage_response(payload.enquiry, outcome, persist=True, staff=staff)
     except RuntimeError as error:
         if str(error) == "Live model calls are disabled":
             raise HTTPException(503, str(error)) from error

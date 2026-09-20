@@ -36,5 +36,6 @@ docs/
 16. [Enquiry triage and safety](./stage_06_triage/enquiry-triage.md)
 17. [Portfolio UI options](./overview/ui-options.md)
 18. [Serving API and portfolio](./stage_07_serving/api-and-portfolio.md)
+19. [Staff authentication](./stage_07_serving/staff-authentication.md)
 
 For hands-on learning, read one stage and then run its matching module.
