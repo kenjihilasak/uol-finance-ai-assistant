@@ -1,17 +1,22 @@
 from __future__ import annotations
 
 import unittest
+from unittest.mock import patch
 from datetime import date
 
+from fastapi import HTTPException, Request
+
 from api.catalog import PublicDocument, load_document_catalog
-from api.main import answer_response, configured_origins
+from api.main import (
+    answer_response,
+    configured_origins,
+    require_admin,
+)
 from api.rate_limit import FixedWindowRateLimiter
 from scripts.stage_05_retrieval.generate_grounded_answer import (
     Evidence,
     GroundedAnswer,
 )
-
-
 class ServingApiTests(unittest.TestCase):
     def test_catalog_contains_official_pdf_and_html_sources(self) -> None:
         catalog = load_document_catalog()
@@ -72,6 +77,18 @@ class ServingApiTests(unittest.TestCase):
         origins = configured_origins()
         self.assertIn("https://kenjihilasak.github.io", origins)
         self.assertNotIn("*", origins)
+
+    def test_admin_token_is_required_and_compared(self) -> None:
+        denied = Request({"type": "http", "headers": []})
+        with patch.dict("os.environ", {"API_ADMIN_TOKEN": "private-token"}):
+            with self.assertRaises(HTTPException) as caught:
+                require_admin(denied)
+            self.assertEqual(caught.exception.status_code, 403)
+            allowed = Request({
+                "type": "http",
+                "headers": [(b"x-admin-token", b"private-token")],
+            })
+            self.assertIsNone(require_admin(allowed))
 
 
 if __name__ == "__main__":

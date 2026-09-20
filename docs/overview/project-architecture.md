@@ -2,9 +2,11 @@
 
 ## Scope
 
-This project uses modular classic RAG on Azure. The offline pipeline turns
-approved PDF and HTML sources into traceable vectors. A FastAPI serving layer returns
-a cited answer or abstains, and the existing Astro portfolio provides the UI.
+This project is a staff-facing enquiry-triage system with modular RAG on Azure.
+The offline pipeline turns approved PDF and HTML sources into traceable vectors.
+The online path categorises each enquiry, applies deterministic safety routing,
+and generates a cited draft only for approved domains. The existing Astro
+portfolio provides the demo UI.
 
 Source acquisition is outside the application boundary. An operator places a
 source in `data/sources/`; a URL is provenance, not a processing-time download input or
@@ -31,7 +33,10 @@ flowchart TB
     vectors[Stage 03: generate embeddings]
     search[(Stage 04: Azure AI Search)]
     retrieval[Stage 05: hybrid retrieval]
+    triage[Stage 06: classify and route]
     rag[FastAPI on Railway]
+    db[(Railway PostgreSQL)]
+    excel[Protected XLSX export]
     ui[Astro portfolio on GitHub Pages]
 
     source --> ingest
@@ -40,10 +45,12 @@ flowchart TB
     process --> vectors
     vectors --> search
     search --> retrieval
+    triage --> rag
     retrieval --> rag
     rag --> ui
+    rag --> db --> excel
 
-    class source,ingest,sourceBlob,process,vectors,search,retrieval,rag,ui implemented
+    class source,ingest,sourceBlob,process,vectors,search,retrieval,triage,rag,db,excel,ui implemented
 ```
 
 All shown components are implemented in code. Railway deployment and the
@@ -94,11 +101,13 @@ records the retrieval-unit decision and comparison.
 | Embedding deployment | Convert text into vectors. | Implemented |
 | Azure AI Search | Store the hybrid retrieval index. | Implemented |
 | Hybrid retrieval | Combine BM25 and vector evidence rankings. | Implemented |
-| Staff enquiry triage | Classify, clarify, answer, or route an enquiry. | Planned |
+| Staff enquiry triage | Classify, clarify, answer, or route an enquiry. | Implemented |
 | Sensitive routing registry | Keep specialist routes outside answer generation. | Implemented |
 | Chat deployment | Synthesize answers from bounded evidence. | Implemented |
 | Grounded answer CLI | Generate, cite, validate, and abstain. | Implemented |
-| FastAPI serving layer | Serve documents, cited answers, and abstentions. | Implemented |
+| FastAPI serving layer | Serve triage, documents, cited answers, and review operations. | Implemented |
+| Enquiry repository | Persist a review queue in PostgreSQL; redact sensitive text. | Implemented |
+| Excel export | Produce a protected `.xlsx` snapshot of the review queue. | Implemented |
 | Astro portfolio UI | Present evidence and call the API without Azure secrets. | Implemented |
 | `evaluation-data` | Store evaluation inputs and results. | Provisioned |
 | Retrieval evaluation | Measure Recall@k and MRR on reviewed questions. | Implemented |
@@ -111,7 +120,7 @@ records the retrieval-unit decision and comparison.
 ```mermaid
 sequenceDiagram
     autonumber
-    actor User
+    actor User as Staff user
     participant UI as Astro on GitHub Pages
     participant API as FastAPI on Railway
     participant ID as Microsoft Entra ID
@@ -119,22 +128,30 @@ sequenceDiagram
     participant SEARCH as Azure AI Search
     participant LLM as Chat deployment
 
-    User->>UI: Submit an enquiry for staff review
-    UI->>API: Send question
+    User->>UI: Paste a synthetic incoming enquiry
+    UI->>API: POST /v1/triage
     API->>ID: Request OAuth access tokens
     ID-->>API: Issue scoped tokens
-    API->>EMB: Generate query vector
-    EMB-->>API: Query embedding
-    API->>SEARCH: Run hybrid search
-    SEARCH-->>API: Return chunks and source pages
 
-    alt Evidence is sufficient
+    API->>LLM: Request typed classification
+    LLM-->>API: Category, sensitivity, action, route
+    API->>API: Apply deterministic routing policy
+
+    alt Sensitive enquiry
+        API-->>UI: Specialist route; no retrieval or draft
+    else Unclear or missing information
+        API-->>UI: Clarification request
+    else Approved answerable domain
+        API->>EMB: Generate query vector
+        EMB-->>API: Query embedding
+        API->>SEARCH: Hybrid search filtered by category
+        SEARCH-->>API: Return chunks and source pages
         API->>LLM: Send question and bounded evidence
         LLM-->>API: Draft cited answer
         API->>API: Validate citation IDs
-        API-->>UI: Return answer and pages
-    else Evidence is insufficient
-        API-->>UI: Abstain
+        API-->>UI: Return staff-reviewed draft and pages
+    else Unsupported domain
+        API-->>UI: Manual review
     end
 
     UI-->>User: Show result
@@ -165,9 +182,10 @@ operator approval
 
 Controls: restricted source paths, symlink rejection, file and hash validation,
 overwrite protection, deterministic chunk IDs, vector-size checks, versioned
-schemas, a public-document allowlist, CORS, input limits, request throttling,
-and a live-generation kill switch. The operator is responsible for usage and
-redistribution rights.
+schemas, a public-document allowlist, deterministic sensitive routing, no
+generation on sensitive cases, redaction before persistence, protected admin
+routes, CORS, input limits, request throttling, and a live-generation kill
+switch. The operator is responsible for usage and redistribution rights.
 
 ## Evaluation targets
 
@@ -176,13 +194,14 @@ redistribution rights.
 | Ingestion | Hash match, extraction coverage, empty-page rate |
 | Retrieval | Recall@k, MRR, nDCG, source/page match |
 | Generation | Groundedness, citation correctness, abstention quality |
+| Triage | Category/action/route accuracy, sensitive recall, generation leaks |
 | Operations | p50/p95 latency, failures, tokens, estimated cost |
 
 Each run should record corpus, index, model, retrieval, and prompt versions.
 
 ## Roadmap
 
-1. Deploy FastAPI to Railway and configure its Entra ID service principal.
-2. Publish the portfolio with `PUBLIC_UOL_FINANCE_API_URL`.
+1. Deploy FastAPI and PostgreSQL to Railway; configure the Entra service principal.
+2. Publish the portfolio with `PUBLIC_AGENTIC_SUPPORT_API_URL`.
 3. Add persistent rate limiting, telemetry, and cost dashboards.
-4. Add an authenticated PDF/URL ingestion interface with security review.
+4. Add an authenticated ingestion interface with malware and content review.

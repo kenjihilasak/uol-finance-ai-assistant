@@ -279,6 +279,7 @@ def run_grounded_answer(
     top: int,
     vector_candidates: int,
     document_id: str | None,
+    category: str | None = None,
 ) -> tuple[GroundedAnswer, list[Evidence]]:
     credential = build_user_credential(config.retrieval.tenant_id)
     token_provider = get_bearer_token_provider(credential, OPENAI_SCOPE)
@@ -306,6 +307,7 @@ def run_grounded_answer(
             top=top,
             vector_candidates=vector_candidates,
             document_id=document_id,
+            category=category,
         )
         evidence = evidence_from_results(results)
         answer = generate_answer(

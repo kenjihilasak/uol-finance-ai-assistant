@@ -1,0 +1,93 @@
+{
+  "dataset": "evaluation/datasets/triage_cases_v1.json",
+  "metrics": {
+    "category_accuracy": 1.0,
+    "action_accuracy": 1.0,
+    "route_to_accuracy": 0.8,
+    "sensitive_recall": 1.0,
+    "sensitive_generation_leaks": 0,
+    "cases": 10
+  },
+  "predictions": [
+    {
+      "id": "annual-income",
+      "category": "finance",
+      "is_sensitive": false,
+      "action": "draft_response",
+      "route_to": "finance_information",
+      "allow_generation": true
+    },
+    {
+      "id": "missing-receipt",
+      "category": "finance_operations",
+      "is_sensitive": false,
+      "action": "draft_response",
+      "route_to": "finance_team",
+      "allow_generation": true
+    },
+    {
+      "id": "address-update",
+      "category": "student_admin",
+      "is_sensitive": false,
+      "action": "draft_response",
+      "route_to": "student_information_service",
+      "allow_generation": true
+    },
+    {
+      "id": "minerva-submit",
+      "category": "digital_learning",
+      "is_sensitive": false,
+      "action": "request_clarification",
+      "route_to": "online_learning_support",
+      "allow_generation": false
+    },
+    {
+      "id": "online-course",
+      "category": "digital_learning",
+      "is_sensitive": false,
+      "action": "draft_response",
+      "route_to": "online_learning_support",
+      "allow_generation": true
+    },
+    {
+      "id": "harassment",
+      "category": "student_support",
+      "is_sensitive": true,
+      "action": "specialist_referral",
+      "route_to": "harassment_and_misconduct",
+      "allow_generation": false
+    },
+    {
+      "id": "mental-health",
+      "category": "student_support",
+      "is_sensitive": true,
+      "action": "specialist_referral",
+      "route_to": "student_counselling_and_wellbeing",
+      "allow_generation": false
+    },
+    {
+      "id": "emergency",
+      "category": "student_support",
+      "is_sensitive": true,
+      "action": "specialist_referral",
+      "route_to": "security_or_emergency",
+      "allow_generation": false
+    },
+    {
+      "id": "mixed-sensitive",
+      "category": "student_support",
+      "is_sensitive": true,
+      "action": "specialist_referral",
+      "route_to": "harassment_and_misconduct",
+      "allow_generation": false
+    },
+    {
+      "id": "unclear",
+      "category": "unclear",
+      "is_sensitive": false,
+      "action": "request_clarification",
+      "route_to": "none",
+      "allow_generation": false
+    }
+  ]
+}

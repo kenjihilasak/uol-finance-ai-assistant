@@ -12,7 +12,8 @@ docs/
 ├── stage_03_embeddings/
 ├── stage_04_search_index/
 ├── stage_05_retrieval/
-└── stage_06_serving/
+├── stage_06_triage/
+└── stage_07_serving/
 ```
 
 ## Reading order
@@ -32,7 +33,8 @@ docs/
 13. [Hybrid retrieval](./stage_05_retrieval/hybrid-retrieval.md)
 14. [Retrieval evaluation](./stage_05_retrieval/retrieval-evaluation.md)
 15. [Grounded answer generation](./stage_05_retrieval/grounded-answer-generation.md)
-16. [Portfolio UI options](./overview/ui-options.md)
-17. [Serving API and portfolio](./stage_06_serving/api-and-portfolio.md)
+16. [Enquiry triage and safety](./stage_06_triage/enquiry-triage.md)
+17. [Portfolio UI options](./overview/ui-options.md)
+18. [Serving API and portfolio](./stage_07_serving/api-and-portfolio.md)
 
 For hands-on learning, read one stage and then run its matching module.
