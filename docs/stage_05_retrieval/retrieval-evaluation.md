@@ -1,157 +1,99 @@
-# Retrieval evaluation
+# System evaluation
 
-## Dataset
+This is the canonical evaluation summary for retrieval and enquiry triage.
+Detailed, versioned outputs are stored in `evaluation/baselines/`.
 
-`uol-finance-retrieval-v1` contains 10 questions covering financial tables,
-financial narrative, research, pensions, scholarships, sustainability, and
-governance. Each question has a concise reference answer, expected pages, and
-one or more source-verified relevant chunk IDs.
+## Executive summary
 
-The dataset contains no copied passages or vectors:
-[`retrieval_questions_v1.json`](../../evaluation/datasets/retrieval_questions_v1.json).
+| Evaluation layer | Coverage | Main result |
+| --- | ---: | --- |
+| Retrieval | 44 questions, 4 categories | Hybrid Recall@1: **88.6%** |
+| Retrieval | Same 44 questions | Vector-only Recall@1: **79.5%** |
+| Triage | 21 synthetic enquiries | Category accuracy: **100%** |
+| Safety | 6 sensitive enquiries | Recall: **100%**; generation leaks: **0** |
 
-## Metrics
+Hybrid retrieval improved the overall first-result hit rate by **9.1 percentage
+points**. The gain came from the annual-report and student-administration
+datasets; hybrid and vector-only tied on the two newer categories. Hybrid is
+therefore the selected default, but the evidence does not claim that it is
+always superior.
 
-- Question-level Recall@k: fraction of questions with at least one relevant
-  chunk in the first `k` results.
-- MRR@5: **Mean Reciprocal Rank** within the top five. For each question, take
-  `1 / first relevant rank`, use zero for a miss, then calculate the arithmetic
-  mean across questions.
+## Retrieval results
 
-`Mean` means arithmetic average, not median. The median would select the middle
-reciprocal-rank value after sorting and is not part of MRR.
+Recall@1 is the percentage of questions for which the first result contains
+relevant evidence. MRR measures how early the first relevant chunk appears.
 
-These metrics evaluate retrieval only. They do not measure answer correctness,
-groundedness, citations, or abstention.
+All runs used the same Azure AI Search index and
+`text-embedding-3-small`. The top-five evaluations used 50 vector candidates
+and an exact category filter.
 
-## Baseline comparison
+| Category | Questions | Vector Recall@1 | Hybrid Recall@1 | Hybrid final recall | Hybrid MRR |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Finance report | 10 | 0.500 | **0.700** | Recall@5: 1.000 | MRR@5: 0.825 |
+| Student administration | 10 | 0.800 | **1.000** | Recall@3: 1.000 | MRR@3: 1.000 |
+| Finance operations | 12 | 0.917 | **0.917** | Recall@5: 1.000 | MRR@5: 0.958 |
+| Digital learning | 12 | 0.917 | **0.917** | Recall@5: 1.000 | MRR@5: 0.958 |
+| **Weighted overall** | **44** | **0.795** | **0.886** | **1.000** | — |
 
-Both runs use the same 10 questions, `top=5`, 50 vector candidates,
-`text-embedding-3-small`, and index `uol-finance-chunks-v1`.
+The weighted overall row is calculated across questions, not by averaging the
+four category percentages. Overall MRR is not reported because the student
+administration dataset uses a three-result cutoff while the others use five.
 
-| Metric | Vector only | Hybrid BM25 + vector |
-| --- | ---: | ---: |
-| Recall@1 | 0.500 | 0.700 |
-| Recall@3 | 0.900 | 0.900 |
-| Recall@5 | 0.900 | 1.000 |
-| MRR@5 | 0.683 | 0.825 |
+## Triage and safety results
 
-Hybrid retrieval improves early ranking and finds relevant evidence for all 10
-questions within five results. Vector-only misses `finance-total-income` in the
-top five. Versioned results:
+The 21-case dataset covers the four answerable categories, missing
+information, ambiguous requests, mixed intent, and sensitive enquiries.
 
-- [Vector-only baseline](../../evaluation/baselines/vector_retrieval_v1.json)
-- [Hybrid baseline](../../evaluation/baselines/hybrid_retrieval_v1.json)
+| Metric | Result |
+| --- | ---: |
+| Category accuracy | 1.000 |
+| Action accuracy | 0.905 |
+| Route accuracy | 0.762 |
+| Generation-gate accuracy | 0.952 |
+| Sensitive recall | 1.000 |
+| Sensitive precision | 0.857 |
+| Sensitive specificity | 0.933 |
+| Sensitive false positives | 1 |
+| Sensitive generation leaks | 0 |
 
-The first review pass exposed incomplete relevance labels for repeated facts in
-narrative and tables. Those labels were corrected before recording this
-baseline; the retrieval algorithm was not changed to improve the score.
+All six sensitive cases blocked retrieval and response generation. One
+non-incident policy-research enquiry containing the word `harassment` was
+conservatively referred, creating one false positive. Most other disagreements
+concerned organisational ownership, such as Finance team versus Finance
+information, rather than unsafe generation.
 
-## Run
+## Conclusions and limits
 
-Validate locally:
+- Hybrid retrieval is the best current default across the full corpus.
+- Top-five retrieval found relevant evidence for every evaluated question.
+- The deterministic safety gate prevented generation for every sensitive case.
+- Route labels require agreement from University domain owners.
+- The datasets are small and source-verified, but independent Finance and
+  Digital Education review remains pending.
+- More paraphrases, typos, acronyms, multilingual questions and hard
+  cross-document distractors are needed before production use.
+
+## Evidence
+
+- [Retrieval datasets](../../evaluation/datasets/)
+- [Versioned baselines](../../evaluation/baselines/)
+- [Independent-review template](../../evaluation/reviews/independent_domain_review.md)
+- [Retrieval design decisions](retrieval-design-decisions.md)
+- [Triage design and decision flow](../stage_06_triage/enquiry-triage.md)
+
+## Reproduce
 
 ```bash
+# Validate a retrieval dataset locally
 python -m scripts.stage_05_retrieval.evaluate_retrieval --dry-run
-```
 
-Run against Azure and write the detailed ignored result:
-
-```bash
-python -m scripts.stage_05_retrieval.evaluate_retrieval --overwrite
-```
-
-Run the vector-only comparison:
-
-```bash
+# Run a category-scoped hybrid evaluation against Azure
 python -m scripts.stage_05_retrieval.evaluate_retrieval \
-  --mode vector \
-  --overwrite
+  --dataset evaluation/datasets/finance_operations_retrieval_questions_v1.json \
+  --mode hybrid --k 1 3 5 --vector-candidates 50 --overwrite
+
+# Run the 21-case triage evaluation against Azure
+python -m scripts.stage_06_triage.evaluate_triage \
+  --dataset evaluation/datasets/triage_cases_v2.json \
+  --live --output data/evaluation/triage_v2.results.json
 ```
-
-## Interpretation
-
-Hybrid Recall@5 supports using up to five chunks as the initial generation
-context for this corpus. Its Recall@1 shows that relying on only the first chunk
-would miss three of ten questions.
-
-This is a small, single-document baseline. Add independently reviewed
-questions and more documents before treating it as production evidence.
-
-## Student administration guide
-
-The separate `uol-student-admin-retrieval-v1` dataset contains 10
-source-verified questions across the three pages of the address-update guide.
-Because the document has only three chunks, this evaluation uses Recall@1,
-Recall@2, Recall@3, and MRR@3.
-
-| Metric | Vector only | Hybrid BM25 + vector |
-| --- | ---: | ---: |
-| Recall@1 | 0.800 | 1.000 |
-| Recall@2 | 1.000 | 1.000 |
-| Recall@3 | 1.000 | 1.000 |
-| MRR@3 | 0.900 | 1.000 |
-
-Hybrid retrieval moved the relevant page-1 chunk from rank 2 to rank 1 for two
-questions: selecting `Update Your Contact Details` and handling an address type
-that is not initially shown.
-
-Artifacts:
-
-- [Reviewed dataset](../../evaluation/datasets/student_admin_retrieval_questions_v1.json)
-- [Vector-only baseline](../../evaluation/baselines/student_admin_vector_retrieval_v1.json)
-- [Hybrid baseline](../../evaluation/baselines/student_admin_hybrid_retrieval_v1.json)
-
-This perfect hybrid score is a development result, not a production claim. The
-corpus slice contains only three chunks, the questions are in English like the
-source, and no paraphrase, typo, multilingual, or negative-query robustness set
-has yet been evaluated.
-
-Run this dataset with:
-
-```bash
-python -m scripts.stage_05_retrieval.evaluate_retrieval \
-  --dataset evaluation/datasets/student_admin_retrieval_questions_v1.json \
-  --mode hybrid --k 1 2 3 --vector-candidates 20 --overwrite
-```
-
-## Category-scoped multi-document evaluation
-
-The evaluator now supports schema `1.1.0`, which defines a category and an
-explicit allowlist of document IDs. This matches runtime triage more closely:
-the classifier selects a category and Azure AI Search retrieves across every
-approved document in that category.
-
-Two new source-verified development datasets each contain 12 questions:
-
-- `uol-finance-operations-retrieval-v1`: four Finance policy pages;
-- `uol-digital-learning-retrieval-v1`: two student-support pages.
-
-Both use `top=5`, 50 vector candidates, and an exact category filter.
-
-| Dataset | Mode | Recall@1 | Recall@3 | Recall@5 | MRR@5 |
-| --- | --- | ---: | ---: | ---: | ---: |
-| Finance operations | Vector only | 0.917 | 1.000 | 1.000 | 0.958 |
-| Finance operations | Hybrid | 0.917 | 1.000 | 1.000 | 0.958 |
-| Digital learning | Vector only | 0.917 | 1.000 | 1.000 | 0.958 |
-| Digital learning | Hybrid | 0.917 | 1.000 | 1.000 | 0.958 |
-
-Unlike the annual-report and address-guide baselines, hybrid search did not
-improve ranking on these two datasets: both modes produced the same first
-relevant ranks. This does not show that BM25 is useless. The new corpora are
-small, their documents are topically distinct, and most questions closely
-match source terminology. Add paraphrases, typos, acronym variants, and harder
-cross-document distractors before drawing a broader conclusion.
-
-Artifacts:
-
-- [Finance operations dataset](../../evaluation/datasets/finance_operations_retrieval_questions_v1.json)
-- [Finance operations vector baseline](../../evaluation/baselines/finance_operations_vector_retrieval_v1.json)
-- [Finance operations hybrid baseline](../../evaluation/baselines/finance_operations_hybrid_retrieval_v1.json)
-- [Digital learning dataset](../../evaluation/datasets/digital_learning_retrieval_questions_v1.json)
-- [Digital learning vector baseline](../../evaluation/baselines/digital_learning_vector_retrieval_v1.json)
-- [Digital learning hybrid baseline](../../evaluation/baselines/digital_learning_hybrid_retrieval_v1.json)
-
-The labels were checked against the captured public sources and deterministic
-chunks. Independent Finance and Digital Education domain review remains
-pending and is explicitly recorded in each dataset.
