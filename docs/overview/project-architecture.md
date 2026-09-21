@@ -133,9 +133,10 @@ sequenceDiagram
     API->>ID: Request OAuth access tokens
     ID-->>API: Issue scoped tokens
 
+    API->>API: Scan sensitive terms; retain rule flags
     API->>LLM: Request typed classification
     LLM-->>API: Category, sensitivity, action, route
-    API->>API: Apply deterministic routing policy
+    API->>API: Apply policy to rule flags + classification
 
     alt Sensitive enquiry
         API-->>UI: Specialist route; no retrieval or draft
@@ -144,8 +145,9 @@ sequenceDiagram
     else Approved answerable domain
         API->>EMB: Generate query vector
         EMB-->>API: Query embedding
-        API->>SEARCH: Hybrid search filtered by category
-        SEARCH-->>API: Return chunks and source pages
+        API->>SEARCH: Text + query vector + category filter
+        SEARCH->>SEARCH: BM25 + HNSW + RRF; 50 candidates
+        SEARCH-->>API: Return top 5 chunks with provenance
         API->>LLM: Send question and bounded evidence
         LLM-->>API: Draft cited answer
         API->>API: Validate citation IDs
