@@ -54,6 +54,9 @@ It is not Azure AI Search's optional Semantic Ranker feature.
 Implementation:
 [`hybrid_search.py`](../../scripts/stage_05_retrieval/hybrid_search.py).
 
+For a study-oriented explanation of BM25, HNSW, RRF, category filters and the
+alternatives considered, read [retrieval design decisions](./retrieval-design-decisions.md).
+
 ## Current boundary
 
 Implemented: query embedding, hybrid retrieval, optional `document_id` and

@@ -31,11 +31,12 @@ docs/
 11. [Create index guide](./stage_04_search_index/create-index.md)
 12. [Upload documents guide](./stage_04_search_index/upload-documents.md)
 13. [Hybrid retrieval](./stage_05_retrieval/hybrid-retrieval.md)
-14. [Retrieval evaluation](./stage_05_retrieval/retrieval-evaluation.md)
-15. [Grounded answer generation](./stage_05_retrieval/grounded-answer-generation.md)
-16. [Enquiry triage and safety](./stage_06_triage/enquiry-triage.md)
-17. [Portfolio UI options](./overview/ui-options.md)
-18. [Serving API and portfolio](./stage_07_serving/api-and-portfolio.md)
-19. [Staff authentication](./stage_07_serving/staff-authentication.md)
+14. [Retrieval design decisions](./stage_05_retrieval/retrieval-design-decisions.md)
+15. [Retrieval evaluation](./stage_05_retrieval/retrieval-evaluation.md)
+16. [Grounded answer generation](./stage_05_retrieval/grounded-answer-generation.md)
+17. [Enquiry triage and safety](./stage_06_triage/enquiry-triage.md)
+18. [Portfolio UI options](./overview/ui-options.md)
+19. [Serving API and portfolio](./stage_07_serving/api-and-portfolio.md)
+20. [Staff authentication](./stage_07_serving/staff-authentication.md)
 
 For hands-on learning, read one stage and then run its matching module.
