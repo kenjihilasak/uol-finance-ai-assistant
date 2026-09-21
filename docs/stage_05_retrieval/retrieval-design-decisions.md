@@ -177,8 +177,12 @@ vector candidates:
 
 The result supports the hybrid choice for this development corpus: it improved
 early ranking and recovered relevant evidence for all ten reviewed questions
-within the first five results. See [retrieval evaluation](./retrieval-evaluation.md)
-for limitations and the student-administration baseline.
+within the first five results. On the newer finance-operations and
+digital-learning datasets, however, hybrid and vector-only retrieval tied at
+`MRR@5 = 0.958`. Hybrid retrieval is therefore retained as a robust combined
+default, not claimed as universally superior. See
+[retrieval evaluation](./retrieval-evaluation.md) for dataset-specific results
+and limitations.
 
 ## Alternatives considered
 

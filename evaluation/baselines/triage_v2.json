@@ -1,0 +1,185 @@
+{
+  "dataset": "evaluation/datasets/triage_cases_v2.json",
+  "metrics": {
+    "category_accuracy": 1.0,
+    "action_accuracy": 0.9047619047619048,
+    "route_to_accuracy": 0.7619047619047619,
+    "sensitive_recall": 1.0,
+    "sensitive_precision": 0.8571428571428571,
+    "sensitive_specificity": 0.9333333333333333,
+    "sensitive_false_positives": 1,
+    "sensitive_generation_leaks": 0,
+    "generation_gate_accuracy": 0.9523809523809523,
+    "cases": 21
+  },
+  "predictions": [
+    {
+      "id": "finance-income",
+      "category": "finance",
+      "is_sensitive": false,
+      "action": "draft_response",
+      "route_to": "finance_information",
+      "allow_generation": true
+    },
+    {
+      "id": "finance-credit-rating",
+      "category": "finance",
+      "is_sensitive": false,
+      "action": "draft_response",
+      "route_to": "finance_information",
+      "allow_generation": true
+    },
+    {
+      "id": "finance-period-missing",
+      "category": "finance",
+      "is_sensitive": false,
+      "action": "draft_response",
+      "route_to": "finance_information",
+      "allow_generation": true
+    },
+    {
+      "id": "finance-ops-missing-receipt",
+      "category": "finance_operations",
+      "is_sensitive": false,
+      "action": "draft_response",
+      "route_to": "finance_team",
+      "allow_generation": true
+    },
+    {
+      "id": "finance-ops-hotel-city-missing",
+      "category": "finance_operations",
+      "is_sensitive": false,
+      "action": "request_clarification",
+      "route_to": "finance_information",
+      "allow_generation": false
+    },
+    {
+      "id": "finance-ops-mileage",
+      "category": "finance_operations",
+      "is_sensitive": false,
+      "action": "draft_response",
+      "route_to": "finance_information",
+      "allow_generation": true
+    },
+    {
+      "id": "student-admin-address",
+      "category": "student_admin",
+      "is_sensitive": false,
+      "action": "draft_response",
+      "route_to": "student_information_service",
+      "allow_generation": true
+    },
+    {
+      "id": "student-admin-country",
+      "category": "student_admin",
+      "is_sensitive": false,
+      "action": "draft_response",
+      "route_to": "student_information_service",
+      "allow_generation": true
+    },
+    {
+      "id": "student-admin-ambiguous-change",
+      "category": "student_admin",
+      "is_sensitive": false,
+      "action": "request_clarification",
+      "route_to": "student_information_service",
+      "allow_generation": false
+    },
+    {
+      "id": "digital-minerva-incomplete",
+      "category": "digital_learning",
+      "is_sensitive": false,
+      "action": "request_clarification",
+      "route_to": "online_learning_support",
+      "allow_generation": false
+    },
+    {
+      "id": "digital-coursera",
+      "category": "digital_learning",
+      "is_sensitive": false,
+      "action": "draft_response",
+      "route_to": "online_learning_support",
+      "allow_generation": true
+    },
+    {
+      "id": "digital-minerva-outage",
+      "category": "digital_learning",
+      "is_sensitive": false,
+      "action": "draft_response",
+      "route_to": "online_learning_support",
+      "allow_generation": true
+    },
+    {
+      "id": "sensitive-harassment",
+      "category": "student_support",
+      "is_sensitive": true,
+      "action": "specialist_referral",
+      "route_to": "harassment_and_misconduct",
+      "allow_generation": false
+    },
+    {
+      "id": "sensitive-mental-health",
+      "category": "student_support",
+      "is_sensitive": true,
+      "action": "specialist_referral",
+      "route_to": "student_counselling_and_wellbeing",
+      "allow_generation": false
+    },
+    {
+      "id": "sensitive-emergency",
+      "category": "student_support",
+      "is_sensitive": true,
+      "action": "specialist_referral",
+      "route_to": "security_or_emergency",
+      "allow_generation": false
+    },
+    {
+      "id": "sensitive-mixed-address",
+      "category": "student_support",
+      "is_sensitive": true,
+      "action": "specialist_referral",
+      "route_to": "security_or_emergency",
+      "allow_generation": false
+    },
+    {
+      "id": "sensitive-discrimination-expense",
+      "category": "student_support",
+      "is_sensitive": true,
+      "action": "specialist_referral",
+      "route_to": "harassment_and_misconduct",
+      "allow_generation": false
+    },
+    {
+      "id": "sensitive-implicit-following",
+      "category": "student_support",
+      "is_sensitive": true,
+      "action": "specialist_referral",
+      "route_to": "harassment_and_misconduct",
+      "allow_generation": false
+    },
+    {
+      "id": "unclear-no-context",
+      "category": "unclear",
+      "is_sensitive": false,
+      "action": "request_clarification",
+      "route_to": "none",
+      "allow_generation": false
+    },
+    {
+      "id": "unclear-pronoun-only",
+      "category": "unclear",
+      "is_sensitive": false,
+      "action": "request_clarification",
+      "route_to": "none",
+      "allow_generation": false
+    },
+    {
+      "id": "nonincident-policy-research",
+      "category": "student_support",
+      "is_sensitive": true,
+      "action": "specialist_referral",
+      "route_to": "harassment_and_misconduct",
+      "allow_generation": false
+    }
+  ]
+}

@@ -44,9 +44,11 @@ class EvaluationCase:
 @dataclass(frozen=True)
 class EvaluationDataset:
     dataset_id: str
-    document_id: str
+    document_id: str | None
     review: dict[str, Any]
     cases: tuple[EvaluationCase, ...]
+    category: str | None = None
+    document_ids: tuple[str, ...] = ()
 
 
 def required_string(value: object, field: str) -> str:
@@ -61,11 +63,32 @@ def load_dataset(path: Path) -> EvaluationDataset:
     payload = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(payload, dict):
         raise RuntimeError("Evaluation dataset must be a JSON object")
-    if payload.get("schema_version") != "1.0.0":
+    schema_version = payload.get("schema_version")
+    if schema_version not in {"1.0.0", "1.1.0"}:
         raise RuntimeError("Unsupported evaluation dataset schema_version")
 
     dataset_id = required_string(payload.get("dataset_id"), "dataset_id")
-    document_id = required_string(payload.get("document_id"), "document_id")
+    document_id: str | None = None
+    category: str | None = None
+    document_ids: tuple[str, ...] = ()
+    if schema_version == "1.0.0":
+        document_id = required_string(payload.get("document_id"), "document_id")
+        document_ids = (document_id,)
+    else:
+        scope = payload.get("scope")
+        if not isinstance(scope, dict):
+            raise RuntimeError("scope must be an object")
+        category = required_string(scope.get("category"), "scope.category")
+        raw_document_ids = scope.get("document_ids")
+        if (
+            not isinstance(raw_document_ids, list)
+            or not raw_document_ids
+            or any(not isinstance(item, str) or not item.strip() for item in raw_document_ids)
+        ):
+            raise RuntimeError("scope.document_ids must be a non-empty string list")
+        document_ids = tuple(item.strip() for item in raw_document_ids)
+        if len(document_ids) != len(set(document_ids)):
+            raise RuntimeError("scope.document_ids must not contain duplicates")
     review = payload.get("review")
     if not isinstance(review, dict) or review.get("status") != "source_verified":
         raise RuntimeError("review.status must be source_verified")
@@ -109,8 +132,11 @@ def load_dataset(path: Path) -> EvaluationDataset:
             or any(not isinstance(chunk_id, str) or not chunk_id for chunk_id in chunk_ids)
         ):
             raise RuntimeError(f"Question {case_id} has invalid relevant_chunk_ids")
-        if any(not chunk_id.startswith(f"{document_id}-") for chunk_id in chunk_ids):
-            raise RuntimeError(f"Question {case_id} references a different document")
+        if any(
+            not any(chunk_id.startswith(f"{allowed_id}-") for allowed_id in document_ids)
+            for chunk_id in chunk_ids
+        ):
+            raise RuntimeError(f"Question {case_id} references a document outside its scope")
 
         cases.append(
             EvaluationCase(
@@ -127,6 +153,8 @@ def load_dataset(path: Path) -> EvaluationDataset:
         document_id=document_id,
         review=review,
         cases=tuple(cases),
+        category=category,
+        document_ids=document_ids,
     )
 
 
@@ -235,6 +263,7 @@ def run_evaluation(
                     top=top,
                     vector_candidates=vector_candidates,
                     document_id=dataset.document_id,
+                    category=dataset.category,
                 )
             else:
                 results = vector_search(
@@ -243,6 +272,7 @@ def run_evaluation(
                     top=top,
                     vector_candidates=vector_candidates,
                     document_id=dataset.document_id,
+                    category=dataset.category,
                 )
             rankings[case.case_id] = [
                 str(result["chunk_id"]) for result in results
@@ -259,6 +289,11 @@ def run_evaluation(
         "evaluated_at": datetime.now(timezone.utc).isoformat(),
         "index_name": config.search_index_name,
         "embedding_deployment": config.embedding_deployment,
+        "scope": {
+            "document_id": dataset.document_id,
+            "category": dataset.category,
+            "document_ids": list(dataset.document_ids),
+        },
         "retrieval": {
             "type": "hybrid_bm25_vector" if mode == "hybrid" else "vector_only",
             "top": top,

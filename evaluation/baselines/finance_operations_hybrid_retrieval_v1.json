@@ -1,0 +1,222 @@
+{
+  "schema_version": "1.0.0",
+  "dataset_id": "uol-finance-operations-retrieval-v1",
+  "evaluated_at": "2026-09-21T17:39:19.121526+00:00",
+  "index_name": "uol-finance-chunks-v1",
+  "embedding_deployment": "text-embedding-3-small",
+  "scope": {
+    "document_id": null,
+    "category": "finance_operations",
+    "document_ids": [
+      "accommodation-3c859667c35c",
+      "cars-and-taxis-ac91fc126134",
+      "subsistence-303e9db7e63d",
+      "travel-and-subsistence-expense-claims-3bf190b47068"
+    ]
+  },
+  "retrieval": {
+    "type": "hybrid_bm25_vector",
+    "top": 5,
+    "vector_candidates": 50
+  },
+  "aggregate": {
+    "recall@1": 0.9166666666666666,
+    "recall@3": 1.0,
+    "recall@5": 1.0,
+    "mrr@5": 0.9583333333333334
+  },
+  "questions": [
+    {
+      "id": "finance-ops-accommodation-booking-channel",
+      "question": "Which booking provider should be used for University business accommodation?",
+      "first_relevant_rank": 1,
+      "reciprocal_rank": 1.0,
+      "recall@1": 1.0,
+      "recall@3": 1.0,
+      "recall@5": 1.0,
+      "retrieved_chunk_ids": [
+        "accommodation-3c859667c35c-p0001-c001",
+        "accommodation-3c859667c35c-p0001-c003",
+        "accommodation-3c859667c35c-p0001-c002",
+        "cars-and-taxis-ac91fc126134-p0001-c001",
+        "subsistence-303e9db7e63d-p0001-c002"
+      ]
+    },
+    {
+      "id": "finance-ops-accommodation-regional-limit",
+      "question": "What nightly accommodation rate is permitted in Leeds when a room cannot be found for under £100?",
+      "first_relevant_rank": 1,
+      "reciprocal_rank": 1.0,
+      "recall@1": 1.0,
+      "recall@3": 1.0,
+      "recall@5": 1.0,
+      "retrieved_chunk_ids": [
+        "accommodation-3c859667c35c-p0001-c002",
+        "accommodation-3c859667c35c-p0001-c001",
+        "accommodation-3c859667c35c-p0001-c003",
+        "subsistence-303e9db7e63d-p0002-c001",
+        "subsistence-303e9db7e63d-p0001-c002"
+      ]
+    },
+    {
+      "id": "finance-ops-unvetted-accommodation",
+      "question": "Can a traveller use an unvetted accommodation provider when Key Travel options do not meet their needs?",
+      "first_relevant_rank": 1,
+      "reciprocal_rank": 1.0,
+      "recall@1": 1.0,
+      "recall@3": 1.0,
+      "recall@5": 1.0,
+      "retrieved_chunk_ids": [
+        "accommodation-3c859667c35c-p0001-c003",
+        "accommodation-3c859667c35c-p0001-c002",
+        "accommodation-3c859667c35c-p0001-c001",
+        "cars-and-taxis-ac91fc126134-p0001-c003",
+        "travel-and-subsistence-expense-claims-3bf190b47068-p0001-c001"
+      ]
+    },
+    {
+      "id": "finance-ops-personal-car-mileage",
+      "question": "What mileage rate can be reimbursed for the first 10,000 business miles in a personal car?",
+      "first_relevant_rank": 1,
+      "reciprocal_rank": 1.0,
+      "recall@1": 1.0,
+      "recall@3": 1.0,
+      "recall@5": 1.0,
+      "retrieved_chunk_ids": [
+        "cars-and-taxis-ac91fc126134-p0001-c002",
+        "cars-and-taxis-ac91fc126134-p0001-c003",
+        "cars-and-taxis-ac91fc126134-p0001-c001",
+        "subsistence-303e9db7e63d-p0001-c002",
+        "subsistence-303e9db7e63d-p0001-c001"
+      ]
+    },
+    {
+      "id": "finance-ops-passenger-mileage",
+      "question": "How much extra mileage is reimbursed when carrying fellow business travellers?",
+      "first_relevant_rank": 2,
+      "reciprocal_rank": 0.5,
+      "recall@1": 0.0,
+      "recall@3": 1.0,
+      "recall@5": 1.0,
+      "retrieved_chunk_ids": [
+        "cars-and-taxis-ac91fc126134-p0001-c002",
+        "cars-and-taxis-ac91fc126134-p0001-c003",
+        "cars-and-taxis-ac91fc126134-p0001-c001",
+        "subsistence-303e9db7e63d-p0001-c001",
+        "subsistence-303e9db7e63d-p0001-c002"
+      ]
+    },
+    {
+      "id": "finance-ops-international-car-insurance",
+      "question": "Is motor insurance required when hiring a car internationally?",
+      "first_relevant_rank": 1,
+      "reciprocal_rank": 1.0,
+      "recall@1": 1.0,
+      "recall@3": 1.0,
+      "recall@5": 1.0,
+      "retrieved_chunk_ids": [
+        "cars-and-taxis-ac91fc126134-p0001-c001",
+        "cars-and-taxis-ac91fc126134-p0001-c002",
+        "cars-and-taxis-ac91fc126134-p0001-c004",
+        "cars-and-taxis-ac91fc126134-p0001-c003",
+        "accommodation-3c859667c35c-p0001-c001"
+      ]
+    },
+    {
+      "id": "finance-ops-short-trip-subsistence",
+      "question": "Can subsistence be reimbursed when the traveller is away for fewer than five hours?",
+      "first_relevant_rank": 1,
+      "reciprocal_rank": 1.0,
+      "recall@1": 1.0,
+      "recall@3": 1.0,
+      "recall@5": 1.0,
+      "retrieved_chunk_ids": [
+        "subsistence-303e9db7e63d-p0001-c001",
+        "subsistence-303e9db7e63d-p0002-c001",
+        "travel-and-subsistence-expense-claims-3bf190b47068-p0001-c002",
+        "subsistence-303e9db7e63d-p0001-c002",
+        "travel-and-subsistence-expense-claims-3bf190b47068-p0001-c001"
+      ]
+    },
+    {
+      "id": "finance-ops-international-subsistence-limit",
+      "question": "What is the maximum daily international subsistence claim?",
+      "first_relevant_rank": 1,
+      "reciprocal_rank": 1.0,
+      "recall@1": 1.0,
+      "recall@3": 1.0,
+      "recall@5": 1.0,
+      "retrieved_chunk_ids": [
+        "subsistence-303e9db7e63d-p0002-c001",
+        "subsistence-303e9db7e63d-p0001-c001",
+        "travel-and-subsistence-expense-claims-3bf190b47068-p0001-c003",
+        "travel-and-subsistence-expense-claims-3bf190b47068-p0001-c002",
+        "subsistence-303e9db7e63d-p0001-c002"
+      ]
+    },
+    {
+      "id": "finance-ops-no-receipt-fifteen-hours",
+      "question": "Without a receipt, what is the maximum meal claim after 15 hours away when the trip continues at 8pm?",
+      "first_relevant_rank": 1,
+      "reciprocal_rank": 1.0,
+      "recall@1": 1.0,
+      "recall@3": 1.0,
+      "recall@5": 1.0,
+      "retrieved_chunk_ids": [
+        "subsistence-303e9db7e63d-p0002-c001",
+        "subsistence-303e9db7e63d-p0001-c001",
+        "travel-and-subsistence-expense-claims-3bf190b47068-p0001-c002",
+        "travel-and-subsistence-expense-claims-3bf190b47068-p0001-c003",
+        "subsistence-303e9db7e63d-p0001-c002"
+      ]
+    },
+    {
+      "id": "finance-ops-lost-original-receipt",
+      "question": "What evidence may support an expense claim when the original receipt is unavailable?",
+      "first_relevant_rank": 1,
+      "reciprocal_rank": 1.0,
+      "recall@1": 1.0,
+      "recall@3": 1.0,
+      "recall@5": 1.0,
+      "retrieved_chunk_ids": [
+        "travel-and-subsistence-expense-claims-3bf190b47068-p0001-c002",
+        "travel-and-subsistence-expense-claims-3bf190b47068-p0001-c001",
+        "travel-and-subsistence-expense-claims-3bf190b47068-p0001-c003",
+        "subsistence-303e9db7e63d-p0002-c001",
+        "cars-and-taxis-ac91fc126134-p0001-c003"
+      ]
+    },
+    {
+      "id": "finance-ops-claim-deadline",
+      "question": "How soon after an expense is incurred must the claim be submitted?",
+      "first_relevant_rank": 1,
+      "reciprocal_rank": 1.0,
+      "recall@1": 1.0,
+      "recall@3": 1.0,
+      "recall@5": 1.0,
+      "retrieved_chunk_ids": [
+        "travel-and-subsistence-expense-claims-3bf190b47068-p0001-c003",
+        "travel-and-subsistence-expense-claims-3bf190b47068-p0001-c002",
+        "travel-and-subsistence-expense-claims-3bf190b47068-p0001-c001",
+        "subsistence-303e9db7e63d-p0002-c001",
+        "subsistence-303e9db7e63d-p0001-c001"
+      ]
+    },
+    {
+      "id": "finance-ops-claim-authorisation",
+      "question": "Who is responsible for authorising a non-staff travel expense claim?",
+      "first_relevant_rank": 1,
+      "reciprocal_rank": 1.0,
+      "recall@1": 1.0,
+      "recall@3": 1.0,
+      "recall@5": 1.0,
+      "retrieved_chunk_ids": [
+        "travel-and-subsistence-expense-claims-3bf190b47068-p0001-c001",
+        "travel-and-subsistence-expense-claims-3bf190b47068-p0001-c003",
+        "subsistence-303e9db7e63d-p0001-c001",
+        "travel-and-subsistence-expense-claims-3bf190b47068-p0001-c002",
+        "cars-and-taxis-ac91fc126134-p0001-c001"
+      ]
+    }
+  ]
+}

@@ -119,9 +119,11 @@ python -m scripts.stage_06_triage.evaluate_triage \
   --output evaluation/baselines/triage_v1.json
 ```
 
-The safety gates are `sensitive_recall=1.0` and
-`sensitive_generation_leaks=0`. Category, action, and route accuracy are useful
-quality metrics but do not replace the safety assertions.
+The primary safety gates are `sensitive_recall=1.0` and
+`sensitive_generation_leaks=0`. Version 2 also measures sensitivity precision
+and specificity so a system cannot appear safe merely by marking every case as
+sensitive. Category, action, route, and generation-gate accuracy measure
+separate behaviour and do not replace the safety assertions.
 
 Baseline recorded on 20 September 2026:
 
@@ -142,3 +144,52 @@ generation. See
 
 The dataset uses synthetic enquiries only. Do not copy real personal or
 sensitive correspondence into the portfolio demo.
+
+## Expanded triage evaluation
+
+`uol-staff-triage-v2` expands the set from 10 to 21 synthetic cases. It covers
+all answerable categories, missing-information gates, three specialist routes,
+mixed intent, implicit sensitive language, ambiguity, and a non-incident use
+of sensitive policy terminology.
+
+| Metric | Version 2 result |
+| --- | ---: |
+| Cases | 21 |
+| Category accuracy | 1.000 |
+| Action accuracy | 0.905 |
+| Route accuracy | 0.762 |
+| Generation-gate accuracy | 0.952 |
+| Sensitive recall | 1.000 |
+| Sensitive precision | 0.857 |
+| Sensitive specificity | 0.933 |
+| Sensitive false positives | 1 |
+| Sensitive generation leaks | 0 |
+
+The conservative rules correctly blocked generation for all six sensitive
+cases. They also flagged one non-incident research question containing the word
+`harassment`, producing a false positive and specialist referral. This is a
+known precision trade-off, not a hidden success. A production revision should
+add reviewed contextual/negation cases and decide with domain owners whether
+policy-research enquiries should go to manual review or remain conservatively
+referred.
+
+Six cases contain at least one expected-field disagreement across action and
+route labels. These
+include finance-information versus finance-team routing and IT service desk
+versus online-learning support. The safe generation decision was still correct
+for 20 of 21 cases. Route ownership requires domain agreement before it can be
+treated as an objective production label.
+
+Artifacts:
+
+- [Expanded dataset](../../evaluation/datasets/triage_cases_v2.json)
+- [Versioned baseline](../../evaluation/baselines/triage_v2.json)
+- [Independent-review template](../../evaluation/reviews/independent_domain_review.md)
+
+Run it with:
+
+```bash
+python -m scripts.stage_06_triage.evaluate_triage \
+  --dataset evaluation/datasets/triage_cases_v2.json \
+  --live --output data/evaluation/triage_v2.results.json
+```

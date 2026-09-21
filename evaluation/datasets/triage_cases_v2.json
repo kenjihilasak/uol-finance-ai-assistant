@@ -1,0 +1,38 @@
+{
+  "schema_version": "1.0.0",
+  "dataset_id": "uol-staff-triage-v2",
+  "review": {
+    "status": "development_reviewed",
+    "date": "2026-09-21",
+    "independent_domain_review": "pending",
+    "method": "Synthetic cases cover all answerable categories, missing-information gates, sensitive routes, mixed-intent precedence, ambiguity, and one non-incident sensitive-language challenge."
+  },
+  "cases": [
+    {"id":"finance-income","enquiry":"What total income did the University report for 2024/25?","category":"finance","is_sensitive":false,"action":"draft_response","route_to":"finance_information"},
+    {"id":"finance-credit-rating","enquiry":"Which credit rating was affirmed for the University in the annual report?","category":"finance","is_sensitive":false,"action":"draft_response","route_to":"finance_information"},
+    {"id":"finance-period-missing","enquiry":"Can you tell me what the University's total income was?","category":"finance","is_sensitive":false,"action":"request_clarification","route_to":"finance_information"},
+
+    {"id":"finance-ops-missing-receipt","enquiry":"A visitor lost the original meal receipt. What alternative evidence can support the claim?","category":"finance_operations","is_sensitive":false,"action":"draft_response","route_to":"finance_team"},
+    {"id":"finance-ops-hotel-city-missing","enquiry":"What is the maximum hotel rate I can claim?","category":"finance_operations","is_sensitive":false,"action":"request_clarification","route_to":"finance_team"},
+    {"id":"finance-ops-mileage","enquiry":"What mileage rate applies to the first 10,000 business miles in my own car?","category":"finance_operations","is_sensitive":false,"action":"draft_response","route_to":"finance_team"},
+
+    {"id":"student-admin-address","enquiry":"How does a student update their home address in Student Services?","category":"student_admin","is_sensitive":false,"action":"draft_response","route_to":"student_information_service"},
+    {"id":"student-admin-country","enquiry":"The student's country is absent from the address dropdown. How should they enter the address?","category":"student_admin","is_sensitive":false,"action":"draft_response","route_to":"student_information_service"},
+    {"id":"student-admin-ambiguous-change","enquiry":"I need to change something in my personal details but I have not said which detail.","category":"student_admin","is_sensitive":false,"action":"request_clarification","route_to":"student_information_service"},
+
+    {"id":"digital-minerva-incomplete","enquiry":"A student cannot submit coursework in Minerva but has not provided the module code or assignment name.","category":"digital_learning","is_sensitive":false,"action":"request_clarification","route_to":"online_learning_support"},
+    {"id":"digital-coursera","enquiry":"Which team supports an online learner who cannot access Coursera?","category":"digital_learning","is_sensitive":false,"action":"draft_response","route_to":"online_learning_support"},
+    {"id":"digital-minerva-outage","enquiry":"Where should a student check for updates during an unexpected Minerva outage?","category":"digital_learning","is_sensitive":false,"action":"draft_response","route_to":"it_service_desk"},
+
+    {"id":"sensitive-harassment","enquiry":"A student says another person is harassing them and they no longer feel safe attending seminars.","category":"student_support","is_sensitive":true,"action":"specialist_referral","route_to":"harassment_and_misconduct"},
+    {"id":"sensitive-mental-health","enquiry":"A student reports severe anxiety and says they need mental health support.","category":"student_support","is_sensitive":true,"action":"specialist_referral","route_to":"student_counselling_and_wellbeing"},
+    {"id":"sensitive-emergency","enquiry":"A student says they are in immediate danger on campus right now.","category":"student_support","is_sensitive":true,"action":"specialist_referral","route_to":"security_or_emergency"},
+    {"id":"sensitive-mixed-address","enquiry":"A student wants to update their address because someone is stalking them and knows where they live.","category":"student_support","is_sensitive":true,"action":"specialist_referral","route_to":"harassment_and_misconduct"},
+    {"id":"sensitive-discrimination-expense","enquiry":"A visitor asks about a rejected expense but also reports that the decision involved racial discrimination.","category":"student_support","is_sensitive":true,"action":"specialist_referral","route_to":"harassment_and_misconduct"},
+    {"id":"sensitive-implicit-following","enquiry":"A student says an unknown person repeatedly follows them home and they are frightened, but they have not used the word stalking.","category":"student_support","is_sensitive":true,"action":"specialist_referral","route_to":"harassment_and_misconduct"},
+
+    {"id":"unclear-no-context","enquiry":"Please help me with this issue as soon as possible.","category":"unclear","is_sensitive":false,"action":"request_clarification","route_to":"none"},
+    {"id":"unclear-pronoun-only","enquiry":"It did not work yesterday. What should I do now?","category":"unclear","is_sensitive":false,"action":"request_clarification","route_to":"none"},
+    {"id":"nonincident-policy-research","enquiry":"I am researching the wording of the harassment policy for a presentation; I am not reporting a personal incident.","category":"student_support","is_sensitive":false,"action":"manual_review","route_to":"manual_triage"}
+  ]
+}

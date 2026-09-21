@@ -1,0 +1,117 @@
+{
+  "schema_version": "1.1.0",
+  "dataset_id": "uol-finance-operations-retrieval-v1",
+  "scope": {
+    "category": "finance_operations",
+    "document_ids": [
+      "accommodation-3c859667c35c",
+      "cars-and-taxis-ac91fc126134",
+      "subsistence-303e9db7e63d",
+      "travel-and-subsistence-expense-claims-3bf190b47068"
+    ]
+  },
+  "review": {
+    "status": "source_verified",
+    "date": "2026-09-21",
+    "method": "Questions, reference answers, pages, and relevant chunks were manually compared with the four captured University of Leeds Finance pages and their deterministic Stage 02 chunks.",
+    "independent_domain_review": "pending"
+  },
+  "questions": [
+    {
+      "id": "finance-ops-accommodation-booking-channel",
+      "question": "Which booking provider should be used for University business accommodation?",
+      "answer_reference": "University business accommodation should be booked through the University contact using Key Travel.",
+      "expected_pages": [1],
+      "relevant_chunk_ids": ["accommodation-3c859667c35c-p0001-c001"]
+    },
+    {
+      "id": "finance-ops-accommodation-regional-limit",
+      "question": "What nightly accommodation rate is permitted in Leeds when a room cannot be found for under £100?",
+      "answer_reference": "A rate of £120 per night is permitted in Leeds in those circumstances.",
+      "expected_pages": [1],
+      "relevant_chunk_ids": ["accommodation-3c859667c35c-p0001-c002"]
+    },
+    {
+      "id": "finance-ops-unvetted-accommodation",
+      "question": "Can a traveller use an unvetted accommodation provider when Key Travel options do not meet their needs?",
+      "answer_reference": "Yes, but only with the required insurance checks, risk assessment where applicable, and evidence satisfactory to the University contact.",
+      "expected_pages": [1],
+      "relevant_chunk_ids": [
+        "accommodation-3c859667c35c-p0001-c002",
+        "accommodation-3c859667c35c-p0001-c003"
+      ]
+    },
+    {
+      "id": "finance-ops-personal-car-mileage",
+      "question": "What mileage rate can be reimbursed for the first 10,000 business miles in a personal car?",
+      "answer_reference": "Up to £0.55 per mile can be reimbursed for the first 10,000 miles in a tax year.",
+      "expected_pages": [1],
+      "relevant_chunk_ids": ["cars-and-taxis-ac91fc126134-p0001-c002"]
+    },
+    {
+      "id": "finance-ops-passenger-mileage",
+      "question": "How much extra mileage is reimbursed when carrying fellow business travellers?",
+      "answer_reference": "The driver can be reimbursed 5p per mile.",
+      "expected_pages": [1],
+      "relevant_chunk_ids": ["cars-and-taxis-ac91fc126134-p0001-c003"]
+    },
+    {
+      "id": "finance-ops-international-car-insurance",
+      "question": "Is motor insurance required when hiring a car internationally?",
+      "answer_reference": "Yes. Motor insurance must be purchased because international car hire is outside the University's travel insurance cover.",
+      "expected_pages": [1],
+      "relevant_chunk_ids": ["cars-and-taxis-ac91fc126134-p0001-c001"]
+    },
+    {
+      "id": "finance-ops-short-trip-subsistence",
+      "question": "Can subsistence be reimbursed when the traveller is away for fewer than five hours?",
+      "answer_reference": "No. Claims are not reimbursed for an absence of fewer than five hours.",
+      "expected_pages": [1],
+      "relevant_chunk_ids": [
+        "subsistence-303e9db7e63d-p0001-c001",
+        "subsistence-303e9db7e63d-p0002-c001"
+      ]
+    },
+    {
+      "id": "finance-ops-international-subsistence-limit",
+      "question": "What is the maximum daily international subsistence claim?",
+      "answer_reference": "The maximum international subsistence claim is £60 per day.",
+      "expected_pages": [2],
+      "relevant_chunk_ids": ["subsistence-303e9db7e63d-p0002-c001"]
+    },
+    {
+      "id": "finance-ops-no-receipt-fifteen-hours",
+      "question": "Without a receipt, what is the maximum meal claim after 15 hours away when the trip continues at 8pm?",
+      "answer_reference": "The maximum is £25.",
+      "expected_pages": [2],
+      "relevant_chunk_ids": ["subsistence-303e9db7e63d-p0002-c001"]
+    },
+    {
+      "id": "finance-ops-lost-original-receipt",
+      "question": "What evidence may support an expense claim when the original receipt is unavailable?",
+      "answer_reference": "Acceptable evidence can include an e-receipt, bank or credit-card statement, or a photograph, with an explanation for the missing original and evidence of payment.",
+      "expected_pages": [1],
+      "relevant_chunk_ids": [
+        "travel-and-subsistence-expense-claims-3bf190b47068-p0001-c001",
+        "travel-and-subsistence-expense-claims-3bf190b47068-p0001-c002"
+      ]
+    },
+    {
+      "id": "finance-ops-claim-deadline",
+      "question": "How soon after an expense is incurred must the claim be submitted?",
+      "answer_reference": "It must be submitted within six weeks of the expense and within three weeks of the 31 July financial year end.",
+      "expected_pages": [1],
+      "relevant_chunk_ids": ["travel-and-subsistence-expense-claims-3bf190b47068-p0001-c003"]
+    },
+    {
+      "id": "finance-ops-claim-authorisation",
+      "question": "Who is responsible for authorising a non-staff travel expense claim?",
+      "answer_reference": "The appropriate authorised signatory in the relevant Faculty, School, or Service is responsible; the prepared claim is then authorised by the approver and checked by the checker.",
+      "expected_pages": [1],
+      "relevant_chunk_ids": [
+        "travel-and-subsistence-expense-claims-3bf190b47068-p0001-c001",
+        "travel-and-subsistence-expense-claims-3bf190b47068-p0001-c003"
+      ]
+    }
+  ]
+}

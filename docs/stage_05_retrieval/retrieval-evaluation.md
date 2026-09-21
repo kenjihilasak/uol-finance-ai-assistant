@@ -114,3 +114,44 @@ python -m scripts.stage_05_retrieval.evaluate_retrieval \
   --dataset evaluation/datasets/student_admin_retrieval_questions_v1.json \
   --mode hybrid --k 1 2 3 --vector-candidates 20 --overwrite
 ```
+
+## Category-scoped multi-document evaluation
+
+The evaluator now supports schema `1.1.0`, which defines a category and an
+explicit allowlist of document IDs. This matches runtime triage more closely:
+the classifier selects a category and Azure AI Search retrieves across every
+approved document in that category.
+
+Two new source-verified development datasets each contain 12 questions:
+
+- `uol-finance-operations-retrieval-v1`: four Finance policy pages;
+- `uol-digital-learning-retrieval-v1`: two student-support pages.
+
+Both use `top=5`, 50 vector candidates, and an exact category filter.
+
+| Dataset | Mode | Recall@1 | Recall@3 | Recall@5 | MRR@5 |
+| --- | --- | ---: | ---: | ---: | ---: |
+| Finance operations | Vector only | 0.917 | 1.000 | 1.000 | 0.958 |
+| Finance operations | Hybrid | 0.917 | 1.000 | 1.000 | 0.958 |
+| Digital learning | Vector only | 0.917 | 1.000 | 1.000 | 0.958 |
+| Digital learning | Hybrid | 0.917 | 1.000 | 1.000 | 0.958 |
+
+Unlike the annual-report and address-guide baselines, hybrid search did not
+improve ranking on these two datasets: both modes produced the same first
+relevant ranks. This does not show that BM25 is useless. The new corpora are
+small, their documents are topically distinct, and most questions closely
+match source terminology. Add paraphrases, typos, acronym variants, and harder
+cross-document distractors before drawing a broader conclusion.
+
+Artifacts:
+
+- [Finance operations dataset](../../evaluation/datasets/finance_operations_retrieval_questions_v1.json)
+- [Finance operations vector baseline](../../evaluation/baselines/finance_operations_vector_retrieval_v1.json)
+- [Finance operations hybrid baseline](../../evaluation/baselines/finance_operations_hybrid_retrieval_v1.json)
+- [Digital learning dataset](../../evaluation/datasets/digital_learning_retrieval_questions_v1.json)
+- [Digital learning vector baseline](../../evaluation/baselines/digital_learning_vector_retrieval_v1.json)
+- [Digital learning hybrid baseline](../../evaluation/baselines/digital_learning_hybrid_retrieval_v1.json)
+
+The labels were checked against the captured public sources and deterministic
+chunks. Independent Finance and Digital Education domain review remains
+pending and is explicitly recorded in each dataset.

@@ -81,6 +81,66 @@ class RetrievalEvaluationTests(unittest.TestCase):
         self.assertEqual(dataset.review["status"], "source_verified")
         self.assertEqual(len(dataset.cases), 10)
 
+    def test_category_datasets_are_valid_and_source_verified(self):
+        expected = {
+            "finance_operations_retrieval_questions_v1.json": (
+                "finance_operations", 12, 4
+            ),
+            "digital_learning_retrieval_questions_v1.json": (
+                "digital_learning", 12, 2
+            ),
+        }
+        for filename, (category, questions, documents) in expected.items():
+            with self.subTest(filename=filename):
+                dataset = load_dataset(Path("evaluation/datasets") / filename)
+                self.assertEqual(dataset.category, category)
+                self.assertEqual(len(dataset.cases), questions)
+                self.assertEqual(len(dataset.document_ids), documents)
+                self.assertEqual(dataset.review["status"], "source_verified")
+
+    def test_category_scoped_dataset_accepts_multiple_documents(self):
+        payload = """{
+          "schema_version": "1.1.0",
+          "dataset_id": "category-test",
+          "scope": {
+            "category": "digital_learning",
+            "document_ids": ["doc-one", "doc-two"]
+          },
+          "review": {"status": "source_verified"},
+          "questions": [{
+            "id": "q1",
+            "question": "Where do I get help?",
+            "answer_reference": "Contact support.",
+            "expected_pages": [1],
+            "relevant_chunk_ids": ["doc-two-p0001-c001"]
+          }]
+        }"""
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "dataset.json"
+            path.write_text(payload, encoding="utf-8")
+            dataset = load_dataset(path)
+        self.assertIsNone(dataset.document_id)
+        self.assertEqual(dataset.category, "digital_learning")
+        self.assertEqual(dataset.document_ids, ("doc-one", "doc-two"))
+
+    def test_category_scoped_dataset_rejects_out_of_scope_chunk(self):
+        payload = """{
+          "schema_version": "1.1.0",
+          "dataset_id": "category-test",
+          "scope": {"category": "finance", "document_ids": ["allowed"]},
+          "review": {"status": "source_verified"},
+          "questions": [{
+            "id": "q1", "question": "What is reported?",
+            "answer_reference": "A fact.", "expected_pages": [1],
+            "relevant_chunk_ids": ["other-p0001-c001"]
+          }]
+        }"""
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "dataset.json"
+            path.write_text(payload, encoding="utf-8")
+            with self.assertRaisesRegex(RuntimeError, "outside its scope"):
+                load_dataset(path)
+
     def test_dataset_rejects_unverified_review(self):
         payload = """{
           "schema_version": "1.0.0",

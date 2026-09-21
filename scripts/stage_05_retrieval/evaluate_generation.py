@@ -160,6 +160,7 @@ def run_generation_evaluation(
                 top=top,
                 vector_candidates=vector_candidates,
                 document_id=dataset.document_id,
+                category=dataset.category,
             )
             evidence = evidence_from_results(results)
             answer, usage = generate_answer_with_usage(

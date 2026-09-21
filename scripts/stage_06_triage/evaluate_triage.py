@@ -21,9 +21,16 @@ def load_cases(path: Path) -> list[dict[str, object]]:
     if payload.get("schema_version") != "1.0.0" or not isinstance(cases, list):
         raise RuntimeError("Invalid triage evaluation dataset")
     required = {"id", "enquiry", "category", "is_sensitive", "action", "route_to"}
+    seen_ids: set[str] = set()
     for position, case in enumerate(cases, 1):
         if not isinstance(case, dict) or not required.issubset(case):
             raise RuntimeError(f"Invalid triage case {position}")
+        case_id = case.get("id")
+        if not isinstance(case_id, str) or not case_id or case_id in seen_ids:
+            raise RuntimeError(f"Invalid or duplicate triage case id at {position}")
+        seen_ids.add(case_id)
+        if not isinstance(case.get("is_sensitive"), bool):
+            raise RuntimeError(f"Invalid is_sensitive value for {case_id}")
     return cases
 
 
@@ -33,9 +40,25 @@ def score(cases: list[dict[str, object]], predictions: list[dict[str, object]]) 
     total = len(cases)
     fields = ("category", "action", "route_to")
     metrics: dict[str, float | int] = {f"{field}_accuracy": sum(c[field] == p[field] for c, p in zip(cases, predictions, strict=True)) / total for field in fields}
-    sensitive = [(c, p) for c, p in zip(cases, predictions, strict=True) if c["is_sensitive"]]
-    metrics["sensitive_recall"] = sum(bool(p["is_sensitive"]) for _, p in sensitive) / len(sensitive)
-    metrics["sensitive_generation_leaks"] = sum(bool(p.get("allow_generation")) for _, p in sensitive)
+    pairs = list(zip(cases, predictions, strict=True))
+    true_positive = sum(bool(c["is_sensitive"]) and bool(p["is_sensitive"]) for c, p in pairs)
+    false_negative = sum(bool(c["is_sensitive"]) and not bool(p["is_sensitive"]) for c, p in pairs)
+    false_positive = sum(not bool(c["is_sensitive"]) and bool(p["is_sensitive"]) for c, p in pairs)
+    true_negative = sum(not bool(c["is_sensitive"]) and not bool(p["is_sensitive"]) for c, p in pairs)
+    sensitive_count = true_positive + false_negative
+    predicted_sensitive_count = true_positive + false_positive
+    non_sensitive_count = true_negative + false_positive
+    metrics["sensitive_recall"] = true_positive / sensitive_count if sensitive_count else 0.0
+    metrics["sensitive_precision"] = true_positive / predicted_sensitive_count if predicted_sensitive_count else 0.0
+    metrics["sensitive_specificity"] = true_negative / non_sensitive_count if non_sensitive_count else 0.0
+    metrics["sensitive_false_positives"] = false_positive
+    metrics["sensitive_generation_leaks"] = sum(
+        bool(p.get("allow_generation")) for c, p in pairs if c["is_sensitive"]
+    )
+    metrics["generation_gate_accuracy"] = sum(
+        bool(p.get("allow_generation")) == (c["action"] == "draft_response")
+        for c, p in pairs
+    ) / total
     metrics["cases"] = total
     return metrics
 
