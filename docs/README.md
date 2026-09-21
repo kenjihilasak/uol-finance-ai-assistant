@@ -36,7 +36,8 @@ docs/
 16. [Grounded answer generation](./stage_05_retrieval/grounded-answer-generation.md)
 17. [Enquiry triage and safety](./stage_06_triage/enquiry-triage.md)
 18. [Portfolio UI options](./overview/ui-options.md)
-19. [Serving API and portfolio](./stage_07_serving/api-and-portfolio.md)
-20. [Staff authentication](./stage_07_serving/staff-authentication.md)
+19. [Architecture options: current, Azure-native, and Power Platform](./overview/architecture-options.md)
+20. [Serving API and portfolio](./stage_07_serving/api-and-portfolio.md)
+21. [Staff authentication](./stage_07_serving/staff-authentication.md)
 
 For hands-on learning, read one stage and then run its matching module.
