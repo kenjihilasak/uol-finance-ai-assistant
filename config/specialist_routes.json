@@ -1,9 +1,9 @@
 {
-  "schema_version": "1.0.0",
+  "schema_version": "1.1.0",
   "routes": [
     {
       "route_id": "harassment_and_misconduct",
-      "category": "student_support",
+      "condition": "is_sensitive",
       "sensitivity": "high",
       "action": "specialist_referral",
       "team_name": "Harassment and Misconduct Team",
@@ -16,8 +16,8 @@
       "generation_allowed": false
     },
     {
-      "route_id": "mental_health_and_wellbeing",
-      "category": "student_support",
+      "route_id": "student_counselling_and_wellbeing",
+      "condition": "is_sensitive",
       "sensitivity": "high",
       "action": "specialist_referral",
       "team_name": "Student Counselling and Wellbeing",

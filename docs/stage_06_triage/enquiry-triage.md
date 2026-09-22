@@ -5,74 +5,22 @@ the original email never interacts with the demo directly.
 
 ## Decision flow
 
-```text
-Staff browser — GitHub Pages
-        │
-        │ Unstructured enquiry
-        ▼
-FastAPI — Railway
-        │
-        ├── Request validation and authentication
-        │
-        ├── Deterministic sensitive-term scan in Python
-        │       └── Rule flags retained
-        │
-        ├── Azure call 1: GPT-5-mini classification
-        │       └── Category, sensitivity, route and missing information
-        │
-        └── Deterministic routing policy in Python
-                │
-                ├── Sensitive
-                │     └── Specialist referral; stop
-                │
-                ├── Missing information
-                │     └── Request clarification; stop
-                │
-                ├── Unsupported category
-                │     └── Manual review; stop
-                │
-                └── Approved category
-                      │
-                      ├── Azure call 2:
-                      │   Original enquiry → text-embedding-3-small
-                      │   → 1,536-dimensional query vector
-                      │
-                      ├── Azure call 3: Azure AI Search
-                      │
-                      │   Stored index:
-                      │   - Chunk text for lexical search
-                      │   - Chunk vectors for similarity search
-                      │   - Source and category metadata
-                      │
-                      │   Query inputs:
-                      │   - Original enquiry text
-                      │   - Query vector
-                      │   - Exact category filter
-                      │
-                      │   Hybrid retrieval:
-                      │   - BM25 lexical search over stored chunk text
-                      │   - HNSW semantic search over stored chunk vectors
-                      │   - RRF combines both ranked lists
-                      │   - 50 vector candidates considered
-                      │   - Top 5 fused chunks returned
-                      │
-                      ├── Evidence preparation in FastAPI
-                      │   - Assign controlled source IDs
-                      │   - Preserve source title, URL and page
-                      │   - Limit evidence text
-                      │
-                      ├── Azure call 4: GPT-5-mini grounded generation
-                      │
-                      │   Inputs:
-                      │   - Original enquiry
-                      │   - Top 5 evidence chunks
-                      │   - Allowed citation IDs
-                      │
-                      └── Staff-reviewed draft + citations
-                              │
-                              ├── Response returned to browser
-                              └── Stored in Railway PostgreSQL
-                                  only when staff is authenticated
+```mermaid
+flowchart LR
+    A[Incoming enquiry] --> B[Python sensitive-term detection]
+    B --> C[GPT-5-mini structured classification]
+    C --> D[Deterministic Python routing policy]
+    D --> E{Sensitive flag from Python or LLM?}
+    E -- Yes --> F[Specialist referral<br/>Example: harassment or stalking<br/>Block RAG]
+    E -- No --> G{Supported category?}
+    G -- No --> H[Manual review<br/>Example: laboratory water leak<br/>Block RAG]
+    G -- Yes --> I{Essential information missing?}
+    I -- Yes --> J[Show missing information and proposed route<br/>Staff requests details or routes enquiry<br/>Block generation]
+    I -- No --> K[Category-filtered hybrid RAG<br/>Grounded draft with citations]
+    F --> L[Staff review queue]
+    H --> L
+    J --> L
+    K --> L
 ```
 
 The LLM returns a typed classification: `category`, `subcategory`,
@@ -81,11 +29,11 @@ summary. `routing_policy.py` then makes the final decision in code. A sensitive
 decision always sets `allow_generation=false`, so the model never receives
 retrieved context with which to draft a response.
 
-`unsupported` is a control category rather than a new knowledge domain. It
-means that the enquiry is understandable but falls outside the four approved
-RAG categories. Python routes it to `manual_triage` and blocks retrieval and
-generation. `unclear` is reserved for enquiries whose intent cannot yet be
-determined.
+The classifier has five category values: four approved RAG domains plus
+`unsupported`. The latter is a control value rather than a knowledge corpus.
+Sensitivity and missing information are separate fields, so neither
+`student_support` nor `unclear` is needed as a category. Python blocks retrieval
+for unsupported and sensitive enquiries.
 
 The sensitive-term scan runs first inside FastAPI on Railway, but the current
 implementation still sends the enquiry to GPT-5-mini for classification. The
@@ -107,7 +55,7 @@ those IDs, and FastAPI validates them before returning the response.
 | `classify_enquiry.py` | Structured classification with `gpt-5-mini` |
 | `routing_policy.py` | Deterministic final action and route |
 | `triage_enquiry.py` | Orchestrates classification and approved RAG |
-| `evaluate_triage.py` | Measures the ten-case reviewed dataset |
+| `evaluate_triage.py` | Measures the 21-case reviewed dataset |
 
 ## Evaluation
 

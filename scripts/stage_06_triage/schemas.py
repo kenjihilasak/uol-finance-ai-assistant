@@ -10,9 +10,7 @@ class Category(str, Enum):
     FINANCE_OPERATIONS = "finance_operations"
     STUDENT_ADMIN = "student_admin"
     DIGITAL_LEARNING = "digital_learning"
-    STUDENT_SUPPORT = "student_support"
     UNSUPPORTED = "unsupported"
-    UNCLEAR = "unclear"
 
 
 class TriageAction(str, Enum):
@@ -23,7 +21,6 @@ class TriageAction(str, Enum):
 
 
 class RouteTo(str, Enum):
-    NONE = "none"
     FINANCE_INFORMATION = "finance_information"
     FINANCE_TEAM = "finance_team"
     STUDENT_INFORMATION_SERVICE = "student_information_service"

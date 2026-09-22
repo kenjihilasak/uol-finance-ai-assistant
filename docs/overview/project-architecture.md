@@ -138,11 +138,13 @@ sequenceDiagram
     LLM-->>API: Category, sensitivity, action, route
     API->>API: Apply policy to rule flags + classification
 
-    alt Sensitive enquiry
+    alt Sensitive flag from Python or LLM
         API-->>UI: Specialist route; no retrieval or draft
-    else Unclear or missing information
-        API-->>UI: Clarification request
-    else Approved answerable domain
+    else Unsupported category
+        API-->>UI: Manual review; no retrieval or draft
+    else Supported but missing information
+        API-->>UI: Missing fields + proposed route for staff decision
+    else Supported and complete
         API->>EMB: Generate query vector
         EMB-->>API: Query embedding
         API->>SEARCH: Text + query vector + category filter
@@ -152,8 +154,6 @@ sequenceDiagram
         LLM-->>API: Draft cited answer
         API->>API: Validate citation IDs
         API-->>UI: Return staff-reviewed draft and pages
-    else Unsupported domain
-        API-->>UI: Manual review
     end
 
     UI-->>User: Show result

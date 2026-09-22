@@ -24,15 +24,15 @@
     {"id":"digital-coursera","enquiry":"Which team supports an online learner who cannot access Coursera?","category":"digital_learning","is_sensitive":false,"action":"draft_response","route_to":"online_learning_support"},
     {"id":"digital-minerva-outage","enquiry":"Where should a student check for updates during an unexpected Minerva outage?","category":"digital_learning","is_sensitive":false,"action":"draft_response","route_to":"it_service_desk"},
 
-    {"id":"sensitive-harassment","enquiry":"A student says another person is harassing them and they no longer feel safe attending seminars.","category":"student_support","is_sensitive":true,"action":"specialist_referral","route_to":"harassment_and_misconduct"},
-    {"id":"sensitive-mental-health","enquiry":"A student reports severe anxiety and says they need mental health support.","category":"student_support","is_sensitive":true,"action":"specialist_referral","route_to":"student_counselling_and_wellbeing"},
-    {"id":"sensitive-emergency","enquiry":"A student says they are in immediate danger on campus right now.","category":"student_support","is_sensitive":true,"action":"specialist_referral","route_to":"security_or_emergency"},
-    {"id":"sensitive-mixed-address","enquiry":"A student wants to update their address because someone is stalking them and knows where they live.","category":"student_support","is_sensitive":true,"action":"specialist_referral","route_to":"harassment_and_misconduct"},
-    {"id":"sensitive-discrimination-expense","enquiry":"A visitor asks about a rejected expense but also reports that the decision involved racial discrimination.","category":"student_support","is_sensitive":true,"action":"specialist_referral","route_to":"harassment_and_misconduct"},
-    {"id":"sensitive-implicit-following","enquiry":"A student says an unknown person repeatedly follows them home and they are frightened, but they have not used the word stalking.","category":"student_support","is_sensitive":true,"action":"specialist_referral","route_to":"harassment_and_misconduct"},
+    {"id":"sensitive-harassment","enquiry":"A student says another person is harassing them and they no longer feel safe attending seminars.","category":"unsupported","is_sensitive":true,"action":"specialist_referral","route_to":"harassment_and_misconduct"},
+    {"id":"sensitive-mental-health","enquiry":"A student reports severe anxiety and says they need mental health support.","category":"unsupported","is_sensitive":true,"action":"specialist_referral","route_to":"student_counselling_and_wellbeing"},
+    {"id":"sensitive-emergency","enquiry":"A student says they are in immediate danger on campus right now.","category":"unsupported","is_sensitive":true,"action":"specialist_referral","route_to":"security_or_emergency"},
+    {"id":"sensitive-mixed-address","enquiry":"A student wants to update their address because someone is stalking them and knows where they live.","category":"student_admin","is_sensitive":true,"action":"specialist_referral","route_to":"harassment_and_misconduct"},
+    {"id":"sensitive-discrimination-expense","enquiry":"A visitor asks about a rejected expense but also reports that the decision involved racial discrimination.","category":"finance_operations","is_sensitive":true,"action":"specialist_referral","route_to":"harassment_and_misconduct"},
+    {"id":"sensitive-implicit-following","enquiry":"A student says an unknown person repeatedly follows them home and they are frightened, but they have not used the word stalking.","category":"unsupported","is_sensitive":true,"action":"specialist_referral","route_to":"harassment_and_misconduct"},
 
-    {"id":"unclear-no-context","enquiry":"Please help me with this issue as soon as possible.","category":"unclear","is_sensitive":false,"action":"request_clarification","route_to":"none"},
-    {"id":"unclear-pronoun-only","enquiry":"It did not work yesterday. What should I do now?","category":"unclear","is_sensitive":false,"action":"request_clarification","route_to":"none"},
-    {"id":"nonincident-policy-research","enquiry":"I am researching the wording of the harassment policy for a presentation; I am not reporting a personal incident.","category":"student_support","is_sensitive":false,"action":"manual_review","route_to":"manual_triage"}
+    {"id":"unclear-no-context","enquiry":"Please help me with this issue as soon as possible.","category":"unsupported","is_sensitive":false,"action":"manual_review","route_to":"manual_triage"},
+    {"id":"unclear-pronoun-only","enquiry":"It did not work yesterday. What should I do now?","category":"unsupported","is_sensitive":false,"action":"manual_review","route_to":"manual_triage"},
+    {"id":"nonincident-policy-research","enquiry":"I am researching the wording of the harassment policy for a presentation; I am not reporting a personal incident.","category":"unsupported","is_sensitive":false,"action":"manual_review","route_to":"manual_triage"}
   ]
 }

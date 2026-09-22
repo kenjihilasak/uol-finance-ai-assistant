@@ -111,7 +111,7 @@
     },
     {
       "id": "sensitive-harassment",
-      "category": "student_support",
+      "category": "unsupported",
       "is_sensitive": true,
       "action": "specialist_referral",
       "route_to": "harassment_and_misconduct",
@@ -119,7 +119,7 @@
     },
     {
       "id": "sensitive-mental-health",
-      "category": "student_support",
+      "category": "unsupported",
       "is_sensitive": true,
       "action": "specialist_referral",
       "route_to": "student_counselling_and_wellbeing",
@@ -127,7 +127,7 @@
     },
     {
       "id": "sensitive-emergency",
-      "category": "student_support",
+      "category": "unsupported",
       "is_sensitive": true,
       "action": "specialist_referral",
       "route_to": "security_or_emergency",
@@ -135,15 +135,15 @@
     },
     {
       "id": "sensitive-mixed-address",
-      "category": "student_support",
+      "category": "student_admin",
       "is_sensitive": true,
       "action": "specialist_referral",
-      "route_to": "security_or_emergency",
+      "route_to": "harassment_and_misconduct",
       "allow_generation": false
     },
     {
       "id": "sensitive-discrimination-expense",
-      "category": "student_support",
+      "category": "finance_operations",
       "is_sensitive": true,
       "action": "specialist_referral",
       "route_to": "harassment_and_misconduct",
@@ -151,31 +151,31 @@
     },
     {
       "id": "sensitive-implicit-following",
-      "category": "student_support",
+      "category": "unsupported",
       "is_sensitive": true,
       "action": "specialist_referral",
-      "route_to": "harassment_and_misconduct",
+      "route_to": "security_or_emergency",
       "allow_generation": false
     },
     {
       "id": "unclear-no-context",
-      "category": "unclear",
+      "category": "unsupported",
       "is_sensitive": false,
-      "action": "request_clarification",
-      "route_to": "none",
+      "action": "manual_review",
+      "route_to": "manual_triage",
       "allow_generation": false
     },
     {
       "id": "unclear-pronoun-only",
-      "category": "unclear",
+      "category": "unsupported",
       "is_sensitive": false,
-      "action": "request_clarification",
-      "route_to": "none",
+      "action": "manual_review",
+      "route_to": "manual_triage",
       "allow_generation": false
     },
     {
       "id": "nonincident-policy-research",
-      "category": "student_support",
+      "category": "unsupported",
       "is_sensitive": true,
       "action": "specialist_referral",
       "route_to": "harassment_and_misconduct",

@@ -7,10 +7,10 @@
     {"id":"address-update","enquiry":"A student asks how to update their home address in Student Services.","category":"student_admin","is_sensitive":false,"action":"draft_response","route_to":"student_information_service"},
     {"id":"minerva-submit","enquiry":"A student cannot submit coursework in Minerva and provides no module code or assignment name.","category":"digital_learning","is_sensitive":false,"action":"request_clarification","route_to":"it_service_desk"},
     {"id":"online-course","enquiry":"An online learner asks which team supports Coursera access.","category":"digital_learning","is_sensitive":false,"action":"draft_response","route_to":"online_learning_support"},
-    {"id":"harassment","enquiry":"A student says another person is harassing them and they no longer feel safe attending seminars.","category":"student_support","is_sensitive":true,"action":"specialist_referral","route_to":"harassment_and_misconduct"},
-    {"id":"mental-health","enquiry":"A student reports severe anxiety and says they need mental health support.","category":"student_support","is_sensitive":true,"action":"specialist_referral","route_to":"student_counselling_and_wellbeing"},
-    {"id":"emergency","enquiry":"A student says they are in immediate danger on campus.","category":"student_support","is_sensitive":true,"action":"specialist_referral","route_to":"security_or_emergency"},
-    {"id":"mixed-sensitive","enquiry":"A student wants an address update but also says they are being stalked by someone who knows the old address.","category":"student_support","is_sensitive":true,"action":"specialist_referral","route_to":"harassment_and_misconduct"},
-    {"id":"unclear","enquiry":"Please help me with this issue as soon as possible.","category":"unclear","is_sensitive":false,"action":"request_clarification","route_to":"manual_triage"}
+    {"id":"harassment","enquiry":"A student says another person is harassing them and they no longer feel safe attending seminars.","category":"unsupported","is_sensitive":true,"action":"specialist_referral","route_to":"harassment_and_misconduct"},
+    {"id":"mental-health","enquiry":"A student reports severe anxiety and says they need mental health support.","category":"unsupported","is_sensitive":true,"action":"specialist_referral","route_to":"student_counselling_and_wellbeing"},
+    {"id":"emergency","enquiry":"A student says they are in immediate danger on campus.","category":"unsupported","is_sensitive":true,"action":"specialist_referral","route_to":"security_or_emergency"},
+    {"id":"mixed-sensitive","enquiry":"A student wants an address update but also says they are being stalked by someone who knows the old address.","category":"student_admin","is_sensitive":true,"action":"specialist_referral","route_to":"harassment_and_misconduct"},
+    {"id":"unclear","enquiry":"Please help me with this issue as soon as possible.","category":"unsupported","is_sensitive":false,"action":"manual_review","route_to":"manual_triage"}
   ]
 }

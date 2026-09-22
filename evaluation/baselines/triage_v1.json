@@ -5,7 +5,11 @@
     "action_accuracy": 1.0,
     "route_to_accuracy": 0.8,
     "sensitive_recall": 1.0,
+    "sensitive_precision": 1.0,
+    "sensitive_specificity": 1.0,
+    "sensitive_false_positives": 0,
     "sensitive_generation_leaks": 0,
+    "generation_gate_accuracy": 1.0,
     "cases": 10
   },
   "predictions": [
@@ -22,7 +26,7 @@
       "category": "finance_operations",
       "is_sensitive": false,
       "action": "draft_response",
-      "route_to": "finance_team",
+      "route_to": "finance_information",
       "allow_generation": true
     },
     {
@@ -51,7 +55,7 @@
     },
     {
       "id": "harassment",
-      "category": "student_support",
+      "category": "unsupported",
       "is_sensitive": true,
       "action": "specialist_referral",
       "route_to": "harassment_and_misconduct",
@@ -59,7 +63,7 @@
     },
     {
       "id": "mental-health",
-      "category": "student_support",
+      "category": "unsupported",
       "is_sensitive": true,
       "action": "specialist_referral",
       "route_to": "student_counselling_and_wellbeing",
@@ -67,7 +71,7 @@
     },
     {
       "id": "emergency",
-      "category": "student_support",
+      "category": "unsupported",
       "is_sensitive": true,
       "action": "specialist_referral",
       "route_to": "security_or_emergency",
@@ -75,7 +79,7 @@
     },
     {
       "id": "mixed-sensitive",
-      "category": "student_support",
+      "category": "student_admin",
       "is_sensitive": true,
       "action": "specialist_referral",
       "route_to": "harassment_and_misconduct",
@@ -83,10 +87,10 @@
     },
     {
       "id": "unclear",
-      "category": "unclear",
+      "category": "unsupported",
       "is_sensitive": false,
-      "action": "request_clarification",
-      "route_to": "none",
+      "action": "manual_review",
+      "route_to": "manual_triage",
       "allow_generation": false
     }
   ]

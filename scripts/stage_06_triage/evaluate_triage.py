@@ -12,6 +12,7 @@ from scripts.stage_05_retrieval.generate_grounded_answer import load_config, ope
 from scripts.stage_05_retrieval.hybrid_search import OPENAI_SCOPE
 from scripts.stage_06_triage.classify_enquiry import classify_enquiry
 from scripts.stage_06_triage.routing_policy import apply_routing_policy
+from scripts.stage_06_triage.schemas import Category, RouteTo, TriageAction
 from scripts.stage_06_triage.sensitive_rules import detect_sensitive_terms
 
 
@@ -31,6 +32,12 @@ def load_cases(path: Path) -> list[dict[str, object]]:
         seen_ids.add(case_id)
         if not isinstance(case.get("is_sensitive"), bool):
             raise RuntimeError(f"Invalid is_sensitive value for {case_id}")
+        try:
+            Category(str(case["category"]))
+            TriageAction(str(case["action"]))
+            RouteTo(str(case["route_to"]))
+        except ValueError as error:
+            raise RuntimeError(f"Invalid controlled value for {case_id}") from error
     return cases
 
 

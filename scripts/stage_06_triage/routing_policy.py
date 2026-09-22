@@ -48,8 +48,7 @@ def apply_routing_policy(
             rule_flags=rule_flags,
         )
     if (
-        classification.category == Category.UNCLEAR
-        or classification.missing_info
+        classification.missing_info
         or classification.action == TriageAction.REQUEST_CLARIFICATION
     ):
         return TriageDecision(

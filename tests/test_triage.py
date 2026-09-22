@@ -42,7 +42,7 @@ class TriageTests(unittest.TestCase):
 
     def test_llm_sensitive_flag_blocks_generation_without_keyword_rule(self):
         decision = apply_routing_policy(classification(
-            category=Category.STUDENT_SUPPORT,
+            category=Category.UNSUPPORTED,
             is_sensitive=True,
             route_to=RouteTo.STUDENT_COUNSELLING_AND_WELLBEING,
         ))
@@ -100,7 +100,7 @@ class TriageTests(unittest.TestCase):
         record = {
             "enquiry_id":"id-1", "created_at_utc":"2026-09-20T12:00:00Z",
             "enquiry":"Sensitive details", "summary":"Needs support",
-            "category":"student_support", "subcategory":"wellbeing",
+            "category":"unsupported", "subcategory":"wellbeing",
             "is_sensitive":True, "action":"specialist_referral",
             "route_to":"student_counselling_and_wellbeing", "missing_info":[],
             "answer_status":None, "draft_response":None, "citation_ids":[],
