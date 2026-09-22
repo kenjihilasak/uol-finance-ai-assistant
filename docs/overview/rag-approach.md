@@ -2,45 +2,35 @@
 
 ## Decision
 
-Use a custom classic RAG pipeline so provenance, retrieval quality, and failure
-modes remain visible. The corpus contains only PDFs placed in `data/sources/`
-and registered by an operator; URL downloading is not part of the application.
+Use a custom classic RAG pipeline so ingestion, retrieval, citations and
+failure modes remain inspectable and independently testable.
 
-This matches a common enterprise boundary: an approved upstream process
-supplies documents, and the AI pipeline validates and processes them.
+```text
+approved source
+→ validate and hash
+→ extract and chunk
+→ embed
+→ index text, vectors and provenance
+→ category-filtered hybrid retrieval
+→ grounded draft with controlled citations
+```
 
-## Pipeline
+## Key choices
 
-1. Register, validate, and hash the PDF.
-2. Store an immutable copy in Azure Blob Storage.
-3. Extract page-level text and apply quality checks.
-4. Create deterministic, recursive, page-bounded chunks.
-5. Generate embeddings with Microsoft Foundry.
-6. Index chunks and vectors in Azure AI Search.
-7. Retrieve evidence with hybrid BM25 and vector search.
-8. Return a cited answer or abstain.
+- Operator-provided PDF and HTML snapshots; no runtime URL downloading.
+- Immutable source copy and deterministic hashes for traceability.
+- Page-bounded chunks so citations map back to original sources.
+- `text-embedding-3-small` for documents and user enquiries.
+- Azure AI Search for BM25 text search, vector similarity and RRF fusion.
+- Top-five evidence context with source IDs constrained by JSON Schema.
+- Abstention when approved evidence is insufficient.
+- RAG starts only after deterministic triage permits generation.
 
-Steps 1–8 plus retrieval, positive-generation, and abstention baselines are
-implemented. Serving is next.
+## Evidence
 
-## Direct PDF intake
-
-Direct intake keeps web acquisition concerns outside the RAG pipeline while
-preserving SHA-256 deduplication, versioning, and overwrite protection. A future
-web, SharePoint, or API connector can feed the same registration boundary.
-
-Public access is not treated as an open licence. PDFs and generated artifacts
-stay outside Git, and source metadata records provenance and usage notes.
-
-## Design references
-
-The design follows the classic flow demonstrated by
-`Azure-Samples/azure-search-classic-rag` and the vector-index patterns in
-`Azure-Samples/azure-search-python-samples`. A full application template is
-deferred until retrieval quality is measurable.
-
-## Azure boundary
-
-`FOUNDRY_PROJECT_ENDPOINT` identifies the project.
-`AZURE_OPENAI_ENDPOINT` serves model requests. Local access uses Entra ID, not
-API keys, connection strings, or SAS tokens.
+- [Chunking strategy](../stage_02_processing/chunking-strategy.md)
+- [Embedding generation](../stage_03_embeddings/embedding-generation.md)
+- [Hybrid retrieval](../stage_05_retrieval/hybrid-retrieval.md)
+- [Retrieval design decisions](../stage_05_retrieval/retrieval-design-decisions.md)
+- [Grounded answer generation](../stage_05_retrieval/grounded-answer-generation.md)
+- [Retrieval evaluation](../stage_05_retrieval/retrieval-evaluation.md)

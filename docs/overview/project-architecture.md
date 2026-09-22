@@ -1,208 +1,59 @@
 # Project architecture
 
-## Scope
+Agentic Support Intelligence is a staff-facing enquiry-triage system. It
+classifies an enquiry, applies deterministic safety policy, and creates a cited
+draft only when the category is supported and the request is complete.
 
-This project is a staff-facing enquiry-triage system with modular RAG on Azure.
-The offline pipeline turns approved PDF and HTML sources into traceable vectors.
-The online path categorises each enquiry, applies deterministic safety routing,
-and generates a cited draft only for approved domains. The existing Astro
-portfolio provides the demo UI.
-
-Source acquisition is outside the application boundary. An operator places a
-source in `data/sources/`; a URL is provenance, not a processing-time download input or
-proof of permission.
-
-| Status | Meaning |
-| --- | --- |
-| Implemented | Code exists in this repository. |
-| Provisioned | Azure resource exists; integration may be incomplete. |
-| Planned | Target capability not yet implemented. |
-
-## System map
+## Deployed system
 
 ```mermaid
-flowchart TB
-    classDef implemented fill:#DCFCE7,stroke:#15803D,color:#14532D,stroke-width:2px
-    classDef provisioned fill:#FEF3C7,stroke:#B45309,color:#78350F,stroke-width:2px
-    classDef planned fill:#F1F5F9,stroke:#64748B,color:#334155,stroke-width:2px,stroke-dasharray:5 5
+flowchart LR
+    staff[Staff browser] -->|Entra sign-in| ui[Astro<br/>GitHub Pages]
+    ui -->|HTTPS| api[FastAPI<br/>Railway]
+    api --> policy[Python triage policy]
+    policy --> foundry[Microsoft Foundry<br/>GPT-5-mini + embeddings]
+    policy --> search[Azure AI Search<br/>text + vectors]
+    api --> db[(Railway PostgreSQL<br/>review queue)]
 
-    source[Approved local PDF or HTML snapshot]
-    ingest[Stage 01: register and validate]
-    sourceBlob[(Immutable source blob)]
-    process[Stage 02: extract and chunk]
-    vectors[Stage 03: generate embeddings]
-    search[(Stage 04: Azure AI Search)]
-    retrieval[Stage 05: hybrid retrieval]
-    triage[Stage 06: classify and route]
-    rag[FastAPI on Railway]
-    db[(Railway PostgreSQL)]
-    excel[Protected XLSX export]
-    ui[Astro portfolio on GitHub Pages]
-
-    source --> ingest
-    ingest --> sourceBlob
-    ingest --> process
-    process --> vectors
-    vectors --> search
-    search --> retrieval
-    triage --> rag
-    retrieval --> rag
-    rag --> ui
-    rag --> db --> excel
-
-    class source,ingest,sourceBlob,process,vectors,search,retrieval,triage,rag,db,excel,ui implemented
+    sources[Approved local sources] --> pipeline[Python ingestion pipeline]
+    pipeline --> blob[Azure Blob Storage]
+    pipeline --> foundry
+    pipeline --> search
 ```
 
-All shown components are implemented. The Railway API and GitHub Pages
-workbench were deployed and verified end to end on 20 September 2026.
-
-## Implemented offline path
-
-```mermaid
-flowchart TB
-    classDef implemented fill:#DCFCE7,stroke:#15803D,color:#14532D,stroke-width:2px
-
-    operator[Operator]
-    pdf[PDF or HTML in data/sources]
-    register[Register provenance and usage basis]
-    validate[Validate path, size, PDF header and SHA-256]
-    upload[Upload without overwrite]
-    sourceBlob[(Blob: source-documents)]
-    extract[Extract pages to processed JSON]
-    chunk[Create recursive page-bounded chunks]
-    request[Send embedding batches]
-    model[Foundry embedding deployment]
-    records[Validate and store vector records]
-    entra[Microsoft Entra ID]
-
-    operator --> pdf --> register --> validate
-    validate --> upload --> sourceBlob
-    validate --> extract --> chunk --> request
-    request --> model --> records
-    entra -.-> upload
-    entra -.-> model
-
-    class operator,pdf,register,validate,upload,sourceBlob,extract,chunk,request,model,records,entra implemented
-```
-
-Use the [source ingestion guide](../stage_01_ingestion/source-ingestion.md) for
-commands. Data contracts are defined by the
-[source metadata](../stage_01_ingestion/source-metadata-schema.md) and
-[processed document](../stage_02_processing/processed-document-schema.md)
-schemas. The [chunking strategy](../stage_02_processing/chunking-strategy.md)
-records the retrieval-unit decision and comparison.
-
-## Component status
-
-| Component | Responsibility | Status |
-| --- | --- | --- |
-| `source-documents` | Preserve verified original PDFs. | Implemented |
-| `processed-documents` | Store processed artifacts in Azure. | Provisioned |
-| Embedding deployment | Convert text into vectors. | Implemented |
-| Azure AI Search | Store the hybrid retrieval index. | Implemented |
-| Hybrid retrieval | Combine BM25 and vector evidence rankings. | Implemented |
-| Staff enquiry triage | Classify, clarify, answer, or route an enquiry. | Implemented |
-| Sensitive routing registry | Keep specialist routes outside answer generation. | Implemented |
-| Chat deployment | Synthesize answers from bounded evidence. | Implemented |
-| Grounded answer CLI | Generate, cite, validate, and abstain. | Implemented |
-| FastAPI serving layer | Serve triage, documents, cited answers, and review operations. | Implemented |
-| Enquiry repository | Persist a review queue in PostgreSQL; redact sensitive text. | Implemented |
-| Excel export | Produce a protected `.xlsx` snapshot of the review queue. | Implemented |
-| Astro portfolio UI | Present evidence and call the API without Azure secrets. | Implemented |
-| `evaluation-data` | Store evaluation inputs and results. | Provisioned |
-| Retrieval evaluation | Measure Recall@k and MRR on reviewed questions. | Implemented |
-| Positive generation evaluation | Measure answers, citations, and token usage. | Implemented |
-| Abstention evaluation | Measure unanswerable questions and false answers. | Implemented |
-| Serving telemetry | Measure public API latency, failures, and cost. | Planned |
-
-## Online request path
-
-```mermaid
-sequenceDiagram
-    autonumber
-    actor User as Staff user
-    participant UI as Astro on GitHub Pages
-    participant API as FastAPI on Railway
-    participant ID as Microsoft Entra ID
-    participant EMB as Embedding deployment
-    participant SEARCH as Azure AI Search
-    participant LLM as Chat deployment
-
-    User->>UI: Paste a synthetic incoming enquiry
-    UI->>API: POST /v1/triage
-    API->>ID: Request OAuth access tokens
-    ID-->>API: Issue scoped tokens
-
-    API->>API: Scan sensitive terms; retain rule flags
-    API->>LLM: Request typed classification
-    LLM-->>API: Category, sensitivity, action, route
-    API->>API: Apply policy to rule flags + classification
-
-    alt Sensitive flag from Python or LLM
-        API-->>UI: Specialist route; no retrieval or draft
-    else Unsupported category
-        API-->>UI: Manual review; no retrieval or draft
-    else Supported but missing information
-        API-->>UI: Missing fields + proposed route for staff decision
-    else Supported and complete
-        API->>EMB: Generate query vector
-        EMB-->>API: Query embedding
-        API->>SEARCH: Text + query vector + category filter
-        SEARCH->>SEARCH: BM25 + HNSW + RRF; 50 candidates
-        SEARCH-->>API: Return top 5 chunks with provenance
-        API->>LLM: Send question and bounded evidence
-        LLM-->>API: Draft cited answer
-        API->>API: Validate citation IDs
-        API-->>UI: Return staff-reviewed draft and pages
-    end
-
-    UI-->>User: Show result
-```
-
-The API also maps cited chunks to official PDF links and page anchors through a
-tracked public document catalog.
-
-## Security and traceability
-
-| Context | Identity |
+| Area | Current implementation |
 | --- | --- |
-| Local development | Device code or browser credential with least-privilege RBAC |
-| Railway application | Entra ID service principal with data-plane RBAC |
-| Future Azure-hosted application | Managed identity with data-plane RBAC |
-| Git | No credentials or document content |
+| Frontend | Astro case study, live workbench and staff queue on GitHub Pages |
+| API | FastAPI on Railway |
+| Identity | Microsoft Entra ID for staff and Azure service access |
+| AI | GPT-5-mini and `text-embedding-3-small` in Microsoft Foundry |
+| Retrieval | Hybrid BM25 + vector search in Azure AI Search |
+| Persistence | Railway PostgreSQL plus protected XLSX export |
+| Source storage | Azure Blob Storage |
+| Ingestion | Operator-run local Python stages |
 
-```text
-operator approval
-  -> PDF SHA-256 + source metadata
-  -> immutable source blob
-  -> page hash
-  -> chunk ID + chunk hash
-  -> embedding record
-  -> search result
-  -> citation
-```
+## Boundaries
 
-Controls: restricted source paths, symlink rejection, file and hash validation,
-overwrite protection, deterministic chunk IDs, vector-size checks, versioned
-schemas, a public-document allowlist, deterministic sensitive routing, no
-generation on sensitive cases, redaction before persistence, protected admin
-routes, CORS, input limits, request throttling, and a live-generation kill
-switch. The operator is responsible for usage and redistribution rights.
+- The public demo accepts synthetic enquiries only.
+- Source acquisition and approval happen before ingestion.
+- Only four indexed categories may enter RAG.
+- Sensitive, unsupported and incomplete enquiries cannot generate drafts.
+- All generated answers are drafts requiring staff review.
+- Source documents, extracted text, chunks and vectors remain outside Git.
 
-## Evaluation targets
+## Detailed documentation
 
-| Layer | Measures |
-| --- | --- |
-| Ingestion | Hash match, extraction coverage, empty-page rate |
-| Retrieval | Recall@k, MRR, nDCG, source/page match |
-| Generation | Groundedness, citation correctness, abstention quality |
-| Triage | Category/action/route accuracy, sensitive recall, generation leaks |
-| Operations | p50/p95 latency, failures, tokens, estimated cost |
+- [Corpus and routing boundaries](corpus-and-routing.md)
+- [Source ingestion](../stage_01_ingestion/source-ingestion.md)
+- [Embedding generation](../stage_03_embeddings/embedding-generation.md)
+- [Index schema](../stage_04_search_index/index-schema.md)
+- [Hybrid retrieval](../stage_05_retrieval/hybrid-retrieval.md)
+- [Enquiry triage](../stage_06_triage/enquiry-triage.md)
+- [API and portfolio](../stage_07_serving/api-and-portfolio.md)
+- [Azure resources](../stage_00_environment/azure-resources.md)
 
-Each run should record corpus, index, model, retrieval, and prompt versions.
+## Current gaps
 
-## Roadmap
-
-1. Add persistent rate limiting, telemetry, and cost dashboards.
-2. Add Entra-authenticated staff access before storing real enquiries.
-3. Add an authenticated ingestion interface with malware and content review.
+Production use still requires institutional policy review, independent domain
+validation, persistent distributed rate limiting, operational telemetry,
+retention controls and an approved ingestion interface.

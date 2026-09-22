@@ -1,22 +1,29 @@
 # Corpus and routing boundaries
 
-The staff tool separates answerable operational knowledge from sensitive cases
-that must be routed without an AI-generated substantive response.
+The classifier exposes five category values, but only four have an approved RAG
+corpus.
 
-| Classification category | Behaviour | Current source status |
+| Category | Knowledge scope | RAG |
 | --- | --- | --- |
-| `finance` | Corporate reporting answers with citations | Indexed |
-| `student_admin` | Process guidance with citations | Indexed |
-| `digital_learning` | Minerva and online-learning guidance | Indexed |
-| `finance_operations` | Expense-policy guidance | Indexed |
-| `unsupported` | Manual review or sensitive specialist referral | No RAG corpus |
+| `finance` | University annual-report information | Allowed |
+| `finance_operations` | Expenses, travel and subsistence guidance | Allowed |
+| `student_admin` | Personal-details and address guidance | Allowed |
+| `digital_learning` | Minerva and online-learning guidance | Allowed |
+| `unsupported` | Everything outside the approved scope | Blocked |
 
-`config/public_documents.json` is the allowlist for answerable sources.
-`unsupported` is a control value, not a fifth knowledge corpus.
-`config/specialist_routes.json` holds referral destinations with
-`generation_allowed=false`. Sensitivity is a separate boolean condition;
-sensitive enquiries must never enter retrieval or answer generation.
+Sensitivity and missing information are independent fields, not categories.
+They can block RAG even when the category is otherwise supported.
 
-The Finance website rejected automated acquisition from this runtime. An
-operator saved approved local snapshots, which were hashed, processed, embedded,
-and indexed without committing the source content to Git.
+Two tracked controls define the boundary:
+
+- [`public_documents.json`](../../config/public_documents.json) allowlists
+  answerable sources and their official URLs.
+- [`specialist_routes.json`](../../config/specialist_routes.json) defines
+  referral destinations where generation is prohibited.
+
+The source corpus is operator-approved. Public availability is treated as
+provenance, not permission to redistribute. Original and generated artifacts
+remain outside Git.
+
+See [enquiry triage](../stage_06_triage/enquiry-triage.md) for routing and
+[source ingestion](../stage_01_ingestion/source-ingestion.md) for intake.
