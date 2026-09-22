@@ -9,6 +9,7 @@ answerable categories. Versioned outputs are stored in `evaluation/baselines/`.
 | --- | ---: | --- |
 | Retrieval | 44 questions, 4 categories | Hybrid Recall@1: **88.6%** |
 | Retrieval | Same 44 questions | Vector-only Recall@1: **79.5%** |
+| Ranking | Same 44 questions | Hybrid MRR@5: **0.938** |
 
 Hybrid retrieval improved the overall first-result hit rate by **9.1 percentage
 points**. The gain came from the annual-report and student-administration
@@ -31,11 +32,14 @@ and an exact category filter.
 | Student administration | 10 | 0.800 | **1.000** | Recall@3: 1.000 | MRR@3: 1.000 |
 | Finance operations | 12 | 0.917 | **0.917** | Recall@5: 1.000 | MRR@5: 0.958 |
 | Digital learning | 12 | 0.917 | **0.917** | Recall@5: 1.000 | MRR@5: 0.958 |
-| **Weighted overall** | **44** | **0.795** | **0.886** | **1.000** | — |
+| **Weighted overall** | **44** | **0.795** | **0.886** | **1.000** | **MRR@5: 0.938** |
 
 The weighted overall row is calculated across questions, not by averaging the
-four category percentages. Overall MRR is not reported because the student
-administration dataset uses a three-result cutoff while the others use five.
+four category percentages. Student administration was originally reported as
+MRR@3 because its corpus has only three chunks. Its MRR@5 is therefore
+identical: ranks four and five do not exist. This allows a comparable weighted
+MRR@5 across all 44 questions. Vector-only MRR@5 is 0.883; hybrid MRR@5 is
+0.938.
 
 ## Conclusions and limits
 
