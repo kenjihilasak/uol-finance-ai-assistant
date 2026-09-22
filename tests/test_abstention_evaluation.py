@@ -50,6 +50,21 @@ class AbstentionEvaluationTests(unittest.TestCase):
         self.assertEqual(dataset.review["status"], "scope_verified")
         self.assertEqual(len(dataset.cases), 10)
 
+    def test_v2_dataset_covers_all_four_rag_categories(self):
+        dataset = load_abstention_dataset(
+            Path("evaluation/datasets/abstention_questions_v2.json")
+        )
+        self.assertEqual(len(dataset.cases), 20)
+        counts = {
+            category: sum(
+                case.retrieval_category == category for case in dataset.cases
+            )
+            for category in {
+                "finance", "finance_operations", "student_admin", "digital_learning"
+            }
+        }
+        self.assertEqual(set(counts.values()), {5})
+
 
 if __name__ == "__main__":
     unittest.main()

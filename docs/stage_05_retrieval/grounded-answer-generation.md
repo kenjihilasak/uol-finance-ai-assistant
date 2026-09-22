@@ -14,13 +14,13 @@ hybrid retriever returns bounded chunks.
 | Development-reviewed correct | 44/44 |
 | Relevant citation hit | 100% |
 | Citation precision | 93.6% |
-| Correct abstentions | 10/10 |
+| Correct abstentions | 20/20 across 4 categories |
 | False answers on unanswerable questions | 0 |
 
-`10/10 correct abstentions` measures whether the answer layer refuses when the
-approved evidence is insufficient. It is not a retrieval-ranking metric like
-Recall@k or MRR. A presentation may place it beside retrieval under a broader
-heading such as **RAG performance**.
+`20/20 correct abstentions` measures whether the answer layer refuses when the
+category-filtered approved evidence is insufficient. It is not a
+retrieval-ranking metric like Recall@k or MRR. A presentation may place it
+beside retrieval under a broader heading such as **RAG performance**.
 
 ## Flow
 
@@ -102,8 +102,9 @@ Detailed responses remain in ignored `data/evaluation/` for local review.
 
 ## Abstention evaluation
 
-Ten scope-verified unanswerable questions cover outside entities and periods,
-false premises, unsupported details, personal data, and forecasts.
+Twenty scope-verified unanswerable questions cover all four RAG categories,
+with five cases per category. They test false premises, unsupported details,
+personal data, credentials, future events and forecasts.
 
 | Metric | Result |
 | --- | ---: |
@@ -111,16 +112,13 @@ false premises, unsupported details, personal data, and forecasts.
 | False answer rate | 0.00 |
 | Citation-free abstention rate | 1.00 |
 
-In presentation form: **10/10 correct abstentions and 0 false answers**.
+In presentation form: **20/20 correct abstentions across four categories and 0
+false answers**.
 
-The run used 15,492 input, 1,291 output, and 16,783 total chat tokens. See the
-[negative dataset](../../evaluation/datasets/abstention_questions_v1.json) and
-[versioned baseline](../../evaluation/baselines/abstention_v1.json).
-
-The first draft incorrectly labelled a Moody's rating question as unanswerable;
-page 83 did contain the answer. The label was corrected to a Fitch question and
-the full dataset rerun. This review is part of evaluation quality, not a model
-failure.
+The run used 19,203 input, 1,863 output, and 21,066 total chat tokens. See the
+[four-category dataset](../../evaluation/datasets/abstention_questions_v2.json)
+and [versioned baseline](../../evaluation/baselines/abstention_v2.json). The
+original finance-only v1 artifacts remain as historical evidence.
 
 ```bash
 python -m scripts.stage_05_retrieval.evaluate_abstention --overwrite

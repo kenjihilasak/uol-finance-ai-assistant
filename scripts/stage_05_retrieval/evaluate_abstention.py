@@ -41,22 +41,26 @@ from scripts.stage_05_retrieval.hybrid_search import (
 )
 
 
-DEFAULT_DATASET = Path("evaluation/datasets/abstention_questions_v1.json")
-DEFAULT_OUTPUT = Path("data/evaluation/abstention_v1.results.json")
+DEFAULT_DATASET = Path("evaluation/datasets/abstention_questions_v2.json")
+DEFAULT_OUTPUT = Path("data/evaluation/abstention_v2.results.json")
+ANSWERABLE_CATEGORIES = {
+    "finance", "finance_operations", "student_admin", "digital_learning",
+}
 
 
 @dataclass(frozen=True)
 class AbstentionCase:
     case_id: str
     question: str
-    category: str
+    failure_type: str
     reason: str
+    retrieval_category: str | None = None
 
 
 @dataclass(frozen=True)
 class AbstentionDataset:
     dataset_id: str
-    document_id: str
+    document_id: str | None
     review: dict[str, Any]
     cases: tuple[AbstentionCase, ...]
 
@@ -67,11 +71,16 @@ def load_abstention_dataset(path: Path) -> AbstentionDataset:
     payload = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(payload, dict):
         raise RuntimeError("Abstention dataset must be a JSON object")
-    if payload.get("schema_version") != "1.0.0":
+    schema_version = payload.get("schema_version")
+    if schema_version not in {"1.0.0", "2.0.0"}:
         raise RuntimeError("Unsupported abstention dataset schema_version")
 
     dataset_id = required_string(payload.get("dataset_id"), "dataset_id")
-    document_id = required_string(payload.get("document_id"), "document_id")
+    document_id = (
+        required_string(payload.get("document_id"), "document_id")
+        if schema_version == "1.0.0"
+        else None
+    )
     review = payload.get("review")
     if not isinstance(review, dict) or review.get("status") != "scope_verified":
         raise RuntimeError("review.status must be scope_verified")
@@ -88,6 +97,16 @@ def load_abstention_dataset(path: Path) -> AbstentionDataset:
         if case_id in seen_ids:
             raise RuntimeError(f"Duplicate question id: {case_id}")
         seen_ids.add(case_id)
+        retrieval_category = None
+        if schema_version == "2.0.0":
+            retrieval_category = required_string(
+                item.get("retrieval_category"),
+                f"questions[{position}].retrieval_category",
+            )
+            if retrieval_category not in ANSWERABLE_CATEGORIES:
+                raise RuntimeError(
+                    f"Unsupported retrieval category: {retrieval_category}"
+                )
         cases.append(
             AbstentionCase(
                 case_id=case_id,
@@ -97,14 +116,19 @@ def load_abstention_dataset(path: Path) -> AbstentionDataset:
                         f"questions[{position}].question",
                     )
                 ),
-                category=required_string(
-                    item.get("category"),
-                    f"questions[{position}].category",
+                failure_type=required_string(
+                    item.get(
+                        "failure_type"
+                        if schema_version == "2.0.0"
+                        else "category"
+                    ),
+                    f"questions[{position}].failure_type",
                 ),
                 reason=required_string(
                     item.get("reason"),
                     f"questions[{position}].reason",
                 ),
+                retrieval_category=retrieval_category,
             )
         )
 
@@ -187,6 +211,7 @@ def run_abstention_evaluation(
                 top=top,
                 vector_candidates=vector_candidates,
                 document_id=dataset.document_id,
+                category=case.retrieval_category,
             )
             evidence = evidence_from_results(results)
             answer, usage = generate_answer_with_usage(
@@ -200,7 +225,8 @@ def run_abstention_evaluation(
                 {
                     "id": case.case_id,
                     "question": case.question,
-                    "category": case.category,
+                    "retrieval_category": case.retrieval_category,
+                    "failure_type": case.failure_type,
                     "unanswerable_reason": case.reason,
                     "status": answer.status,
                     "answer": answer.answer,

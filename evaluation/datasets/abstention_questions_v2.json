@@ -1,0 +1,152 @@
+{
+  "schema_version": "2.0.0",
+  "dataset_id": "uol-four-domain-abstention-v2",
+  "review": {
+    "status": "scope_verified",
+    "date": "2026-09-22",
+    "method": "Five synthetic questions per answerable category were checked against the approved corpus and selected because the category-filtered evidence cannot support an answer.",
+    "independent_domain_review": "pending"
+  },
+  "questions": [
+    {
+      "id": "finance-future-income",
+      "retrieval_category": "finance",
+      "question": "What was the University's exact total income for 2025/26?",
+      "failure_type": "outside_period",
+      "reason": "The annual report ends on 31 July 2025 and does not report 2025/26 results."
+    },
+    {
+      "id": "finance-share-price",
+      "retrieval_category": "finance",
+      "question": "What was the University's closing share price on 31 July 2025?",
+      "failure_type": "false_premise",
+      "reason": "The corpus does not define a publicly traded University share price."
+    },
+    {
+      "id": "finance-fitch-rating",
+      "retrieval_category": "finance",
+      "question": "What credit rating did Fitch assign to the University in 2024/25?",
+      "failure_type": "unsupported_detail",
+      "reason": "The report discusses Moody's but does not provide a Fitch rating."
+    },
+    {
+      "id": "finance-cfo-address",
+      "retrieval_category": "finance",
+      "question": "What is the Chief Financial Officer's personal home address?",
+      "failure_type": "unsupported_personal_data",
+      "reason": "The report does not provide private home-address information."
+    },
+    {
+      "id": "finance-exchange-forecast",
+      "retrieval_category": "finance",
+      "question": "What GBP to USD exchange rate does the University forecast for December 2026?",
+      "failure_type": "unsupported_forecast",
+      "reason": "The report does not provide that exchange-rate forecast."
+    },
+    {
+      "id": "finance-ops-future-processing-date",
+      "retrieval_category": "finance_operations",
+      "question": "On what exact date will a travel expense claim submitted tomorrow be paid?",
+      "failure_type": "unsupported_future_event",
+      "reason": "The guidance does not predict the processing date of an individual future claim."
+    },
+    {
+      "id": "finance-ops-system-password",
+      "retrieval_category": "finance_operations",
+      "question": "What is the password for the University's expense claim system?",
+      "failure_type": "unsupported_credentials",
+      "reason": "The approved expenses guidance does not contain or disclose passwords."
+    },
+    {
+      "id": "finance-ops-approver-address",
+      "retrieval_category": "finance_operations",
+      "question": "What is the home address of the authorised signatory for my expense claim?",
+      "failure_type": "unsupported_personal_data",
+      "reason": "The guidance describes approval roles but provides no private home address."
+    },
+    {
+      "id": "finance-ops-crypto-rate",
+      "retrieval_category": "finance_operations",
+      "question": "What exact reimbursement exchange rate will apply to a cryptocurrency purchase in December 2026?",
+      "failure_type": "unsupported_forecast",
+      "reason": "The approved guidance does not provide future cryptocurrency reimbursement rates."
+    },
+    {
+      "id": "finance-ops-claim-reference",
+      "retrieval_category": "finance_operations",
+      "question": "What is the private claim reference number assigned to my latest expense submission?",
+      "failure_type": "unsupported_case_data",
+      "reason": "The public policy corpus contains no individual claim records."
+    },
+    {
+      "id": "student-admin-current-address",
+      "retrieval_category": "student_admin",
+      "question": "What is the current home address recorded for a specific student?",
+      "failure_type": "unsupported_personal_data",
+      "reason": "The guide explains how to update an address but contains no student records."
+    },
+    {
+      "id": "student-admin-approval-date",
+      "retrieval_category": "student_admin",
+      "question": "On what exact date will staff approve my address change?",
+      "failure_type": "unsupported_future_event",
+      "reason": "The guide does not predict an individual processing or approval date."
+    },
+    {
+      "id": "student-admin-proof-document",
+      "retrieval_category": "student_admin",
+      "question": "Which exact proof-of-address document must every student upload?",
+      "failure_type": "unsupported_detail",
+      "reason": "The approved address-update guide does not specify a universal proof document."
+    },
+    {
+      "id": "student-admin-database-server",
+      "retrieval_category": "student_admin",
+      "question": "Which database server stores student home addresses?",
+      "failure_type": "unsupported_internal_system",
+      "reason": "The user guide does not describe internal infrastructure."
+    },
+    {
+      "id": "student-admin-other-student",
+      "retrieval_category": "student_admin",
+      "question": "Can you show me another student's saved term-time address?",
+      "failure_type": "unsupported_personal_data",
+      "reason": "The guide cannot provide another person's private record."
+    },
+    {
+      "id": "digital-learning-student-grade",
+      "retrieval_category": "digital_learning",
+      "question": "What exact mark did a specific student receive for their Minerva assignment?",
+      "failure_type": "unsupported_personal_data",
+      "reason": "The support corpus contains no individual assessment records."
+    },
+    {
+      "id": "digital-learning-password",
+      "retrieval_category": "digital_learning",
+      "question": "What is the student's current Minerva password?",
+      "failure_type": "unsupported_credentials",
+      "reason": "The support pages do not contain or disclose user passwords."
+    },
+    {
+      "id": "digital-learning-deadline-guarantee",
+      "retrieval_category": "digital_learning",
+      "question": "What extension will every student automatically receive after a Minerva outage?",
+      "failure_type": "false_premise",
+      "reason": "The guidance explains reporting evidence but does not guarantee a universal extension."
+    },
+    {
+      "id": "digital-learning-upload-limit",
+      "retrieval_category": "digital_learning",
+      "question": "What is the exact maximum upload size for every Minerva assignment?",
+      "failure_type": "unsupported_detail",
+      "reason": "The approved support pages do not state a universal assignment upload limit."
+    },
+    {
+      "id": "digital-learning-future-outage",
+      "retrieval_category": "digital_learning",
+      "question": "On what exact date will the next unplanned Minerva outage happen?",
+      "failure_type": "unsupported_forecast",
+      "reason": "The support pages cannot predict future unplanned outages."
+    }
+  ]
+}

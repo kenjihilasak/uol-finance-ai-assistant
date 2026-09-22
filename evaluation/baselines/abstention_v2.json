@@ -1,0 +1,505 @@
+{
+  "schema_version": "1.0.0",
+  "dataset_id": "uol-four-domain-abstention-v2",
+  "evaluated_at": "2026-09-22T16:09:46.440870+00:00",
+  "index_name": "uol-finance-chunks-v1",
+  "embedding_deployment": "text-embedding-3-small",
+  "chat_deployment": "gpt-5-mini",
+  "retrieval": {
+    "type": "hybrid_bm25_vector",
+    "top": 5,
+    "vector_candidates": 50
+  },
+  "aggregate": {
+    "correct_abstention_rate": 1.0,
+    "false_answer_rate": 0.0,
+    "citation_free_abstention_rate": 1.0
+  },
+  "usage": {
+    "input_tokens": 19203,
+    "output_tokens": 1863,
+    "total_tokens": 21066
+  },
+  "questions": [
+    {
+      "id": "finance-future-income",
+      "question": "What was the University's exact total income for 2025/26?",
+      "retrieval_category": "finance",
+      "failure_type": "outside_period",
+      "unanswerable_reason": "The annual report ends on 31 July 2025 and does not report 2025/26 results.",
+      "status": "abstained",
+      "answer": "The supplied document does not provide enough evidence.",
+      "citation_ids": [],
+      "evidence_chunk_ids": [],
+      "cited_chunk_ids": [],
+      "correct_abstention": 1.0,
+      "false_answer": 0.0,
+      "citation_free_abstention": 1.0,
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "total_tokens": 0
+      }
+    },
+    {
+      "id": "finance-share-price",
+      "question": "What was the University's closing share price on 31 July 2025?",
+      "retrieval_category": "finance",
+      "failure_type": "false_premise",
+      "unanswerable_reason": "The corpus does not define a publicly traded University share price.",
+      "status": "abstained",
+      "answer": "The supplied document does not provide enough evidence.",
+      "citation_ids": [],
+      "evidence_chunk_ids": [],
+      "cited_chunk_ids": [],
+      "correct_abstention": 1.0,
+      "false_answer": 0.0,
+      "citation_free_abstention": 1.0,
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "total_tokens": 0
+      }
+    },
+    {
+      "id": "finance-fitch-rating",
+      "question": "What credit rating did Fitch assign to the University in 2024/25?",
+      "retrieval_category": "finance",
+      "failure_type": "unsupported_detail",
+      "unanswerable_reason": "The report discusses Moody's but does not provide a Fitch rating.",
+      "status": "abstained",
+      "answer": "The supplied document does not provide enough evidence.",
+      "citation_ids": [],
+      "evidence_chunk_ids": [],
+      "cited_chunk_ids": [],
+      "correct_abstention": 1.0,
+      "false_answer": 0.0,
+      "citation_free_abstention": 1.0,
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "total_tokens": 0
+      }
+    },
+    {
+      "id": "finance-cfo-address",
+      "question": "What is the Chief Financial Officer's personal home address?",
+      "retrieval_category": "finance",
+      "failure_type": "unsupported_personal_data",
+      "unanswerable_reason": "The report does not provide private home-address information.",
+      "status": "abstained",
+      "answer": "The supplied document does not provide enough evidence.",
+      "citation_ids": [],
+      "evidence_chunk_ids": [],
+      "cited_chunk_ids": [],
+      "correct_abstention": 1.0,
+      "false_answer": 0.0,
+      "citation_free_abstention": 1.0,
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "total_tokens": 0
+      }
+    },
+    {
+      "id": "finance-exchange-forecast",
+      "question": "What GBP to USD exchange rate does the University forecast for December 2026?",
+      "retrieval_category": "finance",
+      "failure_type": "unsupported_forecast",
+      "unanswerable_reason": "The report does not provide that exchange-rate forecast.",
+      "status": "abstained",
+      "answer": "The supplied document does not provide enough evidence.",
+      "citation_ids": [],
+      "evidence_chunk_ids": [],
+      "cited_chunk_ids": [],
+      "correct_abstention": 1.0,
+      "false_answer": 0.0,
+      "citation_free_abstention": 1.0,
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "total_tokens": 0
+      }
+    },
+    {
+      "id": "finance-ops-future-processing-date",
+      "question": "On what exact date will a travel expense claim submitted tomorrow be paid?",
+      "retrieval_category": "finance_operations",
+      "failure_type": "unsupported_future_event",
+      "unanswerable_reason": "The guidance does not predict the processing date of an individual future claim.",
+      "status": "abstained",
+      "answer": "The supplied documents do not state when a travel expense claim submitted tomorrow will be paid (no specific payment date or payroll timing is given).",
+      "citation_ids": [],
+      "evidence_chunk_ids": [
+        "travel-and-subsistence-expense-claims-3bf190b47068-p0001-c003",
+        "travel-and-subsistence-expense-claims-3bf190b47068-p0001-c001",
+        "travel-and-subsistence-expense-claims-3bf190b47068-p0001-c002",
+        "subsistence-303e9db7e63d-p0001-c001",
+        "subsistence-303e9db7e63d-p0002-c001"
+      ],
+      "cited_chunk_ids": [],
+      "correct_abstention": 1.0,
+      "false_answer": 0.0,
+      "citation_free_abstention": 1.0,
+      "usage": {
+        "input_tokens": 1813,
+        "output_tokens": 145,
+        "total_tokens": 1958
+      }
+    },
+    {
+      "id": "finance-ops-system-password",
+      "question": "What is the password for the University's expense claim system?",
+      "retrieval_category": "finance_operations",
+      "failure_type": "unsupported_credentials",
+      "unanswerable_reason": "The approved expenses guidance does not contain or disclose passwords.",
+      "status": "abstained",
+      "answer": "The supplied documents do not provide the password for the University's expense claim system.",
+      "citation_ids": [],
+      "evidence_chunk_ids": [
+        "travel-and-subsistence-expense-claims-3bf190b47068-p0001-c003",
+        "travel-and-subsistence-expense-claims-3bf190b47068-p0001-c001",
+        "travel-and-subsistence-expense-claims-3bf190b47068-p0001-c002",
+        "subsistence-303e9db7e63d-p0001-c001",
+        "subsistence-303e9db7e63d-p0002-c001"
+      ],
+      "cited_chunk_ids": [],
+      "correct_abstention": 1.0,
+      "false_answer": 0.0,
+      "citation_free_abstention": 1.0,
+      "usage": {
+        "input_tokens": 1810,
+        "output_tokens": 101,
+        "total_tokens": 1911
+      }
+    },
+    {
+      "id": "finance-ops-approver-address",
+      "question": "What is the home address of the authorised signatory for my expense claim?",
+      "retrieval_category": "finance_operations",
+      "failure_type": "unsupported_personal_data",
+      "unanswerable_reason": "The guidance describes approval roles but provides no private home address.",
+      "status": "abstained",
+      "answer": "The supplied documents do not provide the home address of the authorised signatory for your expense claim.",
+      "citation_ids": [],
+      "evidence_chunk_ids": [
+        "travel-and-subsistence-expense-claims-3bf190b47068-p0001-c001",
+        "travel-and-subsistence-expense-claims-3bf190b47068-p0001-c003",
+        "travel-and-subsistence-expense-claims-3bf190b47068-p0001-c002",
+        "subsistence-303e9db7e63d-p0001-c001",
+        "subsistence-303e9db7e63d-p0002-c001"
+      ],
+      "cited_chunk_ids": [],
+      "correct_abstention": 1.0,
+      "false_answer": 0.0,
+      "citation_free_abstention": 1.0,
+      "usage": {
+        "input_tokens": 1814,
+        "output_tokens": 136,
+        "total_tokens": 1950
+      }
+    },
+    {
+      "id": "finance-ops-crypto-rate",
+      "question": "What exact reimbursement exchange rate will apply to a cryptocurrency purchase in December 2026?",
+      "retrieval_category": "finance_operations",
+      "failure_type": "unsupported_forecast",
+      "unanswerable_reason": "The approved guidance does not provide future cryptocurrency reimbursement rates.",
+      "status": "abstained",
+      "answer": "The supplied documents do not state any reimbursement exchange rate specific to cryptocurrency purchases in December 2026.",
+      "citation_ids": [],
+      "evidence_chunk_ids": [
+        "travel-and-subsistence-expense-claims-3bf190b47068-p0001-c003",
+        "travel-and-subsistence-expense-claims-3bf190b47068-p0001-c002",
+        "subsistence-303e9db7e63d-p0002-c001",
+        "subsistence-303e9db7e63d-p0001-c002",
+        "cars-and-taxis-ac91fc126134-p0001-c002"
+      ],
+      "cited_chunk_ids": [],
+      "correct_abstention": 1.0,
+      "false_answer": 0.0,
+      "citation_free_abstention": 1.0,
+      "usage": {
+        "input_tokens": 1692,
+        "output_tokens": 132,
+        "total_tokens": 1824
+      }
+    },
+    {
+      "id": "finance-ops-claim-reference",
+      "question": "What is the private claim reference number assigned to my latest expense submission?",
+      "retrieval_category": "finance_operations",
+      "failure_type": "unsupported_case_data",
+      "unanswerable_reason": "The public policy corpus contains no individual claim records.",
+      "status": "abstained",
+      "answer": "The supplied documents do not include any private claim reference numbers or any identifier for an individual’s specific/latest expense submission, so I cannot determine your claim reference from this evidence.",
+      "citation_ids": [],
+      "evidence_chunk_ids": [
+        "travel-and-subsistence-expense-claims-3bf190b47068-p0001-c001",
+        "travel-and-subsistence-expense-claims-3bf190b47068-p0001-c003",
+        "travel-and-subsistence-expense-claims-3bf190b47068-p0001-c002",
+        "subsistence-303e9db7e63d-p0001-c001",
+        "subsistence-303e9db7e63d-p0002-c001"
+      ],
+      "cited_chunk_ids": [],
+      "correct_abstention": 1.0,
+      "false_answer": 0.0,
+      "citation_free_abstention": 1.0,
+      "usage": {
+        "input_tokens": 1813,
+        "output_tokens": 134,
+        "total_tokens": 1947
+      }
+    },
+    {
+      "id": "student-admin-current-address",
+      "question": "What is the current home address recorded for a specific student?",
+      "retrieval_category": "student_admin",
+      "failure_type": "unsupported_personal_data",
+      "unanswerable_reason": "The guide explains how to update an address but contains no student records.",
+      "status": "abstained",
+      "answer": "The supplied document contains only instructions for updating address details in Student Services; it does not include any specific student's current home address.",
+      "citation_ids": [],
+      "evidence_chunk_ids": [
+        "updating-your-address-details-through-student-services-8f93c8f89e9d-p0001-c001",
+        "updating-your-address-details-through-student-services-8f93c8f89e9d-p0002-c001",
+        "updating-your-address-details-through-student-services-8f93c8f89e9d-p0003-c001"
+      ],
+      "cited_chunk_ids": [],
+      "correct_abstention": 1.0,
+      "false_answer": 0.0,
+      "citation_free_abstention": 1.0,
+      "usage": {
+        "input_tokens": 857,
+        "output_tokens": 102,
+        "total_tokens": 959
+      }
+    },
+    {
+      "id": "student-admin-approval-date",
+      "question": "On what exact date will staff approve my address change?",
+      "retrieval_category": "student_admin",
+      "failure_type": "unsupported_future_event",
+      "unanswerable_reason": "The guide does not predict an individual processing or approval date.",
+      "status": "abstained",
+      "answer": "The supplied documents do not state any exact date when staff will approve an address change.",
+      "citation_ids": [],
+      "evidence_chunk_ids": [
+        "updating-your-address-details-through-student-services-8f93c8f89e9d-p0002-c001",
+        "updating-your-address-details-through-student-services-8f93c8f89e9d-p0001-c001",
+        "updating-your-address-details-through-student-services-8f93c8f89e9d-p0003-c001"
+      ],
+      "cited_chunk_ids": [],
+      "correct_abstention": 1.0,
+      "false_answer": 0.0,
+      "citation_free_abstention": 1.0,
+      "usage": {
+        "input_tokens": 856,
+        "output_tokens": 133,
+        "total_tokens": 989
+      }
+    },
+    {
+      "id": "student-admin-proof-document",
+      "question": "Which exact proof-of-address document must every student upload?",
+      "retrieval_category": "student_admin",
+      "failure_type": "unsupported_detail",
+      "unanswerable_reason": "The approved address-update guide does not specify a universal proof document.",
+      "status": "abstained",
+      "answer": "The supplied document does not state which specific proof-of-address document every student must upload.",
+      "citation_ids": [],
+      "evidence_chunk_ids": [
+        "updating-your-address-details-through-student-services-8f93c8f89e9d-p0002-c001",
+        "updating-your-address-details-through-student-services-8f93c8f89e9d-p0001-c001",
+        "updating-your-address-details-through-student-services-8f93c8f89e9d-p0003-c001"
+      ],
+      "cited_chunk_ids": [],
+      "correct_abstention": 1.0,
+      "false_answer": 0.0,
+      "citation_free_abstention": 1.0,
+      "usage": {
+        "input_tokens": 856,
+        "output_tokens": 137,
+        "total_tokens": 993
+      }
+    },
+    {
+      "id": "student-admin-database-server",
+      "question": "Which database server stores student home addresses?",
+      "retrieval_category": "student_admin",
+      "failure_type": "unsupported_internal_system",
+      "unanswerable_reason": "The user guide does not describe internal infrastructure.",
+      "status": "abstained",
+      "answer": "The supplied document does not provide information about which database server stores student home addresses.",
+      "citation_ids": [],
+      "evidence_chunk_ids": [
+        "updating-your-address-details-through-student-services-8f93c8f89e9d-p0001-c001",
+        "updating-your-address-details-through-student-services-8f93c8f89e9d-p0003-c001",
+        "updating-your-address-details-through-student-services-8f93c8f89e9d-p0002-c001"
+      ],
+      "cited_chunk_ids": [],
+      "correct_abstention": 1.0,
+      "false_answer": 0.0,
+      "citation_free_abstention": 1.0,
+      "usage": {
+        "input_tokens": 853,
+        "output_tokens": 113,
+        "total_tokens": 966
+      }
+    },
+    {
+      "id": "student-admin-other-student",
+      "question": "Can you show me another student's saved term-time address?",
+      "retrieval_category": "student_admin",
+      "failure_type": "unsupported_personal_data",
+      "unanswerable_reason": "The guide cannot provide another person's private record.",
+      "status": "abstained",
+      "answer": "The provided document explains how a student can view and update their own address details in Student Services, but it does not provide any information about accessing or viewing another student's saved term-time address. Therefore I cannot show another student's address from the supplied evidence.",
+      "citation_ids": [],
+      "evidence_chunk_ids": [
+        "updating-your-address-details-through-student-services-8f93c8f89e9d-p0001-c001",
+        "updating-your-address-details-through-student-services-8f93c8f89e9d-p0002-c001",
+        "updating-your-address-details-through-student-services-8f93c8f89e9d-p0003-c001"
+      ],
+      "cited_chunk_ids": [],
+      "correct_abstention": 1.0,
+      "false_answer": 0.0,
+      "citation_free_abstention": 1.0,
+      "usage": {
+        "input_tokens": 856,
+        "output_tokens": 139,
+        "total_tokens": 995
+      }
+    },
+    {
+      "id": "digital-learning-student-grade",
+      "question": "What exact mark did a specific student receive for their Minerva assignment?",
+      "retrieval_category": "digital_learning",
+      "failure_type": "unsupported_personal_data",
+      "unanswerable_reason": "The support corpus contains no individual assessment records.",
+      "status": "abstained",
+      "answer": "The supplied documents do not contain any information about a student’s mark for a Minerva assignment.",
+      "citation_ids": [],
+      "evidence_chunk_ids": [
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0002-c001",
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0001-c001",
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0004-c001",
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0005-c001",
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0003-c001"
+      ],
+      "cited_chunk_ids": [],
+      "correct_abstention": 1.0,
+      "false_answer": 0.0,
+      "citation_free_abstention": 1.0,
+      "usage": {
+        "input_tokens": 1198,
+        "output_tokens": 119,
+        "total_tokens": 1317
+      }
+    },
+    {
+      "id": "digital-learning-password",
+      "question": "What is the student's current Minerva password?",
+      "retrieval_category": "digital_learning",
+      "failure_type": "unsupported_credentials",
+      "unanswerable_reason": "The support pages do not contain or disclose user passwords.",
+      "status": "abstained",
+      "answer": "The supplied document does not provide the student's current Minerva password.",
+      "citation_ids": [],
+      "evidence_chunk_ids": [
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0004-c001",
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0001-c001",
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0002-c001",
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0003-c001",
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0005-c001"
+      ],
+      "cited_chunk_ids": [],
+      "correct_abstention": 1.0,
+      "false_answer": 0.0,
+      "citation_free_abstention": 1.0,
+      "usage": {
+        "input_tokens": 1193,
+        "output_tokens": 87,
+        "total_tokens": 1280
+      }
+    },
+    {
+      "id": "digital-learning-deadline-guarantee",
+      "question": "What extension will every student automatically receive after a Minerva outage?",
+      "retrieval_category": "digital_learning",
+      "failure_type": "false_premise",
+      "unanswerable_reason": "The guidance explains reporting evidence but does not guarantee a universal extension.",
+      "status": "abstained",
+      "answer": "The supplied document does not state what (if any) extension every student will automatically receive after a Minerva outage.",
+      "citation_ids": [],
+      "evidence_chunk_ids": [
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0001-c001",
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0004-c001",
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0002-c001",
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0003-c001",
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0005-c001"
+      ],
+      "cited_chunk_ids": [],
+      "correct_abstention": 1.0,
+      "false_answer": 0.0,
+      "citation_free_abstention": 1.0,
+      "usage": {
+        "input_tokens": 1197,
+        "output_tokens": 134,
+        "total_tokens": 1331
+      }
+    },
+    {
+      "id": "digital-learning-upload-limit",
+      "question": "What is the exact maximum upload size for every Minerva assignment?",
+      "retrieval_category": "digital_learning",
+      "failure_type": "unsupported_detail",
+      "unanswerable_reason": "The approved support pages do not state a universal assignment upload limit.",
+      "status": "abstained",
+      "answer": "The supplied documents do not state the maximum upload size for Minerva assignments, so I cannot determine the exact limit from this evidence.",
+      "citation_ids": [],
+      "evidence_chunk_ids": [
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0002-c001",
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0001-c001",
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0004-c001",
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0005-c001",
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0003-c001"
+      ],
+      "cited_chunk_ids": [],
+      "correct_abstention": 1.0,
+      "false_answer": 0.0,
+      "citation_free_abstention": 1.0,
+      "usage": {
+        "input_tokens": 1197,
+        "output_tokens": 130,
+        "total_tokens": 1327
+      }
+    },
+    {
+      "id": "digital-learning-future-outage",
+      "question": "On what exact date will the next unplanned Minerva outage happen?",
+      "retrieval_category": "digital_learning",
+      "failure_type": "unsupported_forecast",
+      "unanswerable_reason": "The support pages cannot predict future unplanned outages.",
+      "status": "abstained",
+      "answer": "The supplied documents do not state any dates for future unplanned Minerva outages and do not provide enough evidence to answer this question.",
+      "citation_ids": [],
+      "evidence_chunk_ids": [
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0001-c001",
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0002-c001",
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0004-c001",
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0003-c001",
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0005-c001"
+      ],
+      "cited_chunk_ids": [],
+      "correct_abstention": 1.0,
+      "false_answer": 0.0,
+      "citation_free_abstention": 1.0,
+      "usage": {
+        "input_tokens": 1198,
+        "output_tokens": 121,
+        "total_tokens": 1319
+      }
+    }
+  ]
+}
