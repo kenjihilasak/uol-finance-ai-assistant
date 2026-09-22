@@ -6,6 +6,22 @@ This step turns retrieved evidence into a concise answer while preserving the
 boundary between retrieval and generation. It uses `gpt-5-mini` only after the
 hybrid retriever returns bounded chunks.
 
+## Evaluation snapshot
+
+| Measure | Result |
+| --- | ---: |
+| Answerable questions | 44 across 4 categories |
+| Development-reviewed correct | 44/44 |
+| Relevant citation hit | 100% |
+| Citation precision | 93.6% |
+| Correct abstentions | 10/10 |
+| False answers on unanswerable questions | 0 |
+
+`10/10 correct abstentions` measures whether the answer layer refuses when the
+approved evidence is insufficient. It is not a retrieval-ranking metric like
+Recall@k or MRR. A presentation may place it beside retrieval under a broader
+heading such as **RAG performance**.
+
 ## Flow
 
 ```text
@@ -94,6 +110,8 @@ false premises, unsupported details, personal data, and forecasts.
 | Correct abstention rate | 1.00 |
 | False answer rate | 0.00 |
 | Citation-free abstention rate | 1.00 |
+
+In presentation form: **10/10 correct abstentions and 0 false answers**.
 
 The run used 15,492 input, 1,291 output, and 16,783 total chat tokens. See the
 [negative dataset](../../evaluation/datasets/abstention_questions_v1.json) and
