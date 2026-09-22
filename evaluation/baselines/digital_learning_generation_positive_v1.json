@@ -1,0 +1,445 @@
+{
+  "schema_version": "1.0.0",
+  "dataset_id": "uol-digital-learning-retrieval-v1",
+  "evaluated_at": "2026-09-22T14:29:33.379113+00:00",
+  "index_name": "uol-finance-chunks-v1",
+  "embedding_deployment": "text-embedding-3-small",
+  "chat_deployment": "gpt-5-mini",
+  "retrieval": {
+    "type": "hybrid_bm25_vector",
+    "top": 5,
+    "vector_candidates": 50
+  },
+  "aggregate": {
+    "answered_rate": 1.0,
+    "unexpected_abstention_rate": 0.0,
+    "context_relevance_hit_rate": 1.0,
+    "citation_relevance_hit_rate": 1.0,
+    "citation_precision": 1.0,
+    "manually_reviewed_answer_correctness": 1.0
+  },
+  "usage": {
+    "input_tokens": 15064,
+    "output_tokens": 2176,
+    "total_tokens": 17240
+  },
+  "questions": [
+    {
+      "id": "digital-learning-scheduled-maintenance",
+      "question": "Where should a student check whether planned maintenance is affecting Minerva?",
+      "answer_reference": "Check the Digital Education Systems help website for scheduled maintenance.",
+      "status": "answered",
+      "answer": "Check the Digital Education Systems help website for scheduled maintenance that may interrupt Minerva.",
+      "citation_ids": [
+        "S1"
+      ],
+      "answered": 1.0,
+      "unexpected_abstention": 0.0,
+      "context_relevance_hit": 1.0,
+      "citation_relevance_hit": 1.0,
+      "citation_precision": 1.0,
+      "evidence_chunk_ids": [
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0001-c001",
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0002-c001",
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0004-c001",
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0003-c001",
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0005-c001"
+      ],
+      "cited_chunk_ids": [
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0001-c001"
+      ],
+      "relevant_cited_chunk_ids": [
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0001-c001"
+      ],
+      "usage": {
+        "input_tokens": 1197,
+        "output_tokens": 113,
+        "total_tokens": 1310
+      },
+      "manual_answer_review_required": true
+    },
+    {
+      "id": "digital-learning-unplanned-status",
+      "question": "Where are updates posted for an unplanned Minerva outage?",
+      "answer_reference": "Updates are posted during office hours on the IT service status page.",
+      "status": "answered",
+      "answer": "Updates for unplanned Minerva outages are posted on the IT service status page.",
+      "citation_ids": [
+        "S1"
+      ],
+      "answered": 1.0,
+      "unexpected_abstention": 0.0,
+      "context_relevance_hit": 1.0,
+      "citation_relevance_hit": 1.0,
+      "citation_precision": 1.0,
+      "evidence_chunk_ids": [
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0001-c001",
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0002-c001",
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0004-c001",
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0003-c001",
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0005-c001"
+      ],
+      "cited_chunk_ids": [
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0001-c001"
+      ],
+      "relevant_cited_chunk_ids": [
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0001-c001"
+      ],
+      "usage": {
+        "input_tokens": 1196,
+        "output_tokens": 150,
+        "total_tokens": 1346
+      },
+      "manual_answer_review_required": true
+    },
+    {
+      "id": "digital-learning-materials-unavailable",
+      "question": "Which teaching materials become unavailable when Minerva is down?",
+      "answer_reference": "Examples include lecture recordings, digitised course readings, and lecture slides.",
+      "status": "answered",
+      "answer": "When Minerva is unavailable you won’t be able to access teaching materials such as: video recordings of your lectures on Lecture Capture; digitised reading list material (online course readings); and lecture slides.",
+      "citation_ids": [
+        "S1"
+      ],
+      "answered": 1.0,
+      "unexpected_abstention": 0.0,
+      "context_relevance_hit": 1.0,
+      "citation_relevance_hit": 1.0,
+      "citation_precision": 1.0,
+      "evidence_chunk_ids": [
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0001-c001",
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0004-c001",
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0002-c001",
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0005-c001",
+        "get-help-with-your-online-learning-course-6305edf50390-p0001-c001"
+      ],
+      "cited_chunk_ids": [
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0001-c001"
+      ],
+      "relevant_cited_chunk_ids": [
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0001-c001"
+      ],
+      "usage": {
+        "input_tokens": 1409,
+        "output_tokens": 154,
+        "total_tokens": 1563
+      },
+      "manual_answer_review_required": true
+    },
+    {
+      "id": "digital-learning-submission-error-record",
+      "question": "What details should a student record when Minerva fails during coursework submission?",
+      "answer_reference": "Take a screenshot and record the page, date, time, location, and PC number when using an IT cluster.",
+      "status": "answered",
+      "answer": "Take a screenshot of any error messages and note the page you were trying to access. Record: the date, the time, your location, and your PC number (if you’re in an IT cluster). When reporting the issue to IT, include your module code, assignment name and contact information, and keep the IT reference number.",
+      "citation_ids": [
+        "S1"
+      ],
+      "answered": 1.0,
+      "unexpected_abstention": 0.0,
+      "context_relevance_hit": 1.0,
+      "citation_relevance_hit": 1.0,
+      "citation_precision": 1.0,
+      "evidence_chunk_ids": [
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0002-c001",
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0001-c001",
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0004-c001",
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0005-c001",
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0003-c001"
+      ],
+      "cited_chunk_ids": [
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0002-c001"
+      ],
+      "relevant_cited_chunk_ids": [
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0002-c001"
+      ],
+      "usage": {
+        "input_tokens": 1198,
+        "output_tokens": 247,
+        "total_tokens": 1445
+      },
+      "manual_answer_review_required": true
+    },
+    {
+      "id": "digital-learning-it-report-details",
+      "question": "What information should be included when reporting a failed Minerva submission to the IT service desk?",
+      "answer_reference": "Include the module code, assignment name, contact information, and the recorded error details.",
+      "status": "answered",
+      "answer": "When reporting the issue to the IT service desk include:\n- A screenshot of any error messages and the page you were trying to access\n- Date and time of the problem\n- Your location and PC number (if in an IT cluster)\n- Module code\n- Assignment name\n- Your contact information\n\n(Keep the IT reference number you receive and the details above for any school enquiries.)",
+      "citation_ids": [
+        "S1"
+      ],
+      "answered": 1.0,
+      "unexpected_abstention": 0.0,
+      "context_relevance_hit": 1.0,
+      "citation_relevance_hit": 1.0,
+      "citation_precision": 1.0,
+      "evidence_chunk_ids": [
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0002-c001",
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0001-c001",
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0005-c001",
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0004-c001",
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0003-c001"
+      ],
+      "cited_chunk_ids": [
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0002-c001"
+      ],
+      "relevant_cited_chunk_ids": [
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0002-c001"
+      ],
+      "usage": {
+        "input_tokens": 1202,
+        "output_tokens": 202,
+        "total_tokens": 1404
+      },
+      "manual_answer_review_required": true
+    },
+    {
+      "id": "digital-learning-deadline-impact",
+      "question": "What should a student send their school if a Minerva problem may cause a missed deadline?",
+      "answer_reference": "Send the recorded issue details and the IT service desk reference number to the school teaching the module.",
+      "status": "answered",
+      "answer": "They should send the details they recorded for IT: a screenshot of any error messages and the page they tried to access, the date, time, location and PC number (if in an IT cluster). They should also send the IT service‑desk reference number.",
+      "citation_ids": [
+        "S1"
+      ],
+      "answered": 1.0,
+      "unexpected_abstention": 0.0,
+      "context_relevance_hit": 1.0,
+      "citation_relevance_hit": 1.0,
+      "citation_precision": 1.0,
+      "evidence_chunk_ids": [
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0002-c001",
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0001-c001",
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0004-c001",
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0005-c001",
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0003-c001"
+      ],
+      "cited_chunk_ids": [
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0002-c001"
+      ],
+      "relevant_cited_chunk_ids": [
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0002-c001"
+      ],
+      "usage": {
+        "input_tokens": 1202,
+        "output_tokens": 244,
+        "total_tokens": 1446
+      },
+      "manual_answer_review_required": true
+    },
+    {
+      "id": "digital-learning-submission-receipt",
+      "question": "What evidence should a student keep after eventually submitting their work?",
+      "answer_reference": "Keep the submission receipt email.",
+      "status": "answered",
+      "answer": "Keep your submission receipt email. If Minerva prevented you submitting, also keep the evidence you recorded for IT: screenshots of error messages, the page you tried to access, the date, time, location and PC number (if applicable), and the IT service‑desk reference number.",
+      "citation_ids": [
+        "S1"
+      ],
+      "answered": 1.0,
+      "unexpected_abstention": 0.0,
+      "context_relevance_hit": 1.0,
+      "citation_relevance_hit": 1.0,
+      "citation_precision": 1.0,
+      "evidence_chunk_ids": [
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0002-c001",
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0005-c001",
+        "get-help-with-your-online-learning-course-6305edf50390-p0001-c001",
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0003-c001",
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0001-c001"
+      ],
+      "cited_chunk_ids": [
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0002-c001"
+      ],
+      "relevant_cited_chunk_ids": [
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0002-c001"
+      ],
+      "usage": {
+        "input_tokens": 1335,
+        "output_tokens": 282,
+        "total_tokens": 1617
+      },
+      "manual_answer_review_required": true
+    },
+    {
+      "id": "digital-learning-registration-help",
+      "question": "Where is a student directed if they need help registering as a student?",
+      "answer_reference": "They are directed to the how-to-register page.",
+      "status": "answered",
+      "answer": "They are directed to read the “how to register” page for details about registering as a student and who to contact for help.",
+      "citation_ids": [
+        "S1"
+      ],
+      "answered": 1.0,
+      "unexpected_abstention": 0.0,
+      "context_relevance_hit": 1.0,
+      "citation_relevance_hit": 1.0,
+      "citation_precision": 1.0,
+      "evidence_chunk_ids": [
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0003-c001",
+        "get-help-with-your-online-learning-course-6305edf50390-p0001-c001",
+        "get-help-with-your-online-learning-course-6305edf50390-p0002-c001",
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0005-c001",
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0002-c001"
+      ],
+      "cited_chunk_ids": [
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0003-c001"
+      ],
+      "relevant_cited_chunk_ids": [
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0003-c001"
+      ],
+      "usage": {
+        "input_tokens": 1164,
+        "output_tokens": 141,
+        "total_tokens": 1305
+      },
+      "manual_answer_review_required": true
+    },
+    {
+      "id": "digital-learning-alternative-links",
+      "question": "Can students still access module reading lists and past exam papers while Minerva is unavailable?",
+      "answer_reference": "Yes. Direct links for module reading lists and past exam papers are provided.",
+      "status": "answered",
+      "answer": "Yes. If Minerva is unavailable you will still be able to access module reading lists and past examination papers (the guidance also lists direct links for module reading lists and past exam papers to use when Minerva is down).",
+      "citation_ids": [
+        "S1",
+        "S2"
+      ],
+      "answered": 1.0,
+      "unexpected_abstention": 0.0,
+      "context_relevance_hit": 1.0,
+      "citation_relevance_hit": 1.0,
+      "citation_precision": 1.0,
+      "evidence_chunk_ids": [
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0001-c001",
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0004-c001",
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0002-c001",
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0005-c001",
+        "get-help-with-your-online-learning-course-6305edf50390-p0001-c001"
+      ],
+      "cited_chunk_ids": [
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0001-c001",
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0004-c001"
+      ],
+      "relevant_cited_chunk_ids": [
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0001-c001",
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0004-c001"
+      ],
+      "usage": {
+        "input_tokens": 1415,
+        "output_tokens": 202,
+        "total_tokens": 1617
+      },
+      "manual_answer_review_required": true
+    },
+    {
+      "id": "digital-learning-course-platform-support",
+      "question": "Which team should an online learner contact about Minerva or Coursera access?",
+      "answer_reference": "Contact the Enhancement and Course Support Team at DESCourseSupport@leeds.ac.uk.",
+      "status": "answered",
+      "answer": "Contact the Enhancement and Course Support Team (email DESCourseSupport@leeds.ac.uk).",
+      "citation_ids": [
+        "S2"
+      ],
+      "answered": 1.0,
+      "unexpected_abstention": 0.0,
+      "context_relevance_hit": 1.0,
+      "citation_relevance_hit": 1.0,
+      "citation_precision": 1.0,
+      "evidence_chunk_ids": [
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0005-c001",
+        "get-help-with-your-online-learning-course-6305edf50390-p0001-c001",
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0001-c001",
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0002-c001",
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0003-c001"
+      ],
+      "cited_chunk_ids": [
+        "get-help-with-your-online-learning-course-6305edf50390-p0001-c001"
+      ],
+      "relevant_cited_chunk_ids": [
+        "get-help-with-your-online-learning-course-6305edf50390-p0001-c001"
+      ],
+      "usage": {
+        "input_tokens": 1337,
+        "output_tokens": 135,
+        "total_tokens": 1472
+      },
+      "manual_answer_review_required": true
+    },
+    {
+      "id": "digital-learning-administration-support",
+      "question": "Who handles online-course questions about registration, enrolment, extensions, or assessments?",
+      "answer_reference": "The Student Education and Experience Team handles those administrative questions.",
+      "status": "answered",
+      "answer": "The Student Education and Experience Team handles questions about registration, module enrolment, extensions, assessments (email: DESstudents@leeds.ac.uk).",
+      "citation_ids": [
+        "S1"
+      ],
+      "answered": 1.0,
+      "unexpected_abstention": 0.0,
+      "context_relevance_hit": 1.0,
+      "citation_relevance_hit": 1.0,
+      "citation_precision": 1.0,
+      "evidence_chunk_ids": [
+        "get-help-with-your-online-learning-course-6305edf50390-p0001-c001",
+        "get-help-with-your-online-learning-course-6305edf50390-p0002-c001",
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0005-c001",
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0001-c001",
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0003-c001"
+      ],
+      "cited_chunk_ids": [
+        "get-help-with-your-online-learning-course-6305edf50390-p0001-c001"
+      ],
+      "relevant_cited_chunk_ids": [
+        "get-help-with-your-online-learning-course-6305edf50390-p0001-c001"
+      ],
+      "usage": {
+        "input_tokens": 1085,
+        "output_tokens": 164,
+        "total_tokens": 1249
+      },
+      "manual_answer_review_required": true
+    },
+    {
+      "id": "digital-learning-response-time",
+      "question": "When do the online learning support teams work and how quickly do they aim to respond?",
+      "answer_reference": "They work Monday to Friday, 9am to 5pm UK time, and aim to respond within two working days.",
+      "status": "answered",
+      "answer": "All online learning support teams work Monday to Friday, 9am–5pm UK time, and they aim to respond within two working days.",
+      "citation_ids": [
+        "S1"
+      ],
+      "answered": 1.0,
+      "unexpected_abstention": 0.0,
+      "context_relevance_hit": 1.0,
+      "citation_relevance_hit": 1.0,
+      "citation_precision": 1.0,
+      "evidence_chunk_ids": [
+        "get-help-with-your-online-learning-course-6305edf50390-p0001-c001",
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0005-c001",
+        "get-help-with-your-online-learning-course-6305edf50390-p0002-c001",
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0002-c001",
+        "what-to-do-if-you-can-t-access-minerva-2e29b9d0c375-p0001-c001"
+      ],
+      "cited_chunk_ids": [
+        "get-help-with-your-online-learning-course-6305edf50390-p0001-c001"
+      ],
+      "relevant_cited_chunk_ids": [
+        "get-help-with-your-online-learning-course-6305edf50390-p0001-c001"
+      ],
+      "usage": {
+        "input_tokens": 1324,
+        "output_tokens": 142,
+        "total_tokens": 1466
+      },
+      "manual_answer_review_required": true
+    }
+  ],
+  "manual_review": {
+    "status": "development_review_complete",
+    "correct_answers": 12,
+    "questions": 12,
+    "independent_domain_review_required": true
+  }
+}

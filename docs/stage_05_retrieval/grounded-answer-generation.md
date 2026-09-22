@@ -57,34 +57,32 @@ python -m scripts.stage_05_retrieval.generate_grounded_answer \
   --dry-run
 ```
 
-## Ten-question positive evaluation
+## Positive generation evaluation
 
-The full reviewed positive set was executed with one embedding batch and 10
-`gpt-5-mini` responses.
+The same grounded-generation contract was evaluated across all four answerable
+categories.
 
-| Metric | Result |
-| --- | ---: |
-| Answered rate | 1.00 |
-| Relevant context hit rate | 1.00 |
-| Relevant citation hit rate | 1.00 |
-| Citation precision | 0.85 |
-| Manually reviewed answer correctness | 1.00 |
+| Category | Questions | Answered | Relevant citation hit | Citation precision | Development-reviewed correct |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Finance report | 10 | 1.000 | 1.000 | 0.850 | 10/10 |
+| Student administration | 10 | 1.000 | 1.000 | 1.000 | 10/10 |
+| Finance operations | 12 | 1.000 | 1.000 | 0.889 | 12/12 |
+| Digital learning | 12 | 1.000 | 1.000 | 1.000 | 12/12 |
+| **Overall** | **44** | **1.000** | **1.000** | **0.936** | **44/44** |
 
-All 10 answers matched their concise references during development review.
-Three answers included additional retrieved citations not labelled as relevant,
-which reduced macro-averaged citation precision without changing answer
-correctness.
+Citation precision is macro-averaged across questions. It falls below 1.0 when
+an answer cites additional retrieved chunks that were not labelled relevant,
+even when the answer remains correct and supported.
 
-Token usage for the run was 16,141 input, 1,844 output, and 17,985 total tokens.
-The concise versioned result is
-[`generation_positive_v1.json`](../../evaluation/baselines/generation_positive_v1.json).
-Detailed answers remain in ignored `data/evaluation/` for local review.
+The four accepted runs used 59,963 input tokens, 7,746 output tokens and 67,709
+total tokens. Versioned baselines:
 
-Run the positive evaluation:
+- [Finance report](../../evaluation/baselines/generation_positive_v1.json)
+- [Student administration](../../evaluation/baselines/student_admin_generation_positive_v1.json)
+- [Finance operations](../../evaluation/baselines/finance_operations_generation_positive_v1.json)
+- [Digital learning](../../evaluation/baselines/digital_learning_generation_positive_v1.json)
 
-```bash
-python -m scripts.stage_05_retrieval.evaluate_generation --overwrite
-```
+Detailed responses remain in ignored `data/evaluation/` for local review.
 
 ## Abstention evaluation
 
@@ -112,42 +110,11 @@ python -m scripts.stage_05_retrieval.evaluate_abstention --overwrite
 
 Independent domain review is still required before production-quality claims.
 
-## Student administration positive evaluation
-
-The same generation contract was evaluated on the 10 reviewed questions from
-`uol-student-admin-retrieval-v1`, using hybrid top 3 because the guide contains
-three chunks.
-
-| Metric | Result |
-| --- | ---: |
-| Answered rate | 1.00 |
-| Unexpected abstention rate | 0.00 |
-| Relevant context hit rate | 1.00 |
-| Relevant citation hit rate | 1.00 |
-| Citation precision | 1.00 |
-| Development-reviewed answer correctness | 1.00 |
-
-All 10 answers matched their references and cited only labelled relevant
-chunks. The reviewed run used 8,594 input, 1,533 output, and 10,127 total chat
-tokens.
-See the
-[versioned baseline](../../evaluation/baselines/student_admin_generation_positive_v1.json).
-These usage totals describe the accepted reviewed run. They exclude the
-rejected initial run and infrastructure retries, which can still contribute to
-Azure consumption.
-
-An initial run exposed that the model could return a raw `chunk_id` instead of
-an `S1...Sn` source ID. Runtime validation rejected the response. The structured
-output schema now restricts citation values dynamically to the evidence IDs in
-the current request, while runtime validation remains as a second control.
-
-This remains a small development evaluation over a three-page English guide.
-Independent review and robustness testing are still required.
+Run any positive dataset with:
 
 ```bash
 python -m scripts.stage_05_retrieval.evaluate_generation \
-  --dataset evaluation/datasets/student_admin_retrieval_questions_v1.json \
-  --top 3 --vector-candidates 20 \
-  --output data/evaluation/student_admin_generation_positive_v1.results.json \
+  --dataset evaluation/datasets/digital_learning_retrieval_questions_v1.json \
+  --output data/evaluation/digital_learning_generation_positive_v1.results.json \
   --overwrite
 ```
