@@ -68,6 +68,28 @@ class TriageTests(unittest.TestCase):
         self.assertEqual(decision.action, TriageAction.MANUAL_REVIEW)
         self.assertFalse(decision.allow_generation)
 
+    def test_unsupported_category_routes_to_manual_review(self):
+        decision = apply_routing_policy(classification(
+            category=Category.UNSUPPORTED,
+            subcategory="facilities_safety",
+            action=TriageAction.MANUAL_REVIEW,
+            route_to=RouteTo.MANUAL_TRIAGE,
+        ))
+        self.assertEqual(decision.action, TriageAction.MANUAL_REVIEW)
+        self.assertEqual(decision.route_to, RouteTo.MANUAL_TRIAGE)
+        self.assertFalse(decision.allow_generation)
+        self.assertFalse(decision.classification.is_sensitive)
+
+    def test_unsupported_takes_precedence_over_missing_information(self):
+        decision = apply_routing_policy(classification(
+            category=Category.UNSUPPORTED,
+            action=TriageAction.REQUEST_CLARIFICATION,
+            missing_info=("fault severity",),
+        ))
+        self.assertEqual(decision.action, TriageAction.MANUAL_REVIEW)
+        self.assertEqual(decision.route_to, RouteTo.MANUAL_TRIAGE)
+        self.assertFalse(decision.allow_generation)
+
     def test_answerable_category_allows_staff_reviewed_draft(self):
         decision = apply_routing_policy(classification())
         self.assertTrue(decision.allow_generation)

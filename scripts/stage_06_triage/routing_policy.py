@@ -38,6 +38,15 @@ def apply_routing_policy(
             reason="Sensitive enquiries are routed without retrieval or generation.",
             rule_flags=rule_flags,
         )
+    if classification.category == Category.UNSUPPORTED:
+        return TriageDecision(
+            classification=classification,
+            action=TriageAction.MANUAL_REVIEW,
+            route_to=RouteTo.MANUAL_TRIAGE,
+            allow_generation=False,
+            reason="The enquiry is outside the approved knowledge domains.",
+            rule_flags=rule_flags,
+        )
     if (
         classification.category == Category.UNCLEAR
         or classification.missing_info

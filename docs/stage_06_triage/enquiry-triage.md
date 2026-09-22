@@ -81,6 +81,12 @@ summary. `routing_policy.py` then makes the final decision in code. A sensitive
 decision always sets `allow_generation=false`, so the model never receives
 retrieved context with which to draft a response.
 
+`unsupported` is a control category rather than a new knowledge domain. It
+means that the enquiry is understandable but falls outside the four approved
+RAG categories. Python routes it to `manual_triage` and blocks retrieval and
+generation. `unclear` is reserved for enquiries whose intent cannot yet be
+determined.
+
 The sensitive-term scan runs first inside FastAPI on Railway, but the current
 implementation still sends the enquiry to GPT-5-mini for classification. The
 routing policy then combines the retained rule flags with the LLM result. A

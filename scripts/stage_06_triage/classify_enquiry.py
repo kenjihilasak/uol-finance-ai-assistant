@@ -14,12 +14,19 @@ Return a concise operational summary and one category:
 - finance_operations: expenses, receipts, travel, subsistence, accommodation, cars or taxis.
 - student_admin: personal details and address updates.
 - digital_learning: Minerva, Coursera, online submissions or online-course support.
-- student_support: wellbeing, mental health, harassment, discrimination, abuse or safety.
-- unclear: insufficient or conflicting intent.
+- student_support: sensitive personal wellbeing, mental health, harassment,
+  discrimination, abuse or an immediate threat to a person.
+- unsupported: a clear enquiry outside the approved categories, including
+  facilities, maintenance, room or equipment faults and operational incidents.
+- unclear: the intent itself is insufficient or conflicting.
 Sensitive personal difficulty always takes precedence over other topics.
+Physical hazards or equipment faults are unsupported, not sensitive, unless the
+enquiry also reports an immediate threat, injury or sensitive personal matter.
 Use specialist_referral for sensitive cases, request_clarification when essential
 information is missing, draft_response for supported operational questions, and
-manual_review when no safe route is clear. Never invent personal details."""
+manual_review for unsupported enquiries or when no safe route is clear. Never
+invent personal details. For unsupported enquiries, return manual_review,
+manual_triage and an empty missing_info array; do not request contact details."""
 
 
 CLASSIFICATION_TEXT_CONFIG: dict[str, object] = {
@@ -33,7 +40,7 @@ CLASSIFICATION_TEXT_CONFIG: dict[str, object] = {
                 "summary": {"type": "string"},
                 "category": {"type": "string", "enum": [
                     "finance", "finance_operations", "student_admin",
-                    "digital_learning", "student_support", "unclear",
+                    "digital_learning", "student_support", "unsupported", "unclear",
                 ]},
                 "subcategory": {"type": "string"},
                 "is_sensitive": {"type": "boolean"},

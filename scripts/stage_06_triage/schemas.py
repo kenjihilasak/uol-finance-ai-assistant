@@ -11,6 +11,7 @@ class Category(str, Enum):
     STUDENT_ADMIN = "student_admin"
     DIGITAL_LEARNING = "digital_learning"
     STUDENT_SUPPORT = "student_support"
+    UNSUPPORTED = "unsupported"
     UNCLEAR = "unclear"
 
 
