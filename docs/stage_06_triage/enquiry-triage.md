@@ -1,67 +1,61 @@
-# Enquiry triage and safe routing
+# Enquiry triage
 
-The user is a staff member handling an incoming enquiry. The person who sent
-the original email never interacts with the demo directly.
+This staff-facing pipeline converts one unstructured enquiry into a controlled
+action and route. It never sends a response automatically.
 
-## Decision flow
+## Flow
 
 ```mermaid
 flowchart LR
-    A[Incoming enquiry] --> B[Python sensitive-term detection]
+    A[Incoming enquiry] --> B[Python sensitive-term scan]
     B --> C[GPT-5-mini structured classification]
     C --> D[Deterministic Python routing policy]
-    D --> E{Sensitive flag from Python or LLM?}
-    E -- Yes --> F[Specialist referral<br/>Example: harassment or stalking<br/>Block RAG]
+    D --> E{Sensitive?}
+    E -- Yes --> F[Specialist referral<br/>Block RAG]
     E -- No --> G{Supported category?}
-    G -- No --> H[Manual review<br/>Example: laboratory water leak<br/>Block RAG]
-    G -- Yes --> I{Essential information missing?}
-    I -- Yes --> J[Show missing information and proposed route<br/>Staff requests details or routes enquiry<br/>Block generation]
-    I -- No --> K[Category-filtered hybrid RAG<br/>Grounded draft with citations]
+    G -- No --> H[Manual triage<br/>Block RAG]
+    G -- Yes --> I{Missing essential information?}
+    I -- Yes --> J[Show missing fields and proposed route<br/>Staff decides next step]
+    I -- No --> K[Category-filtered RAG<br/>Grounded draft and citations]
     F --> L[Staff review queue]
     H --> L
     J --> L
     K --> L
 ```
 
-The LLM returns a typed classification: `category`, `subcategory`,
-`is_sensitive`, proposed `action`, `route_to`, `missing_info`, and a short
-summary. `routing_policy.py` then makes the final decision in code. A sensitive
-decision always sets `allow_generation=false`, so the model never receives
-retrieved context with which to draft a response.
+## Execution order
 
-The classifier has five category values: four approved RAG domains plus
-`unsupported`. The latter is a control value rather than a knowledge corpus.
-Sensitivity and missing information are separate fields, so neither
-`student_support` nor `unclear` is needed as a category. Python blocks retrieval
-for unsupported and sensitive enquiries.
+1. [`sensitive_rules.py`](../../scripts/stage_06_triage/sensitive_rules.py)
+   records conservative sensitive-term flags.
+2. [`classify_enquiry.py`](../../scripts/stage_06_triage/classify_enquiry.py)
+   sends the original enquiry to GPT-5-mini and receives structured output.
+3. [`schemas.py`](../../scripts/stage_06_triage/schemas.py) validates the
+   controlled fields and enum values.
+4. [`routing_policy.py`](../../scripts/stage_06_triage/routing_policy.py)
+   applies the final decision in Python.
+5. [`triage_enquiry.py`](../../scripts/stage_06_triage/triage_enquiry.py) runs
+   RAG only when the final policy permits it.
 
-The sensitive-term scan runs first inside FastAPI on Railway, but the current
-implementation still sends the enquiry to GPT-5-mini for classification. The
-routing policy then combines the retained rule flags with the LLM result. A
-sensitive result stops calls 2–4: no query embedding, retrieval, or draft
-generation occurs.
+## Four outcomes
 
-Azure AI Search stores both chunk text and vectors. Citations originate from
-the returned chunks' `source_title`, `source_url`, `page_number`, and text
-metadata. FastAPI assigns allowed IDs such as `S1`; GPT-5-mini may cite only
-those IDs, and FastAPI validates them before returning the response.
-
-## Files
-
-| File | Responsibility |
+| Example | Final outcome |
 | --- | --- |
-| `schemas.py` | Validated classification and decision contracts |
-| `sensitive_rules.py` | Conservative first-layer safety flags |
-| `classify_enquiry.py` | Structured classification with `gpt-5-mini` |
-| `routing_policy.py` | Deterministic final action and route |
-| `triage_enquiry.py` | Orchestrates classification and approved RAG |
-| `evaluate_triage.py` | Measures the 21-case reviewed dataset |
+| Harassment or stalking | Specialist referral; no RAG |
+| Laboratory water leak | Unsupported; manual triage; no RAG |
+| Incomplete Minerva issue | Staff requests details or routes it; no generation |
+| Complete expense question | Cited draft from approved evidence |
 
-## Evaluation
+The LLM proposes a classification and route. Python decides whether retrieval
+and generation are allowed. Every result enters a staff review queue; the
+original sender does not interact with the demo.
 
-The canonical report combines retrieval results with the expanded 21-case
-triage and safety evaluation:
-[System evaluation](../stage_05_retrieval/retrieval-evaluation.md).
+## Read next
 
-The dataset contains synthetic enquiries only. Do not enter real personal or
-sensitive correspondence in the portfolio demo.
+1. [Classification contract](classification-contract.md): first Azure call,
+   five categories, structured output and validation.
+2. [Routing and safety policy](routing-policy.md): precedence, actions, routes
+   and generation gates.
+3. [Triage evaluation](triage-evaluation.md): classification, routing and
+   generation-safety metrics.
+4. [API and portfolio](../stage_07_serving/api-and-portfolio.md): authentication,
+   persistence and Staff UI.

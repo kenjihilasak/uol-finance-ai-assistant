@@ -24,6 +24,7 @@ directory; the application does not download them automatically from URLs.
 - [Retrieval baseline](./docs/stage_05_retrieval/retrieval-evaluation.md)
 - [Grounded answers](./docs/stage_05_retrieval/grounded-answer-generation.md)
 - [Enquiry triage and safety](./docs/stage_06_triage/enquiry-triage.md)
+- [Triage evaluation](./docs/stage_06_triage/triage-evaluation.md)
 - [Portfolio UI decision](./docs/overview/ui-options.md)
 - [Serving and deployment guide](./docs/stage_07_serving/api-and-portfolio.md)
 - [Source ingestion guide](./docs/stage_01_ingestion/source-ingestion.md)
